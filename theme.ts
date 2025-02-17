@@ -1,0 +1,27 @@
+export const theme = {
+  colors: {
+    primary10: "#FBF5F5",
+    primary20: "#F8EBEC",
+    primary30: "#F1DADD",
+    primary40: "#E4BDC2",
+    primary50: "#D597A1",
+    primary60: "#C27180",
+    primary70: "#AB5367",
+    primary80: "#8F4155",
+    primary90: "#78394B",
+    primary100: "#683344",
+    primary200: "#381923",
+    text: "#40454F",
+    white: "#FFFFFF",
+    black: "#28262B",
+    success: "#CFE3D1",
+    danger: "#FDCECB",
+    disabled: "#1D1B201F",
+  },
+  fonts: {
+    regular: "Poppins_400Regular",
+    medium: "Poppins_500Medium",
+    semibold: "Poppins_600SemiBold",
+    bold: "Poppins_700Bold",
+  },
+};
