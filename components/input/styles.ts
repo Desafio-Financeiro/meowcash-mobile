@@ -1,12 +1,13 @@
+import { theme } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   input: {
     width: "100%",
     padding: 4,
-    fontFamily: "Poppins_400Regular",
+    fontFamily: theme.fonts.regular,
     fontSize: 16,
-    color: "#000",
+    color: theme.colors.text,
     borderWidth: 0,
     borderBottomWidth: 1,
   },
@@ -27,9 +28,9 @@ export const styles = StyleSheet.create({
   },
 
   label: {
-    fontFamily: "Poppins_400Regular",
+    fontFamily: theme.fonts.regular,
     fontSize: 14,
     paddingHorizontal: 4,
-    color: "#000",
+    color: theme.colors.text,
   },
 });
