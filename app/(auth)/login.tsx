@@ -1,12 +1,14 @@
+import { Button } from "@/components/button";
+import { Input } from "@/components/input";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
-import { Button, View, Text } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { View, Text } from "react-native";
 
 export default function Index() {
   const { message, handleLogin, handleSignUp } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
     <View
@@ -16,29 +18,33 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <TextInput
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        style={{ borderWidth: 1, marginBottom: 16, padding: 8, width: 300 }}
-      />
-      <TextInput
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        style={{ borderWidth: 1, marginBottom: 16, padding: 8, width: 300 }}
-      />
-      <Button
-        title="Criar conta"
-        color="green"
-        onPress={() => handleSignUp(email, password)}
-      />
-      <Button
-        title="Fazer login"
-        color="blue"
-        onPress={() => handleLogin(email, password)}
-      />
+      <View style={{ width: 300, gap: 16 }}>
+        <Input
+          label="E-mail"
+          placeholder="email@gmail.com"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Input
+          label="Senha"
+          secureTextEntry={showPassword}
+          value={password}
+          onChangeText={setPassword}
+          endIcon={showPassword ? "eye" : "eye-off"}
+          endIconOnPress={() => setShowPassword((oldState) => !oldState)}
+        />
+
+        <Button
+          title="Criar conta"
+          variant="primary"
+          onPress={() => handleSignUp(email, password)}
+        />
+        <Button
+          title="Fazer login"
+          variant="ghost"
+          onPress={() => handleLogin(email, password)}
+        />
+      </View>
 
       {message && <Text>{message}</Text>}
     </View>
