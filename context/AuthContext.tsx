@@ -6,6 +6,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { ToastAndroid } from "react-native";
 
 interface IAuthContext {
   user: UserCredential | null;
@@ -13,7 +14,6 @@ interface IAuthContext {
   handleSignUp: (email: string, password: string) => void;
   handleLogout: () => void;
   isAuthenticated: boolean;
-  message: string;
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -21,11 +21,8 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserCredential | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [message, setMessage] = useState<string>("");
 
   const handleLogin = async (email: string, password: string) => {
-    setMessage("");
-
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -34,36 +31,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       setUser(userCredential);
       setIsAuthenticated(true);
+      ToastAndroid.show("Usuário logado com sucesso", ToastAndroid.SHORT);
       console.log("AuthProvider :: login - usuário logado com sucesso");
-      setMessage("AuthProvider :: login - usuário logado com sucesso");
       router.replace("/profile");
       return true;
     } catch (error) {
+      ToastAndroid.show("Falha ao logar usuário", ToastAndroid.SHORT);
       console.log("AuthProvider :: login - falha ao logar usuário", error);
-      setMessage(`AuthProvider :: login - falha ao logar usuário >> ${error}`);
       return false;
     }
   };
 
   const handleSignUp = (email: string, password: string) => {
-    setMessage("");
-
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         router.replace("/login");
+        ToastAndroid.show("Usuário cadastrado com sucesso", ToastAndroid.SHORT);
         console.log("AuthProvider :: signUp - usuário cadastrado com sucesso");
-        setMessage("AuthProvider :: signUp - usuário cadastrado com sucesso");
       })
       .catch((error) => {
+        ToastAndroid.show("Falha ao cadastrar usuário", ToastAndroid.SHORT);
         console.log("AuthProvider :: signUp - falha", error);
-        setMessage(`AuthProvider :: signUp - falha >> ${error}`);
       });
   };
 
   const handleLogout = () => {
-    setMessage("");
     console.log("AuthProvider :: logout - usuário deslogado com sucesso");
-    setMessage("AuthProvider :: logout - usuário deslogado com sucesso");
+    ToastAndroid.show("Usuário deslogado com sucesso", ToastAndroid.SHORT);
     auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
@@ -77,7 +71,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleSignUp,
         handleLogout,
         isAuthenticated,
-        message,
       }}
     >
       {children}
