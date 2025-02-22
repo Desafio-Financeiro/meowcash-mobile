@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Toast.show({
         type: "success",
         text1: "Usuário logado com sucesso",
+        position: "bottom",
       });
       console.log("AuthProvider :: login - usuário logado com sucesso");
       router.replace("/profile");
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Toast.show({
         type: "error",
         text1: "Falha ao logar usuário",
+        position: "bottom",
       });
       console.log("AuthProvider :: login - falha ao logar usuário", error);
       return false;
@@ -55,6 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         Toast.show({
           type: "success",
           text1: "Usuário cadastrado com sucesso",
+          position: "bottom",
         });
         console.log("AuthProvider :: signUp - usuário cadastrado com sucesso");
       })
@@ -62,6 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         Toast.show({
           type: "error",
           text1: "Falha ao cadastrar usuário",
+          position: "bottom",
         });
         console.log("AuthProvider :: signUp - falha", error);
       });
@@ -72,6 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     Toast.show({
       type: "success",
       text1: "Usuário deslogado com sucesso",
+      position: "bottom",
     });
     auth.signOut();
     setUser(null);

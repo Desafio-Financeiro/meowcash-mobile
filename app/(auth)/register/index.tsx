@@ -41,7 +41,7 @@ export default function Index() {
           secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-          endIcon={showPassword ? "eye" : "eye-off"}
+          endIcon={showPassword ? "eye-off" : "eye"}
           endIconOnPress={() => setShowPassword((oldState) => !oldState)}
           placeholder="********"
         />
