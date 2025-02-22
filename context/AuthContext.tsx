@@ -6,7 +6,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ToastAndroid } from "react-native";
+import Toast from "react-native-toast-message";
 
 interface IAuthContext {
   user: UserCredential | null;
@@ -31,12 +31,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       setUser(userCredential);
       setIsAuthenticated(true);
-      ToastAndroid.show("Usuário logado com sucesso", ToastAndroid.SHORT);
+      Toast.show({
+        type: "success",
+        text1: "Usuário logado com sucesso",
+      });
       console.log("AuthProvider :: login - usuário logado com sucesso");
       router.replace("/profile");
       return true;
     } catch (error) {
-      ToastAndroid.show("Falha ao logar usuário", ToastAndroid.SHORT);
+      Toast.show({
+        type: "error",
+        text1: "Falha ao logar usuário",
+      });
       console.log("AuthProvider :: login - falha ao logar usuário", error);
       return false;
     }
@@ -46,18 +52,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         router.replace("/login");
-        ToastAndroid.show("Usuário cadastrado com sucesso", ToastAndroid.SHORT);
+        Toast.show({
+          type: "success",
+          text1: "Usuário cadastrado com sucesso",
+        });
         console.log("AuthProvider :: signUp - usuário cadastrado com sucesso");
       })
       .catch((error) => {
-        ToastAndroid.show("Falha ao cadastrar usuário", ToastAndroid.SHORT);
+        Toast.show({
+          type: "error",
+          text1: "Falha ao cadastrar usuário",
+        });
         console.log("AuthProvider :: signUp - falha", error);
       });
   };
 
   const handleLogout = () => {
     console.log("AuthProvider :: logout - usuário deslogado com sucesso");
-    ToastAndroid.show("Usuário deslogado com sucesso", ToastAndroid.SHORT);
+    Toast.show({
+      type: "success",
+      text1: "Usuário deslogado com sucesso",
+    });
     auth.signOut();
     setUser(null);
     setIsAuthenticated(false);

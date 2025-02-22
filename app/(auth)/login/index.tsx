@@ -29,7 +29,7 @@ export default function Index() {
         />
         <Input
           label="Senha"
-          secureTextEntry={showPassword}
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
           endIcon={showPassword ? "eye" : "eye-off"}
