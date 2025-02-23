@@ -1,3 +1,5 @@
+import Toast from "react-native-toast-message";
+
 import Header from "@/components/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import {
@@ -61,6 +63,7 @@ export default function RootLayout() {
             }}
           />
         </Drawer>
+        <Toast />
       </AuthProvider>
     </GestureHandlerRootView>
   );

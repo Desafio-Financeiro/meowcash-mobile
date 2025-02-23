@@ -6,6 +6,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
+import Toast from "react-native-toast-message";
 
 interface IAuthContext {
   user: UserCredential | null;
@@ -13,7 +14,6 @@ interface IAuthContext {
   handleSignUp: (email: string, password: string) => void;
   handleLogout: () => void;
   isAuthenticated: boolean;
-  message: string;
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -21,11 +21,8 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserCredential | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [message, setMessage] = useState<string>("");
 
   const handleLogin = async (email: string, password: string) => {
-    setMessage("");
-
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -34,36 +31,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       setUser(userCredential);
       setIsAuthenticated(true);
+      Toast.show({
+        type: "success",
+        text1: "Usuário logado com sucesso",
+        position: "bottom",
+      });
       console.log("AuthProvider :: login - usuário logado com sucesso");
-      setMessage("AuthProvider :: login - usuário logado com sucesso");
       router.replace("/profile");
       return true;
     } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Falha ao logar usuário",
+        position: "bottom",
+      });
       console.log("AuthProvider :: login - falha ao logar usuário", error);
-      setMessage(`AuthProvider :: login - falha ao logar usuário >> ${error}`);
       return false;
     }
   };
 
   const handleSignUp = (email: string, password: string) => {
-    setMessage("");
-
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         router.replace("/login");
+        Toast.show({
+          type: "success",
+          text1: "Usuário cadastrado com sucesso",
+          position: "bottom",
+        });
         console.log("AuthProvider :: signUp - usuário cadastrado com sucesso");
-        setMessage("AuthProvider :: signUp - usuário cadastrado com sucesso");
       })
       .catch((error) => {
+        Toast.show({
+          type: "error",
+          text1: "Falha ao cadastrar usuário",
+          position: "bottom",
+        });
         console.log("AuthProvider :: signUp - falha", error);
-        setMessage(`AuthProvider :: signUp - falha >> ${error}`);
       });
   };
 
   const handleLogout = () => {
-    setMessage("");
     console.log("AuthProvider :: logout - usuário deslogado com sucesso");
-    setMessage("AuthProvider :: logout - usuário deslogado com sucesso");
+    Toast.show({
+      type: "success",
+      text1: "Usuário deslogado com sucesso",
+      position: "bottom",
+    });
     auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
@@ -77,7 +91,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleSignUp,
         handleLogout,
         isAuthenticated,
-        message,
       }}
     >
       {children}

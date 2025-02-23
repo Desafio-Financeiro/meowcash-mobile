@@ -3,22 +3,24 @@ import { Input } from "@/components/input";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { View, Text } from "react-native";
+import { router } from "expo-router";
+import { styles } from "./style";
+import Cat from "@/components/Icons/Cat";
 
 export default function Index() {
-  const { message, handleLogin, handleSignUp } = useAuth();
+  const { handleLogin } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View style={{ width: 300, gap: 16 }}>
+    <View style={styles.loginContainer}>
+      <View style={styles.headerContainer}>
+        <Cat />
+        <Text style={styles.headerTitle}>Faça login na sua MeowConta</Text>
+        <Text>Insira seu e-mail para fazer o login.</Text>
+      </View>
+      <View style={styles.formContainer}>
         <Input
           label="E-mail"
           placeholder="email@gmail.com"
@@ -27,26 +29,30 @@ export default function Index() {
         />
         <Input
           label="Senha"
-          secureTextEntry={showPassword}
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-          endIcon={showPassword ? "eye" : "eye-off"}
+          endIcon={showPassword ? "eye-off" : "eye"}
           endIconOnPress={() => setShowPassword((oldState) => !oldState)}
+          placeholder="********"
         />
 
         <Button
-          title="Criar conta"
+          title="Entrar"
           variant="primary"
-          onPress={() => handleSignUp(email, password)}
-        />
-        <Button
-          title="Fazer login"
-          variant="ghost"
           onPress={() => handleLogin(email, password)}
         />
-      </View>
 
-      {message && <Text>{message}</Text>}
+        <View style={styles.registerTextContainer}>
+          <Text>Não tem conta?</Text>
+          <Text
+            style={styles.registerLink}
+            onPress={() => router.push("/register")}
+          >
+            Cadastre-se
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }

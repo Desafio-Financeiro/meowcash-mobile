@@ -12,6 +12,7 @@ export const theme = {
     primary100: "#683344",
     primary200: "#381923",
     text: "#40454F",
+    textSecondary: "#96919F",
     white: "#FFFFFF",
     black: "#28262B",
     success: "#CFE3D1",
