@@ -49,7 +49,7 @@ export default function Index() {
         <Button
           title="Começar agora"
           variant="primary"
-          onPress={() => handleSignUp(email, password)}
+          onPress={() => handleSignUp(email, password, name)}
         />
 
         <Text style={styles.registerTermsNotice}>
