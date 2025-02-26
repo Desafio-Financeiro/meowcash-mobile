@@ -6,6 +6,8 @@ import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { styles } from "./style";
 import Cat from "@/components/Icons/Cat";
+import { Balance } from "@/components/balance";
+import { SummaryCard } from "@/components/summary-card";
 
 export default function Index() {
   const { handleLogin } = useAuth();
@@ -26,6 +28,7 @@ export default function Index() {
           placeholder="email@gmail.com"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
         />
         <Input
           label="Senha"
@@ -35,6 +38,7 @@ export default function Index() {
           endIcon={showPassword ? "eye-off" : "eye"}
           endIconOnPress={() => setShowPassword((oldState) => !oldState)}
           placeholder="********"
+          autoCapitalize="none"
         />
 
         <Button

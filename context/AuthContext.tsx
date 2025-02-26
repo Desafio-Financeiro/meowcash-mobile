@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         position: "bottom",
       });
       console.log("AuthProvider :: login - usuário logado com sucesso");
-      router.replace("/profile");
+      router.replace("/home");
       return true;
     } catch (error) {
       Toast.show({
