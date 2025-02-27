@@ -6,8 +6,6 @@ import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { styles } from "./style";
 import Cat from "@/components/Icons/Cat";
-import { Balance } from "@/components/balance";
-import { SummaryCard } from "@/components/summary-card";
 
 export default function Index() {
   const { handleLogin } = useAuth();

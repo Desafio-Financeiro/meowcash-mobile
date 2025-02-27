@@ -3,18 +3,10 @@ import { SummaryCard } from "@/components/summary-card";
 import { Text, View } from "react-native";
 import { styles } from "./style";
 import { getAuth } from "firebase/auth";
+import { getCurrentDate } from "@/utils/getCurrentData";
 
 export default function Home() {
   const auth = getAuth();
-  function getCurrentDate() {
-    const locale = "pt-br";
-    return new Date().toLocaleDateString(locale, {
-      year: "numeric",
-      month: "2-digit",
-      weekday: "long",
-      day: "2-digit",
-    });
-  }
 
   return (
     <View style={styles.container}>
