@@ -1,7 +1,8 @@
+import Feather from "@expo/vector-icons/Feather";
+
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Text, View } from "react-native";
 import { styles } from "./style";
-import Arrow from "../Icons/Arrow";
 import { theme } from "@/theme";
 
 interface SummaryCardProps {
@@ -16,7 +17,11 @@ export function SummaryCard({ value, type }: SummaryCardProps) {
   return (
     <View style={styles.container}>
       <View style={[styles.icon, { backgroundColor: iconBackgroundColor }]}>
-        {type === "income" ? <Arrow /> : <Arrow rotation={180} scaleX={-1} />}
+        <Feather
+          name={type === "income" ? "trending-up" : "trending-down"}
+          size={20}
+          color={theme.colors.black}
+        />
       </View>
       <View style={styles.info}>
         <Text style={styles.title}>
