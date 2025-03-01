@@ -20,8 +20,14 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.regular,
   },
 
+  buttonTextLink: {
+    color: theme.colors.primary200,
+    fontFamily: theme.fonts.medium,
+    textDecorationLine: "underline",
+  },
+
   buttonPrimary: {
-    backgroundColor: theme.colors.primary60,
+    backgroundColor: theme.colors.primary70,
   },
 
   buttonGhost: {
