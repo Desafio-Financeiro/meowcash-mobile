@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     position: "relative",
     borderBottomColor: theme.colors.text,
     borderBottomWidth: 6,
-    paddingBottom: 30,
+    paddingBottom: 26,
     paddingLeft: 16,
     paddingRight: 16,
   },

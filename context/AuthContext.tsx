@@ -100,6 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
+    navigation.navigate("LandingPage" as never);
   };
 
   return (

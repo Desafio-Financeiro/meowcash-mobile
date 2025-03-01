@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
     color: theme.colors.primary200,
     fontFamily: theme.fonts.medium,
     textDecorationLine: "underline",
+    fontSize: 16,
   },
 
   buttonPrimary: {

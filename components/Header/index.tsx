@@ -4,8 +4,14 @@ import type { DrawerHeaderProps } from "@react-navigation/drawer";
 import { StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import Logo from "../Illustrations/Logo";
+import { useState } from "react";
+import { Button } from "../button";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
+  const [openPopover, setOpenPopover] = useState<boolean>(false);
+  const { handleLogout } = useAuth();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
@@ -14,13 +20,19 @@ export default function Header({ props }: { props: DrawerHeaderProps }) {
 
       <Logo />
 
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity onPress={() => setOpenPopover(!openPopover)}>
         <Ionicons
           name="person-circle-outline"
           size={28}
           color={theme.colors.primary80}
         />
       </TouchableOpacity>
+
+      {openPopover && (
+        <View style={styles.popover}>
+          <Button variant="link" title="Sair" onPress={handleLogout} />
+        </View>
+      )}
     </View>
   );
 }
@@ -42,5 +54,16 @@ const styles = StyleSheet.create({
   drawerLabel: {
     fontSize: 16,
     fontFamily: theme.fonts.medium,
+  },
+  popover: {
+    backgroundColor: "white",
+    position: "absolute",
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 8,
+    right: 16,
+    top: 80,
+    borderColor: theme.colors.primary90,
+    borderWidth: 1,
   },
 });
