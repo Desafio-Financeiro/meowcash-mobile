@@ -2,7 +2,6 @@ import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
 import { getAuth } from "firebase/auth";
 import { View, Text, Button } from 'react-native';
-import ListaTransactions from '@/components/transactions/list';
 
 export default function Profile() {
   const {handleLogout} = useAuth();
@@ -20,7 +19,6 @@ export default function Profile() {
           router.replace('/(auth)/login');
         }}
       />
-      <ListaTransactions/>
     </View>
   );
 }

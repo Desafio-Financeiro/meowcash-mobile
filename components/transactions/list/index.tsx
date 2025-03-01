@@ -4,7 +4,7 @@ import List from '@/components/list';
 import { transactionsMOCK } from '@/components/transactions/mock';
 import TransactionItem from '@/components/transactions/item';
 
-const ListaTransactions = () => {
+const TransactionsList = () => {
   const [roupas, setTransactions] = useState<{ id: string; body: React.ReactNode }[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -41,4 +41,4 @@ const ListaTransactions = () => {
   );
 };
 
-export default ListaTransactions;
+export default TransactionsList;

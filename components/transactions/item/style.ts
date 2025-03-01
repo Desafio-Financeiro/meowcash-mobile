@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { theme } from '@/theme';
 
 export const styles = StyleSheet.create({
   transaction: {
@@ -11,6 +12,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderTopColor: '#CAC4D0',
     flexGrow: 1,
+    fontFamily: theme.fonts.regular,
   },
 
   title: {
@@ -29,6 +31,9 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     minWidth: 200,
 
+  },
+  colorText: {
+    color: '#635D6C',
   },
   description: {
     display: 'flex',
@@ -76,7 +81,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     color: '#635D6C',
   },
-  icon:{
+  icon: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

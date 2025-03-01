@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { format } from 'date-fns';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowTrendDown, faArrowTrendUp, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/button';
 import { styles } from './style';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { theme } from '@/theme';
 
 
 export interface TransactionModal extends Omit<Props, 'transactionsList'> {
@@ -37,28 +37,31 @@ const TransactionItem = (transactionModal: TransactionModal) => {
     <View style={styles.transaction}>
       <View style={styles.title}>
         <View style={{...styles.icon, ...styleIcon}}>
-          <FontAwesomeIcon size={26}
-                           icon={type === 'Credit' ? faArrowTrendUp : faArrowTrendDown}/>
+          <MaterialCommunityIcons
+            name={type === 'Credit' ? 'trending-down' : 'trending-up'}
+            size={26}
+            color={theme.colors.black}
+          />
         </View>
         <View style={styles.listTitle}>
           <Text>{type === 'Credit' ? 'Entrada' : 'Saida'}</Text>
-          {to && <Text>{to}</Text>}
-          {from && <Text>{from}</Text>}
+          {to && <Text style={styles.colorText}>{to}</Text>}
+          {from && <Text style={styles.colorText}>{from}</Text>}
         </View>
 
       </View>
       <View style={styles.description}>
         <View>
-          <Text>{format(new Date(date), 'dd/MM/yyyy')}</Text>
+          <Text style={styles.colorText}>{format(new Date(date), 'dd/MM/yyyy')}</Text>
           <Text style={{...styles.price, ...styleValue}}>{'R$ ' + value}</Text>
         </View>
         <View style={styles.edit}>
           <Button variant={'ghost'} style={styles.buttonTransaction} onPress={() => {
             edit(id);
-          }} icon={(<FontAwesomeIcon size={12} color={'#635D6C'} icon={faPen}/>)}/>
+          }} icon={(<MaterialCommunityIcons size={12} color={'#635D6C'} name={'pencil'}/>)}/>
           <Button variant={'ghost'} style={styles.buttonTransaction} onPress={() => {
             exclude(id);
-          }} icon={(<FontAwesomeIcon size={12} color={'#635D6C'} icon={faTrash}/>)}/>
+          }} icon={(<MaterialCommunityIcons size={12} color={'#635D6C'} name={'trash-can'}/>)}/>
 
         </View>
       </View>
