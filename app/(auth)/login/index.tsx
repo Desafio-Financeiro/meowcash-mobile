@@ -26,6 +26,7 @@ export default function Index() {
           placeholder="email@gmail.com"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
         />
         <Input
           label="Senha"
@@ -35,6 +36,7 @@ export default function Index() {
           endIcon={showPassword ? "eye-off" : "eye"}
           endIconOnPress={() => setShowPassword((oldState) => !oldState)}
           placeholder="********"
+          autoCapitalize="none"
         />
 
         <Button

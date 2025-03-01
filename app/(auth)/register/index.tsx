@@ -29,12 +29,14 @@ export default function Index() {
           placeholder="Nome Completo"
           value={name}
           onChangeText={setName}
+          autoCapitalize="none"
         />
         <Input
           label="E-mail"
           placeholder="email@gmail.com"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
         />
         <Input
           label="Senha"
@@ -44,12 +46,13 @@ export default function Index() {
           endIcon={showPassword ? "eye-off" : "eye"}
           endIconOnPress={() => setShowPassword((oldState) => !oldState)}
           placeholder="********"
+          autoCapitalize="none"
         />
 
         <Button
           title="Começar agora"
           variant="primary"
-          onPress={() => handleSignUp(email, password)}
+          onPress={() => handleSignUp(email, password, name)}
         />
 
         <Text style={styles.registerTermsNotice}>

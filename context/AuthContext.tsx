@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   UserCredential,
+  updateProfile,
 } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
 import Toast from "react-native-toast-message";
@@ -11,7 +12,7 @@ import Toast from "react-native-toast-message";
 interface IAuthContext {
   user: UserCredential | null;
   handleLogin: (email: string, password: string) => Promise<boolean>;
-  handleSignUp: (email: string, password: string) => void;
+  handleSignUp: (email: string, password: string, userName: string) => void;
   handleLogout: () => void;
   isAuthenticated: boolean;
 }
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         position: "bottom",
       });
       console.log("AuthProvider :: login - usuário logado com sucesso");
-      router.replace("/profile");
+      router.replace("/home");
       return true;
     } catch (error) {
       Toast.show({
@@ -50,16 +51,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleSignUp = (email: string, password: string) => {
+  const handleSignUp = (email: string, password: string, userName: string) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
-        router.replace("/login");
-        Toast.show({
-          type: "success",
-          text1: "Usuário cadastrado com sucesso",
-          position: "bottom",
-        });
-        console.log("AuthProvider :: signUp - usuário cadastrado com sucesso");
+        if (auth?.currentUser) {
+          updateProfile(auth.currentUser, {
+            displayName: userName,
+          })
+            .then(() => {
+              router.replace("/login");
+              Toast.show({
+                type: "success",
+                text1: "Usuário cadastrado com sucesso",
+                position: "bottom",
+              });
+              console.log(
+                "AuthProvider :: signUp - usuário cadastrado com sucesso"
+              );
+            })
+            .catch((error) => {
+              Toast.show({
+                type: "error",
+                text1: "Falha ao cadastrar usuário",
+                position: "bottom",
+              });
+              console.log("AuthProvider :: signUp - falha", error);
+            });
+        }
       })
       .catch((error) => {
         Toast.show({
