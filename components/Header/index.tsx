@@ -34,7 +34,14 @@ export default function Header({ props }: { props: DrawerHeaderProps }) {
 
       {openPopover && (
         <View style={styles.popover}>
-          <Button variant="link" title="Sair" onPress={handleLogout} />
+          <Button
+            variant="link"
+            title="Sair"
+            onPress={() => {
+              setOpenPopover(false);
+              handleLogout();
+            }}
+          />
         </View>
       )}
     </View>
