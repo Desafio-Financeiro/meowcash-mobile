@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     overflow: "hidden",
+    marginLeft: 8,
+    marginRight: 8
   },
   text: {
     fontFamily: theme.fonts.regular,

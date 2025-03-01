@@ -13,18 +13,20 @@ export const styles = StyleSheet.create({
   buttonTextGhost: {
     color: theme.colors.primary60,
     fontFamily: theme.fonts.regular,
+    fontSize: 14,
   },
 
   buttonTextPrimary: {
     color: theme.colors.white,
     fontFamily: theme.fonts.regular,
+    fontSize: 14,
   },
 
   buttonTextLink: {
     color: theme.colors.primary200,
     fontFamily: theme.fonts.medium,
     textDecorationLine: "underline",
-    fontSize: 16,
+    fontSize: 14,
   },
 
   buttonPrimary: {
