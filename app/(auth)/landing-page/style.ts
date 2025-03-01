@@ -60,4 +60,11 @@ export const styles = StyleSheet.create({
     left: -16,
     top: 200,
   },
+
+  caroussel: {
+    marginTop: 24,
+    marginBottom: 24,
+    marginLeft: 16,
+    marginRight: 16,
+  },
 });
