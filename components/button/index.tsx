@@ -3,13 +3,17 @@ import { styles } from "./style";
 
 interface ButtonProps extends PressableProps {
   title: string;
-  variant: "primary" | "ghost";
+  variant: "primary" | "ghost" | "link";
   disabled?: boolean;
 }
 
 export function Button({ variant, disabled, title, ...rest }: ButtonProps) {
   const textColorStyle =
-    variant === "primary" ? styles.buttonTextPrimary : styles.buttonTextGhost;
+    variant === "primary"
+      ? styles.buttonTextPrimary
+      : variant === "link"
+      ? styles.buttonTextLink
+      : styles.buttonTextGhost;
   const backgroundColorStyle =
     variant === "primary" ? styles.buttonPrimary : styles.buttonGhost;
 
