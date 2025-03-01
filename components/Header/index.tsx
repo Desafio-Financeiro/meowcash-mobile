@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
   const [openPopover, setOpenPopover] = useState<boolean>(false);
-  const { handleLogout } = useAuth();
+  const { handleLogout, isAuthenticated } = useAuth();
 
   return (
     <View style={styles.container}>
@@ -18,15 +18,19 @@ export default function Header({ props }: { props: DrawerHeaderProps }) {
         <Ionicons name="menu" size={28} color={theme.colors.primary80} />
       </TouchableOpacity>
 
-      <Logo />
+      <View style={{ margin: "auto" }}>
+        <Logo />
+      </View>
 
-      <TouchableOpacity onPress={() => setOpenPopover(!openPopover)}>
-        <Ionicons
-          name="person-circle-outline"
-          size={28}
-          color={theme.colors.primary80}
-        />
-      </TouchableOpacity>
+      {isAuthenticated && (
+        <TouchableOpacity onPress={() => setOpenPopover(!openPopover)}>
+          <Ionicons
+            name="person-circle-outline"
+            size={28}
+            color={theme.colors.primary80}
+          />
+        </TouchableOpacity>
+      )}
 
       {openPopover && (
         <View style={styles.popover}>

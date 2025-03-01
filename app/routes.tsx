@@ -36,6 +36,7 @@ export default function Routes() {
         name="LandingPage"
         options={{
           drawerLabel: "Início",
+          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
         component={LandingPage}
@@ -45,6 +46,7 @@ export default function Routes() {
         component={Login}
         options={{
           drawerLabel: "Login",
+          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />
@@ -53,6 +55,7 @@ export default function Routes() {
         component={Register}
         options={{
           drawerLabel: "Criar conta",
+          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />

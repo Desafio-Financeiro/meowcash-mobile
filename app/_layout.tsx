@@ -38,7 +38,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
-      navigation.navigate("Login" as never);
+      navigation.navigate("LandingPage" as never);
     }
   }, [fontsLoaded]);
 
