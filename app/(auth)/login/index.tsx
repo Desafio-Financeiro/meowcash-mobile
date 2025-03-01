@@ -3,11 +3,12 @@ import { Input } from "@/components/input";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { View, Text } from "react-native";
-import { router } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { styles } from "./style";
 import Cat from "@/components/Icons/Cat";
 
 export default function Index() {
+  const navigation = useNavigation();
   const { handleLogin } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -49,7 +50,7 @@ export default function Index() {
           <Text>Não tem conta?</Text>
           <Text
             style={styles.registerLink}
-            onPress={() => router.push("/register")}
+            onPress={() => navigation.navigate("Register" as never)}
           >
             Cadastre-se
           </Text>

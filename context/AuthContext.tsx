@@ -1,5 +1,5 @@
 import { auth } from "@/firebase/config";
-import { router } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -20,6 +20,7 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const navigation = useNavigation();
   const [user, setUser] = useState<UserCredential | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         position: "bottom",
       });
       console.log("AuthProvider :: login - usuário logado com sucesso");
-      router.replace("/home");
+      navigation.navigate("Home" as never);
       return true;
     } catch (error) {
       Toast.show({
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             displayName: userName,
           })
             .then(() => {
-              router.replace("/login");
+              navigation.navigate("Login" as never);
               Toast.show({
                 type: "success",
                 text1: "Usuário cadastrado com sucesso",
