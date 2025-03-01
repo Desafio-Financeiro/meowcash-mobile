@@ -1,17 +1,29 @@
-import { Text, Pressable, PressableProps } from "react-native";
-import { styles } from "./style";
+import { Text, Pressable, PressableProps } from 'react-native';
+import { styles } from './style';
+import React from 'react';
 
 interface ButtonProps extends PressableProps {
-  title: string;
-  variant: "primary" | "ghost";
+  title?: string;
+  variant: 'primary' | 'ghost';
   disabled?: boolean;
+  useButtonBase?: boolean;
+  style?: object;
+  icon?: React.ReactNode;
 }
 
-export function Button({ variant, disabled, title, ...rest }: ButtonProps) {
+export function Button({
+                         variant,
+                         disabled,
+                         title,
+                         useButtonBase = true,
+                         style = {},
+                         icon,
+                         ...rest
+                       }: ButtonProps) {
   const textColorStyle =
-    variant === "primary" ? styles.buttonTextPrimary : styles.buttonTextGhost;
+    variant === 'primary' ? styles.buttonTextPrimary : styles.buttonTextGhost;
   const backgroundColorStyle =
-    variant === "primary" ? styles.buttonPrimary : styles.buttonGhost;
+    variant === 'primary' ? styles.buttonPrimary : styles.buttonGhost;
 
   const disabledBackgroundStyle = disabled ? styles.buttonPrimaryDisabled : {};
 
@@ -21,9 +33,10 @@ export function Button({ variant, disabled, title, ...rest }: ButtonProps) {
     <Pressable
       {...rest}
       disabled={disabled}
-      style={[styles.buttonBase, backgroundColorStyle, disabledBackgroundStyle]}
+      style={[useButtonBase ? styles.buttonBase : '', backgroundColorStyle, disabledBackgroundStyle, style]}
     >
-      <Text style={[textColorStyle, disabledTextStyle]}>{title}</Text>
+      {icon && icon}
+      {title && <Text style={[textColorStyle, disabledTextStyle]}>{title}</Text>}
     </Pressable>
   );
 }

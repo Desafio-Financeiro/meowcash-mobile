@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderWidth: 1,
     borderColor: theme.colors.gray10,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   icon: {
     width: 42,

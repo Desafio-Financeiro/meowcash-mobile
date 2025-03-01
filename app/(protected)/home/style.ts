@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     gap: 14,
-    backgroundColor: theme.colors.primary20,
+    backgroundColor: theme.colors.background,
   },
 
   summaryContainer: { gap: 14 },
