@@ -5,24 +5,17 @@ import { styles } from "./style";
 import { getAuth } from "firebase/auth";
 import { getCurrentDate } from "@/utils/getCurrentData";
 import TransactionsList from "@/components/transactions/list";
-import { useEffect, useState } from "react";
 import { getBalance } from "@/api/balance";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const auth = getAuth();
-  const [balance, setBalance] = useState<number>(0);
 
-  const getUserBalance = async () => {
-    const balance = await getBalance(auth.currentUser?.uid || "");
-
-    setBalance(balance);
-  };
-
-  useEffect(() => {
-    if (auth.currentUser) {
-      getUserBalance();
-    }
-  }, []);
+  const { isLoading, data } = useQuery({
+    queryKey: ["balanceInfo"],
+    queryFn: () => getBalance(auth.currentUser?.uid || ""),
+    enabled: !!auth.currentUser?.uid,
+  });
 
   return (
     <View style={styles.container}>
@@ -32,7 +25,7 @@ export default function Home() {
       </View>
 
       <View style={styles.summaryContainer}>
-        <Balance balance={balance} />
+        <Balance balance={data} isLoading={isLoading} />
         <SummaryCard value={5000} type="income" />
         <SummaryCard value={2000} type="outcome" />
       </View>

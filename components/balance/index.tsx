@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { styles } from "./style";
 import { formatCurrency } from "@/utils/formatCurrency";
+import SkeletonLoading from "expo-skeleton-loading";
 
 interface BalanceProps {
   balance: number;
+  isLoading?: boolean;
 }
 
-export function Balance({ balance }: BalanceProps) {
+export function Balance({ balance, isLoading = false }: BalanceProps) {
   const [showBalance, setShowBalance] = useState(true);
   const icon = showBalance ? "eye" : "eye-off";
 
@@ -25,9 +27,15 @@ export function Balance({ balance }: BalanceProps) {
         />
       </View>
 
-      <Text style={styles.balance}>
-        R$ {showBalance ? formatCurrency(balance) : "****"}
-      </Text>
+      {isLoading ? (
+        <SkeletonLoading background={"#adadad"} highlight={"#ffffff"}>
+          <Text style={styles.balance}>R$ ****</Text>
+        </SkeletonLoading>
+      ) : (
+        <Text style={styles.balance}>
+          R$ {showBalance ? formatCurrency(balance) : "****"}
+        </Text>
+      )}
     </View>
   );
 }
