@@ -1,24 +1,34 @@
 import Toast from "react-native-toast-message";
 
-import Header from "@/components/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import {
   useFonts,
+  Poppins_300Light,
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
-import { SplashScreen, useRouter } from "expo-router";
-import { Drawer } from "expo-router/drawer";
+import { SplashScreen } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
-import { theme } from "@/theme";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Routes from "./routes";
+
+type DrawerParamList = {
+  LandingPage: undefined;
+  Login: undefined;
+  Register: undefined;
+  Home: undefined;
+};
+
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export default function RootLayout() {
-  const router = useRouter();
+  const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
+    Poppins_300Light,
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
@@ -28,7 +38,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
-      router.replace("/login");
+      navigation.navigate("LandingPage" as never);
     }
   }, [fontsLoaded]);
 
@@ -39,46 +49,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <Drawer
-          screenOptions={{
-            header: (props) => <Header props={props} />,
-            drawerContentStyle: styles.drawerContent,
-            drawerActiveBackgroundColor: theme.colors.primary70,
-            drawerActiveTintColor: theme.colors.white,
-            drawerLabelStyle: styles.drawerLabel,
-          }}
-        >
-          <Drawer.Screen
-            name="(auth)/login"
-            options={{
-              drawerLabel: "Login",
-              sceneStyle: styles.sceneStyle,
-            }}
-          />
-          <Drawer.Screen
-            name="(protected)/profile"
-            options={{
-              drawerLabel: "Profile",
-              sceneStyle: styles.sceneStyle,
-            }}
-          />
-        </Drawer>
+        <Routes />
         <Toast />
       </AuthProvider>
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  sceneStyle: {
-    backgroundColor: theme.colors.primary10,
-  },
-  drawerContent: {
-    backgroundColor: theme.colors.primary10,
-    paddingTop: 24,
-  },
-  drawerLabel: {
-    fontSize: 16,
-    fontFamily: theme.fonts.medium,
-  },
-});
