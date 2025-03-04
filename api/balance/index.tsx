@@ -1,3 +1,4 @@
+import Toast from "react-native-toast-message";
 import { db } from "../../firebase/config";
 import {
   collection,
@@ -15,9 +16,18 @@ const addBalance = async (user: string, balance: number) => {
       user,
       balance,
     });
-    console.log("Saldo adicionado!");
+    Toast.show({
+      type: "success",
+      text1: "Saldo adicionado!",
+      position: "bottom",
+    });
   } catch (error) {
     console.error("Erro ao adicionar saldo: ", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao adicionar saldo",
+      position: "bottom",
+    });
   }
 };
 
@@ -32,10 +42,19 @@ const getBalance = async (user: string) => {
       const doc = querySnapshot.docs[0];
       return doc.data().balance;
     } else {
-      console.log("Nenhum usuário encontrado.");
+      Toast.show({
+        type: "error",
+        text1: "Nenhum usuário encontrado",
+        position: "bottom",
+      });
     }
   } catch (error) {
     console.error("Erro ao buscar saldo:", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao buscar saldo",
+      position: "bottom",
+    });
   }
 };
 
@@ -50,14 +69,26 @@ const updateBalance = async (user: string, newData: { balance: number }) => {
       querySnapshot.forEach(async (document) => {
         const userRef = doc(db, "balance", document.id);
         await updateDoc(userRef, newData);
-
-        console.log("Saldo atualizado com sucesso!");
+        Toast.show({
+          type: "success",
+          text1: "Saldo atualizado com sucesso!",
+          position: "bottom",
+        });
       });
     } else {
-      console.log("Nenhum usuário encontrado.");
+      Toast.show({
+        type: "error",
+        text1: "Nenhum usuário encontrado",
+        position: "bottom",
+      });
     }
   } catch (error) {
     console.error("Erro ao atualizar saldo:", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao atualizar saldo",
+      position: "bottom",
+    });
   }
 };
 
