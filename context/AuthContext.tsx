@@ -38,7 +38,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         text1: "Usuário logado com sucesso",
         position: "bottom",
       });
-      console.log("AuthProvider :: login - usuário logado com sucesso");
       navigation.navigate("Home" as never);
       return true;
     } catch (error) {
@@ -66,9 +65,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 text1: "Usuário cadastrado com sucesso",
                 position: "bottom",
               });
-              console.log(
-                "AuthProvider :: signUp - usuário cadastrado com sucesso"
-              );
             })
             .catch((error) => {
               Toast.show({
