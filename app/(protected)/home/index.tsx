@@ -21,8 +21,9 @@ export default function Home() {
         <SummaryCard value={5000} type="income" />
         <SummaryCard value={2000} type="outcome" />
       </View>
-      <TransactionsList />
-
+      <View style={styles.transactions}>
+        <TransactionsList />
+      </View>
     </View>
   );
 }

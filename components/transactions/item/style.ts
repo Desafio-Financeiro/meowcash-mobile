@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     gap: 14,
-    padding: 12,
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "stretch",
@@ -28,12 +27,15 @@ export const styles = StyleSheet.create({
     color: "#28262B",
     fontSize: 16,
     textOverflow: "ellipsis",
-    overflow: "hidden",
-    minWidth: 200
+    overflow: "hidden"
 
   },
+  font: {
+    fontFamily: theme.fonts.regular
+  },
   colorText: {
-    color: "#635D6C"
+    color: "#635D6C",
+    fontFamily: theme.fonts.regular
   },
   description: {
     display: "flex",
@@ -46,7 +48,6 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     gap: 4
-
   },
 
   date: {
@@ -66,13 +67,15 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.15,
     textAlign: "right"
   },
+
   Debit: {
     color: "#B3261E"
-
   },
+
   Credit: {
     color: "#3E6642"
   },
+
   buttonTransaction: {
     padding: 6,
     borderRadius: 50,
@@ -81,6 +84,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     color: "#635D6C"
   },
+
   icon: {
     display: "flex",
     justifyContent: "center",
@@ -89,10 +93,13 @@ export const styles = StyleSheet.create({
     height: 42,
     borderRadius: 50
   },
+
   iconCredit: {
     backgroundColor: "#D1E7DD"
   },
+
   iconDebit: {
     backgroundColor: "#FDCECB"
   }
+
 });

@@ -6,7 +6,6 @@ import { styles } from "./style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";
 
-
 export interface TransactionModal extends Omit<Props, "transactionsList"> {
   transaction: Transaction;
 }
@@ -44,7 +43,7 @@ const TransactionItem = (transactionModal: TransactionModal) => {
           />
         </View>
         <View style={styles.listTitle}>
-          <Text>{type === "Credit" ? "Entrada" : "Saida"}</Text>
+          <Text style={styles.font}>{type === "Credit" ? "Entrada" : "Saida"}</Text>
           {to && <Text style={styles.colorText}>{to}</Text>}
           {from && <Text style={styles.colorText}>{from}</Text>}
         </View>
@@ -62,7 +61,6 @@ const TransactionItem = (transactionModal: TransactionModal) => {
           <Button variant={"ghost"} style={styles.buttonTransaction} onPress={() => {
             exclude(id);
           }} icon={(<MaterialCommunityIcons size={12} color={"#635D6C"} name={"trash-can"} />)} />
-
         </View>
       </View>
 

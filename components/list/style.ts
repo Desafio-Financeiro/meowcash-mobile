@@ -1,19 +1,13 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   text: {
-    fontSize: 16,
+    fontSize: 16
   },
   body: {
-    padding: 15,
+    paddingBottom: 15,
+    paddingTop: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    borderBottomColor: "#ccc",
   },
-  list: {
-    height: 250,
-  }
-
 });

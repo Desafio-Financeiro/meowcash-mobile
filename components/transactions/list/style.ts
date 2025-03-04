@@ -1,10 +1,7 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
+const screenHeight = Dimensions.get("window").height;
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff"
-  },
   header: {
     padding: 20,
     borderBottomWidth: 1,
@@ -13,13 +10,11 @@ export const styles = StyleSheet.create({
   headerText: {
     fontSize: 20
   },
-  item: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc"
-  },
   text: {
     fontSize: 16
+  },
+  list: {
+    height: screenHeight - 250
   },
   body: {
     flexDirection: "row",

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
 import List from "@/components/list";
 import { transactionsMOCK } from "@/components/transactions/mock";
 import TransactionItem from "@/components/transactions/item";
+import { styles } from "./style";
 
 const TransactionsList = () => {
   const [roupas, setTransactions] = useState<{ id: string; body: React.ReactNode }[]>([]);
@@ -35,9 +35,7 @@ const TransactionsList = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
-      <List data={roupas} onLoadMore={fetchTransactions} isLoading={loading} />
-    </View>
+    <List style={styles.list} data={roupas} onLoadMore={fetchTransactions} isLoading={loading} />
   );
 };
 
