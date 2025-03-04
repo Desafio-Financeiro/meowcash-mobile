@@ -12,6 +12,7 @@ export const theme = {
     primary100: "#683344",
     primary200: "#381923",
     gray10: "#CAC4D0",
+    gray20: "#635D6C",
     text: "#40454F",
     textSecondary: "#96919F",
     white: "#FFFFFF",
@@ -21,6 +22,7 @@ export const theme = {
     disabled: "#1D1B201F",
   },
   fonts: {
+    light: "Poppins_300Light",
     regular: "Poppins_400Regular",
     medium: "Poppins_500Medium",
     semibold: "Poppins_600SemiBold",
