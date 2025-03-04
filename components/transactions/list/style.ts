@@ -1,28 +1,28 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff"
   },
   header: {
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
+    borderBottomColor: "#cccccc"
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 20
   },
   item: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
+    borderBottomColor: "#cccccc"
   },
   text: {
-    fontSize: 16,
+    fontSize: 16
   },
   body: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between"
   }
 });
