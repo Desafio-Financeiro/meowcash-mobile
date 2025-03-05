@@ -16,7 +16,7 @@ const DinamicTransactionsList = () => {
     setLoading(true);
 
     setTimeout(() => {
-      const novasTransactions = transactionsMOCK.map((transaction) => {
+      const transactions = transactionsMOCK.map((transaction) => {
         return {
           id: transaction.id as string,
           body: (
@@ -29,7 +29,7 @@ const DinamicTransactionsList = () => {
         };
       });
 
-      setTransactions(novasTransactions);
+      setTransactions(transactions);
       setPage(page + 1);
       setLoading(false);
     }, 1500);
