@@ -1,12 +1,13 @@
-import { View, TouchableOpacity, Platform, StatusBar } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { DrawerHeaderProps } from "@react-navigation/drawer";
-import { StyleSheet } from "react-native";
+
 import { theme } from "@/theme";
 import Logo from "../Illustrations/Logo";
 import { useState } from "react";
 import { Button } from "../button";
 import { useAuth } from "@/context/AuthContext";
+import { styles } from "./style";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
   const [openPopover, setOpenPopover] = useState<boolean>(false);
@@ -47,34 +48,3 @@ export default function Header({ props }: { props: DrawerHeaderProps }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: theme.colors.primary20,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 44,
-    height: Platform.OS === "android" ? 56 + StatusBar.currentHeight! : 88,
-  },
-  drawerContent: {
-    backgroundColor: theme.colors.primary10,
-    paddingTop: 24,
-  },
-  drawerLabel: {
-    fontSize: 16,
-    fontFamily: theme.fonts.medium,
-  },
-  popover: {
-    backgroundColor: "white",
-    position: "absolute",
-    paddingLeft: 8,
-    paddingRight: 8,
-    borderRadius: 8,
-    right: 16,
-    top: 80,
-    borderColor: theme.colors.primary90,
-    borderWidth: 1,
-  },
-});

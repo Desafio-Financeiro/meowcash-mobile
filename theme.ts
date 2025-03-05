@@ -14,6 +14,7 @@ export const theme = {
     primary200: "#381923",
     gray10: "#CAC4D0",
     gray20: "#635D6C",
+    gray30: "#79747E",
     text: "#40454F",
     textSecondary: "#96919F",
     white: "#FFFFFF",
