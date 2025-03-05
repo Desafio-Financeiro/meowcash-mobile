@@ -8,12 +8,14 @@ import LandingPage from "./(auth)/landing-page";
 import Login from "./(auth)/login";
 import Register from "./(auth)/register";
 import Home from "./(protected)/home";
+import Extract from "./(protected)/extract";
 
 type DrawerParamList = {
   LandingPage: undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;
+  Extract: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -64,6 +66,15 @@ export default function Routes() {
         component={Home}
         options={{
           drawerLabel: "Home",
+          drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
+          sceneStyle: styles.sceneStyle,
+        }}
+      />
+      <Drawer.Screen
+        name="Extract"
+        component={Extract}
+        options={{
+          drawerLabel: "Extrato",
           drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}

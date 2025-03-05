@@ -9,9 +9,10 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "stretch",
-    borderTopColor: "#CAC4D0",
+    borderTopColor: theme.colors.gray10,
     flexGrow: 1,
-    fontFamily: theme.fonts.regular
+    fontFamily: theme.fonts.regular,
+    padding: 12,
   },
 
   title: {
@@ -19,45 +20,42 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    gap: 15
-
+    gap: 15,
   },
 
   listTitle: {
-    color: "#28262B",
+    color: theme.colors.black,
     fontSize: 16,
     textOverflow: "ellipsis",
-    overflow: "hidden"
-
+    overflow: "hidden",
   },
   font: {
-    fontFamily: theme.fonts.regular
+    fontFamily: theme.fonts.regular,
   },
   colorText: {
-    color: "#635D6C",
-    fontFamily: theme.fonts.regular
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   description: {
     display: "flex",
     alignItems: "center",
     gap: 14,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   edit: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    gap: 4
+    gap: 4,
   },
 
   date: {
     textAlign: "right",
-    color: "#635D6C",
+    color: theme.colors.text,
     fontSize: 14,
-    fontStyle: "normal",
-    fontWeight: "400",
+    fontFamily: theme.fonts.regular,
     lineHeight: 24,
-    letterSpacing: 0.15
+    letterSpacing: 0.15,
   },
   price: {
     fontSize: 16,
@@ -65,24 +63,24 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     lineHeight: 24,
     letterSpacing: 0.15,
-    textAlign: "right"
+    textAlign: "right",
   },
 
-  Debit: {
-    color: "#B3261E"
+  debit: {
+    color: theme.colors.dangerDark,
   },
 
-  Credit: {
-    color: "#3E6642"
+  credit: {
+    color: theme.colors.successDark,
   },
 
   buttonTransaction: {
     padding: 6,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: "#CAC4D0",
-    backgroundColor: "#FFF",
-    color: "#635D6C"
+    borderColor: theme.colors.gray10,
+    backgroundColor: theme.colors.white,
+    color: theme.colors.gray20,
   },
 
   icon: {
@@ -91,15 +89,14 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     width: 42,
     height: 42,
-    borderRadius: 50
+    borderRadius: 50,
   },
 
   iconCredit: {
-    backgroundColor: "#D1E7DD"
+    backgroundColor: theme.colors.success,
   },
 
   iconDebit: {
-    backgroundColor: "#FDCECB"
-  }
-
+    backgroundColor: theme.colors.danger,
+  },
 });

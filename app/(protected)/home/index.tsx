@@ -1,12 +1,13 @@
 import { Balance } from "@/components/balance";
 import { SummaryCard } from "@/components/summary-card";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { styles } from "./style";
 import { getAuth } from "firebase/auth";
 import { getCurrentDate } from "@/utils/getCurrentData";
-import TransactionsList from "@/components/transactions/list";
 import { getBalance } from "@/api/balance";
 import { useQuery } from "@tanstack/react-query";
+import StaticTransactionsList from "@/components/Transactions/StaticTransactionsList";
+import { transactionsMOCK } from "@/components/Transactions/mock";
 
 export default function Home() {
   const auth = getAuth();
@@ -24,14 +25,16 @@ export default function Home() {
         <Text style={styles.date}>{getCurrentDate()}</Text>
       </View>
 
-      <View style={styles.summaryContainer}>
-        <Balance balance={data} isLoading={isLoading} />
-        <SummaryCard value={5000} type="income" />
-        <SummaryCard value={2000} type="outcome" />
-      </View>
-      <View style={styles.transactions}>
-        <TransactionsList />
-      </View>
+      <ScrollView>
+        <View style={styles.summaryContainer}>
+          <Balance balance={data} isLoading={isLoading} />
+          <SummaryCard value={5000} type="income" />
+          <SummaryCard value={2000} type="outcome" />
+        </View>
+        <View style={styles.transactions}>
+          <StaticTransactionsList data={transactionsMOCK} />
+        </View>
+      </ScrollView>
     </View>
   );
 }
