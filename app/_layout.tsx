@@ -13,17 +13,10 @@ import { SplashScreen } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import Routes from "./routes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-type DrawerParamList = {
-  LandingPage: undefined;
-  Login: undefined;
-  Register: undefined;
-  Home: undefined;
-};
-
-const Drawer = createDrawerNavigator<DrawerParamList>();
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const navigation = useNavigation();
@@ -48,10 +41,12 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <Routes />
-        <Toast />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Routes />
+          <Toast />
+        </AuthProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }
