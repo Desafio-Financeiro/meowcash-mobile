@@ -27,7 +27,7 @@ export function Balance({ balance, isLoading = false }: BalanceProps) {
         />
       </View>
 
-      {!isLoading ? (
+      {isLoading ? (
         <SkeletonLoading
           background={theme.colors.gray10}
           highlight={theme.colors.white}
