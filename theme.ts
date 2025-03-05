@@ -19,7 +19,9 @@ export const theme = {
     white: "#FFFFFF",
     black: "#28262B",
     success: "#CFE3D1",
+    successDark: "#3E6642",
     danger: "#FDCECB",
+    dangerDark: "#B3261E",
     disabled: "#1D1B201F",
   },
   fonts: {
