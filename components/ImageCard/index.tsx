@@ -1,5 +1,4 @@
-import { View, Text } from "react-native";
-import { StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import type { SvgProps } from "react-native-svg";
 
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     marginLeft: 8,
-    marginRight: 8
+    marginRight: 8,
   },
   text: {
     fontFamily: theme.fonts.regular,
