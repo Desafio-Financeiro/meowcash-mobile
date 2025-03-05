@@ -27,8 +27,11 @@ export function Balance({ balance, isLoading = false }: BalanceProps) {
         />
       </View>
 
-      {isLoading ? (
-        <SkeletonLoading background={"#adadad"} highlight={"#ffffff"}>
+      {!isLoading ? (
+        <SkeletonLoading
+          background={theme.colors.gray10}
+          highlight={theme.colors.white}
+        >
           <Text style={styles.balance}>R$ ****</Text>
         </SkeletonLoading>
       ) : (
