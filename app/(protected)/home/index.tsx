@@ -8,9 +8,12 @@ import { getBalance } from "@/api/balance";
 import { useQuery } from "@tanstack/react-query";
 import StaticTransactionsList from "@/components/Transactions/StaticTransactionsList";
 import { transactionsMOCK } from "@/components/Transactions/mock";
+import { DatePicker } from "../../../components/datePicker";
+import { useState } from "react";
 
 export default function Home() {
   const auth = getAuth();
+  const [date, setDate] = useState(new Date());
 
   const { isLoading, data } = useQuery({
     queryKey: ["balanceInfo"],
@@ -31,7 +34,12 @@ export default function Home() {
           <SummaryCard value={5000} type="income" />
           <SummaryCard value={2000} type="outcome" />
         </View>
-        <View style={styles.transactions}>
+        <DatePicker value={date} onChange={(data) => {
+        setDate(data);
+      }}
+                  label="Data">
+      </DatePicker>
+      <View style={styles.transactions}>
           <StaticTransactionsList data={transactionsMOCK} />
         </View>
       </ScrollView>

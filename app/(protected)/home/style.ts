@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     overflowY: "auto",
     gap: 14,
-    backgroundColor: theme.colors.background
+    backgroundColor: theme.colors.background,
   },
 
   summaryContainer: { gap: 14 },
