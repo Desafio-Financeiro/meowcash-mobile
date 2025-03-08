@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import DinamicList from "@/components/DinamicList";
-import { transactionsMOCK } from "@/components/Transactions/mock";
-import TransactionItem from "@/components/Transactions/TransactionItem";
+import { transactionsMOCK } from "@/components/transactions/mock";
+import TransactionItem from "@/components/transactions/TransactionItem";
 import { styles } from "./style";
 
 const DinamicTransactionsList = () => {

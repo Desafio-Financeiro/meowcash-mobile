@@ -1,19 +1,30 @@
 import { Balance } from "@/components/balance";
 import { SummaryCard } from "@/components/summary-card";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { styles } from "./style";
 import { getAuth } from "firebase/auth";
-import { getCurrentDate } from "@/utils/getCurrentData";
 import { getBalance } from "@/api/balance";
 import { useQuery } from "@tanstack/react-query";
-import StaticTransactionsList from "@/components/Transactions/StaticTransactionsList";
-import { transactionsMOCK } from "@/components/Transactions/mock";
+import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
+import { transactionsMOCK } from "@/components/transactions/mock";
 import { DatePicker } from "../../../components/datePicker";
 import { useState } from "react";
+import { getFullCurrentDate } from "@/utils/getCurrentDate";
+import { DateRangeSelector } from "@/components/data-range-selector";
+import { OptionsSelector } from "@/components/options-selector";
 
 export default function Home() {
   const auth = getAuth();
-  const [date, setDate] = useState(new Date());
+  const [transactionDate, setTransactionDate] = useState({
+    start: new Date(),
+    end: new Date(),
+  });
+  const [transactionFilter, setTransactionFilter] = useState("");
+  const [showDateFilter, setShowDateFilter] = useState(false);
+  const [showTransactionFilter, setShowTransactionFilter] = useState(false);
+
+  console.log({ date: transactionDate, transactionFilter });
 
   const { isLoading, data } = useQuery({
     queryKey: ["balanceInfo"],
@@ -25,7 +36,7 @@ export default function Home() {
     <View style={styles.container}>
       <View>
         <Text style={styles.hello}>Olá, {auth.currentUser?.displayName}</Text>
-        <Text style={styles.date}>{getCurrentDate()}</Text>
+        <Text style={styles.date}>{getFullCurrentDate()}</Text>
       </View>
 
       <ScrollView>
@@ -34,12 +45,36 @@ export default function Home() {
           <SummaryCard value={5000} type="income" />
           <SummaryCard value={2000} type="outcome" />
         </View>
-        <DatePicker value={date} onChange={(data) => {
-        setDate(data);
-      }}
-                  label="Data">
-      </DatePicker>
-      <View style={styles.transactions}>
+        <DateRangeSelector
+          onDateChange={(start, end) => setTransactionDate({ start, end })}
+          open={showDateFilter}
+          onClose={() => setShowDateFilter(false)}
+        />
+        <OptionsSelector
+          open={showTransactionFilter}
+          onClose={() => setShowTransactionFilter(false)}
+          handleOptionSelection={(option) => setTransactionFilter(option)}
+        />
+
+        <View style={styles.filtersContainer}>
+          <TouchableOpacity
+            onPress={() => setShowDateFilter(true)}
+            style={styles.filterButton}
+          >
+            <Text style={styles.filterButtonText}>Período</Text>
+            <MaterialIcons name="arrow-drop-down" size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setShowTransactionFilter(true)}
+            style={styles.filterButton}
+          >
+            <Text style={styles.filterButtonText}>Movimentações</Text>
+            <MaterialIcons name="arrow-drop-down" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.transactions}>
           <StaticTransactionsList data={transactionsMOCK} />
         </View>
       </ScrollView>

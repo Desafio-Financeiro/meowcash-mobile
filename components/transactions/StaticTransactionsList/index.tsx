@@ -1,6 +1,6 @@
 import TransactionItem, {
   type Transaction,
-} from "@/components/Transactions/TransactionItem";
+} from "@/components/transactions/TransactionItem";
 import { styles } from "./style";
 import { View } from "react-native";
 import { Button } from "@/components/button";
