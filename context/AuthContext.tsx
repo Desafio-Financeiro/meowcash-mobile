@@ -33,11 +33,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       setUser(userCredential.user);
       setIsAuthenticated(true);
-      Toast.show({
-        type: "success",
-        text1: "Usuário logado com sucesso",
-        position: "bottom",
-      });
       navigation.navigate("Home" as never);
       return true;
     } catch (error) {
