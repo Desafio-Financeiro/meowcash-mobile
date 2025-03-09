@@ -4,13 +4,15 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import { Text, View } from "react-native";
 import { styles } from "./style";
 import { theme } from "@/theme";
+import SkeletonLoading from "expo-skeleton-loading";
 
 interface SummaryCardProps {
   value: number;
   type: "income" | "outcome";
+  isLoading?: boolean;
 }
 
-export function SummaryCard({ value, type }: SummaryCardProps) {
+export function SummaryCard({ value, type, isLoading }: SummaryCardProps) {
   const iconBackgroundColor =
     type === "income" ? theme.colors.success : theme.colors.danger;
 
@@ -27,7 +29,17 @@ export function SummaryCard({ value, type }: SummaryCardProps) {
         <Text style={styles.title}>
           {type === "income" ? "Entradas" : "Saídas"}
         </Text>
-        <Text style={styles.value}>R$ {formatCurrency(value)}</Text>
+        {isLoading ? (
+          <SkeletonLoading
+            background={theme.colors.gray10}
+            highlight={theme.colors.white}
+          >
+            <Text style={styles.value}>R$ ****</Text>
+          </SkeletonLoading>
+        ) : (
+          <Text style={styles.value}>R$ {formatCurrency(value)}</Text>
+        )}
+
         <Text style={styles.period}>Relação dos últimos 30 dias</Text>
       </View>
     </View>

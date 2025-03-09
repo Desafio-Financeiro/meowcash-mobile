@@ -3,7 +3,8 @@ import DinamicList from "@/components/DinamicList";
 import TransactionItem from "@/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionFilters } from "../filters";
-import { View } from "react-native";
+import { View, Text } from "react-native";
+import { styles } from "./style";
 
 const DinamicTransactionsList = () => {
   const {
@@ -56,7 +57,7 @@ const DinamicTransactionsList = () => {
     }
   }, [isLoading, transactions]);
 
-  return (
+  return transactions.length > 0 ? (
     <>
       <View style={{ paddingHorizontal: 16 }}>
         <TransactionFilters
@@ -72,6 +73,8 @@ const DinamicTransactionsList = () => {
         hasNextPage={hasNextPage}
       />
     </>
+  ) : (
+    <Text style={styles.emptyHistory}>Não existe histórico de transações</Text>
   );
 };
 

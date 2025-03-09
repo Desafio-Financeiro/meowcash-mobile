@@ -16,7 +16,11 @@ import {
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
-import { deleteTransaction, getTransactions } from "@/api/transaction";
+import {
+  deleteTransaction,
+  getStatistics,
+  getTransactions,
+} from "@/api/transaction";
 import { Alert } from "react-native";
 import { getBalance } from "@/api/balance";
 
@@ -26,6 +30,8 @@ interface ITransactionsContext {
   isLoading: boolean;
   balanceIsLoading: boolean;
   hasNextPage: boolean;
+  statistics?: { credit: number; debit: number };
+  statisticsIsLoading: boolean;
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
       InfiniteData<
@@ -56,6 +62,16 @@ interface ITransactionsContext {
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<any, Error>>;
   showDeleteAlert: (transaction: Transaction) => void;
+  refetchStatistics: (options?: RefetchOptions) => Promise<
+    QueryObserverResult<
+      | {
+          credit: number;
+          debit: number;
+        }
+      | undefined,
+      Error
+    >
+  >;
 }
 
 const TransactionsContext = createContext<ITransactionsContext | undefined>(
@@ -74,6 +90,17 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   } = useQuery({
     queryKey: ["balanceInfo"],
     queryFn: () => getBalance(user?.uid || ""),
+    enabled: !!user?.uid,
+  });
+
+  const {
+    isLoading: statisticsIsLoading,
+    data: statistics,
+    refetch: refetchStatistics,
+    isRefetching: statisticsIsRefetching,
+  } = useQuery({
+    queryKey: ["statistics"],
+    queryFn: () => getStatistics(user?.uid || ""),
     enabled: !!user?.uid,
   });
 
@@ -112,6 +139,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
             deleteTransaction(transaction).then(() => {
               refetch();
               refetchBalance();
+              refetchStatistics();
             });
           },
         },
@@ -120,7 +148,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!isLoading && data?.pages[0]) {
+    if (!isLoading && data?.pages) {
       setTransactions(
         data?.pages?.map((page) => page?.data || []).flat() || []
       );
@@ -139,6 +167,9 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
         refetchTransactions: refetch,
         refetchBalance,
         showDeleteAlert,
+        statistics,
+        statisticsIsLoading: statisticsIsLoading || statisticsIsRefetching,
+        refetchStatistics,
       }}
     >
       {children}

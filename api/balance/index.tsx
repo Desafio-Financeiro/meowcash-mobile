@@ -69,16 +69,11 @@ const updateBalance = async (user: string, newData: { balance: number }) => {
       querySnapshot.forEach(async (document) => {
         const userRef = doc(db, "balance", document.id);
         await updateDoc(userRef, newData);
-        Toast.show({
-          type: "success",
-          text1: "Saldo atualizado com sucesso!",
-          position: "bottom",
-        });
       });
     } else {
       Toast.show({
         type: "error",
-        text1: "Nenhum usuário encontrado",
+        text1: "Erro ao atualizar saldo",
         position: "bottom",
       });
     }
