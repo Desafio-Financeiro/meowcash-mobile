@@ -3,14 +3,16 @@ import { db } from "../../firebase/config";
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   limit,
   orderBy,
   query,
   startAfter,
+  updateDoc,
   where,
 } from "firebase/firestore";
-import { Transaction } from "@/components/Transactions/TransactionItem";
+import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
 
 const TRANSACTIONS_LIMIT = 6;
@@ -95,4 +97,35 @@ const addTransaction = async (transaction: Transaction) => {
   }
 };
 
-export { getTransactions, addTransaction };
+const deleteTransaction = async (transaction: Transaction) => {
+  try {
+    const transactionRef = doc(db, "transaction", transaction.id!);
+
+    await updateDoc(transactionRef, {
+      deletedAt: new Date(),
+    });
+
+    const balance = await getBalance(transaction.userId);
+    const newBalance =
+      transaction.type === "Credit"
+        ? balance - transaction.value
+        : balance + transaction.value;
+
+    await updateBalance(transaction.userId, { balance: newBalance });
+
+    Toast.show({
+      type: "success",
+      text1: "Transação deletada com sucesso!",
+      position: "bottom",
+    });
+  } catch (error) {
+    console.error("Erro ao deletar transação: ", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao deletar transação",
+      position: "bottom",
+    });
+  }
+};
+
+export { getTransactions, addTransaction, deleteTransaction };
