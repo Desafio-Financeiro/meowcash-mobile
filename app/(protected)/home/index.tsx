@@ -20,6 +20,9 @@ export default function Home() {
     transactions,
     refetchTransactions,
     isLoading: transactionsIsLoading,
+    balanceIsLoading,
+    balance,
+    refetchBalance,
   } = useTransactions();
 
   const [transactionDate, setTransactionDate] = useState<{
@@ -31,16 +34,6 @@ export default function Home() {
   });
   const [transactionFilter, setTransactionFilter] = useState("");
 
-  const {
-    isLoading,
-    data,
-    refetch: refetchBalance,
-  } = useQuery({
-    queryKey: ["balanceInfo"],
-    queryFn: () => getBalance(user?.uid || ""),
-    enabled: !!user?.uid,
-  });
-
   return (
     <View style={styles.container}>
       <View>
@@ -48,14 +41,14 @@ export default function Home() {
         <Text style={styles.date}>{getFullCurrentDate()}</Text>
       </View>
 
-      <Balance balance={data} isLoading={isLoading} />
+      <Balance balance={balance} isLoading={balanceIsLoading} />
 
       <ScrollView>
         <View style={styles.summaryContainer}>
           <SummaryCard value={5000} type="income" />
           <SummaryCard value={2000} type="outcome" />
         </View>
-        
+
         <Button
           title="Criar transação de débito"
           variant="link"
@@ -93,15 +86,15 @@ export default function Home() {
           handleTransactionFilter={(filter) => setTransactionFilter(filter)}
         />
 
-          {transactionsIsLoading ? (
-            <ActivityIndicator
-              size="large"
-              color={theme.colors.primary60}
-              style={{ marginVertical: 24 }}
-            />
-          ) : (
-            <StaticTransactionsList data={transactions} />
-          )}
+        {transactionsIsLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary60}
+            style={{ marginVertical: 24 }}
+          />
+        ) : (
+          <StaticTransactionsList data={transactions} />
+        )}
       </ScrollView>
     </View>
   );
