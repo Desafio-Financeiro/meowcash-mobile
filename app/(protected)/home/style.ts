@@ -24,4 +24,11 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.medium,
     color: theme.colors.textSecondary,
   },
+
+  emptyHistory: {
+    fontSize: 16,
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.text,
+    marginTop: 24,
+  },
 });

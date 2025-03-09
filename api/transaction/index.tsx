@@ -15,16 +15,24 @@ import {
 import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
 
+type TransactionType = "credit" | "debit";
+
 const TRANSACTIONS_LIMIT = 6;
 
 const getTransactions = async (
   user: string,
   pageParam?: number | null
-): Promise<{ data: Transaction[]; lastDoc: any } | undefined> => {
+): Promise<
+  | {
+      data: Transaction[];
+      lastDoc: any;
+    }
+  | undefined
+> => {
   try {
-    const balanceRef = collection(db, "transaction");
+    const transactionsRef = collection(db, "transaction");
     let q = query(
-      balanceRef,
+      transactionsRef,
       where("userId", "==", user),
       // orderBy("date"), // Default "asc"
       orderBy("date", "desc"),
@@ -33,7 +41,7 @@ const getTransactions = async (
 
     if (pageParam) {
       q = query(
-        balanceRef,
+        transactionsRef,
         where("userId", "==", user),
         // orderBy("date"), // Default "asc"
         orderBy("date", "desc"),
@@ -48,7 +56,7 @@ const getTransactions = async (
       const transactions = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as Transaction[];
 
       const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
 
@@ -59,6 +67,44 @@ const getTransactions = async (
         text1: "Nenhuma transação encontrada",
         position: "bottom",
       });
+    }
+  } catch (error) {
+    console.error("Erro ao buscar transações:", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao buscar transações",
+      position: "bottom",
+    });
+  }
+};
+
+const getStatistics = async (
+  user: string
+): Promise<{ credit: number; debit: number } | undefined> => {
+  try {
+    const transactionsRef = collection(db, "transaction");
+    let q = query(transactionsRef, where("userId", "==", user));
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const transactions = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Transaction[];
+
+      const statistics = transactions.reduce(
+        (acc, { type, value }) => {
+          const key: TransactionType = type.toLowerCase() as TransactionType;
+          acc[key] = (acc[key] || 0) + value;
+          return acc;
+        },
+        { credit: 0, debit: 0 }
+      );
+
+      return statistics;
+    } else {
+      return { credit: 0, debit: 0 };
     }
   } catch (error) {
     console.error("Erro ao buscar transações:", error);
@@ -128,4 +174,4 @@ const deleteTransaction = async (transaction: Transaction) => {
   }
 };
 
-export { getTransactions, addTransaction, deleteTransaction };
+export { getTransactions, addTransaction, deleteTransaction, getStatistics };

@@ -23,6 +23,9 @@ export default function Home() {
     balanceIsLoading,
     balance,
     refetchBalance,
+    statistics,
+    statisticsIsLoading,
+    refetchStatistics,
   } = useTransactions();
 
   const [transactionDate, setTransactionDate] = useState<{
@@ -45,8 +48,16 @@ export default function Home() {
 
       <ScrollView>
         <View style={styles.summaryContainer}>
-          <SummaryCard value={5000} type="income" />
-          <SummaryCard value={2000} type="outcome" />
+          <SummaryCard
+            value={statistics?.credit || 0}
+            type="income"
+            isLoading={statisticsIsLoading}
+          />
+          <SummaryCard
+            value={statistics?.debit || 0}
+            type="outcome"
+            isLoading={statisticsIsLoading}
+          />
         </View>
 
         <Button
@@ -62,6 +73,7 @@ export default function Home() {
             }).then(() => {
               refetchTransactions();
               refetchBalance();
+              refetchStatistics();
             })
           }
         />
@@ -78,12 +90,9 @@ export default function Home() {
             }).then(() => {
               refetchTransactions();
               refetchBalance();
+              refetchStatistics();
             })
           }
-        />
-        <TransactionFilters
-          handleTransactionDate={(date) => setTransactionDate(date)}
-          handleTransactionFilter={(filter) => setTransactionFilter(filter)}
         />
 
         {transactionsIsLoading ? (
@@ -92,8 +101,18 @@ export default function Home() {
             color={theme.colors.primary60}
             style={{ marginVertical: 24 }}
           />
+        ) : transactions.length > 0 ? (
+          <>
+            <TransactionFilters
+              handleTransactionDate={(date) => setTransactionDate(date)}
+              handleTransactionFilter={(filter) => setTransactionFilter(filter)}
+            />
+            <StaticTransactionsList data={transactions} />
+          </>
         ) : (
-          <StaticTransactionsList data={transactions} />
+          <Text style={styles.emptyHistory}>
+            Não existe histórico de transações
+          </Text>
         )}
       </ScrollView>
     </View>
