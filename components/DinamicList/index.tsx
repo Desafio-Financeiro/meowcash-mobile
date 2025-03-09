@@ -16,16 +16,7 @@ const DinamicList = ({
   hasNextPage,
 }: DinamicListProps) => {
   return (
-    <View
-      style={{
-        // display: "flex",
-        // flexDirection: "column",
-        // justifyContent: "center",
-        alignItems: "center",
-        flex: 1,
-        // paddingBottom: 24,
-      }}
-    >
+    <View style={styles.screen}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -33,13 +24,15 @@ const DinamicList = ({
       />
 
       {hasNextPage && onLoadMore && (
-        <View style={{ width: "50%", marginTop: 24 }}>
-          <Button
-            variant="primary"
-            title={isLoading ? "Carregando..." : "Carregar mais"}
-            onPress={() => onLoadMore()}
-            disabled={isLoading}
-          />
+        <View style={styles.footer}>
+          <View style={styles.button}>
+            <Button
+              variant="primary"
+              title={isLoading ? "Carregando..." : "Carregar mais"}
+              onPress={() => onLoadMore()}
+              disabled={isLoading}
+            />
+          </View>
         </View>
       )}
     </View>
