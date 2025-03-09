@@ -11,10 +11,12 @@ import {
   FetchNextPageOptions,
   InfiniteData,
   InfiniteQueryObserverResult,
+  QueryObserverResult,
+  RefetchOptions,
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
-import { getTransactions, TRANSACTIONS_LIMIT } from "@/api/transaction";
+import { getTransactions } from "@/api/transaction";
 
 interface ITransactionsContext {
   transactions: Transaction[];
@@ -22,6 +24,19 @@ interface ITransactionsContext {
   hasNextPage: boolean;
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
+      InfiniteData<
+        | {
+            data: Transaction[];
+            lastDoc: any;
+          }
+        | undefined,
+        unknown
+      >,
+      Error
+    >
+  >;
+  refetchTransactions: (options?: RefetchOptions) => Promise<
+    QueryObserverResult<
       InfiniteData<
         | {
             data: Transaction[];
@@ -43,17 +58,24 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["transactions"],
-      queryFn: ({ pageParam }) => getTransactions(user?.uid || "", pageParam),
-      getNextPageParam: (lastPage) =>
-        lastPage?.data && lastPage?.data?.length > 0
-          ? lastPage?.lastDoc
-          : undefined,
-      initialPageParam: null,
-      enabled: !!user?.uid,
-    });
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isRefetching,
+  } = useInfiniteQuery({
+    queryKey: ["transactions"],
+    queryFn: ({ pageParam }) => getTransactions(user?.uid || "", pageParam),
+    getNextPageParam: (lastPage) =>
+      lastPage?.data && lastPage?.data?.length > 0
+        ? lastPage?.lastDoc
+        : undefined,
+    initialPageParam: null,
+    enabled: !!user?.uid,
+  });
 
   useEffect(() => {
     if (!isLoading && data?.pages[0]) {
@@ -67,9 +89,10 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     <TransactionsContext.Provider
       value={{
         transactions,
-        isLoading: isLoading || isFetchingNextPage,
+        isLoading: isLoading || isFetchingNextPage || isRefetching,
         fetchNextPage,
         hasNextPage,
+        refetchTransactions: refetch,
       }}
     >
       {children}

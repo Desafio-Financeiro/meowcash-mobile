@@ -1,6 +1,7 @@
 import Toast from "react-native-toast-message";
 import { db } from "../../firebase/config";
 import {
+  addDoc,
   collection,
   getDocs,
   limit,
@@ -10,6 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { Transaction } from "@/components/Transactions/TransactionItem";
+import { getBalance, updateBalance } from "../balance";
 
 const TRANSACTIONS_LIMIT = 6;
 
@@ -66,4 +68,31 @@ const getTransactions = async (
   }
 };
 
-export { getTransactions };
+const addTransaction = async (transaction: Transaction) => {
+  try {
+    await addDoc(collection(db, "transaction"), transaction);
+
+    const balance = await getBalance(transaction.userId);
+    const newBalance =
+      transaction.type === "Credit"
+        ? balance + transaction.value
+        : balance - transaction.value;
+
+    await updateBalance(transaction.userId, { balance: newBalance });
+
+    Toast.show({
+      type: "success",
+      text1: "Transação adicionada!",
+      position: "bottom",
+    });
+  } catch (error) {
+    console.error("Erro ao adicionar transação: ", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao adicionar transação",
+      position: "bottom",
+    });
+  }
+};
+
+export { getTransactions, addTransaction };

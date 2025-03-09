@@ -1,6 +1,5 @@
-import { View, FlatList, ActivityIndicator } from "react-native";
+import { View, FlatList } from "react-native";
 import { styles } from "./style";
-import { theme } from "@/theme";
 import { Button } from "../button";
 
 interface DinamicListProps {
