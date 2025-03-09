@@ -11,7 +11,6 @@ import Notification from "@/components/Illustrations/Notification";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Chart from "@/components/Illustrations/Chart";
 import Footer from "@/components/Footer";
-import { TransactionFilters } from "@/components/transactions/filters";
 
 export default function Index() {
   const navigation = useNavigation();
