@@ -55,7 +55,7 @@ export default function Home() {
           <SummaryCard value={5000} type="income" />
           <SummaryCard value={2000} type="outcome" />
         </View>
-        
+
         <Button
           title="Criar transação de débito"
           variant="link"
@@ -93,15 +93,15 @@ export default function Home() {
           handleTransactionFilter={(filter) => setTransactionFilter(filter)}
         />
 
-          {transactionsIsLoading ? (
-            <ActivityIndicator
-              size="large"
-              color={theme.colors.primary60}
-              style={{ marginVertical: 24 }}
-            />
-          ) : (
-            <StaticTransactionsList data={transactions} />
-          )}
+        {transactionsIsLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary60}
+            style={{ marginVertical: 24 }}
+          />
+        ) : (
+          <StaticTransactionsList data={transactions} />
+        )}
       </ScrollView>
     </View>
   );
