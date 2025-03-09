@@ -7,14 +7,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 14,
     justifyContent: "space-between",
-    alignItems: "center",
     alignSelf: "stretch",
     borderTopColor: theme.colors.gray10,
     flexGrow: 1,
     fontFamily: theme.fonts.regular,
     padding: 12,
   },
-
   title: {
     display: "flex",
     justifyContent: "space-between",
@@ -22,58 +20,40 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 15,
   },
-
   listTitle: {
     color: theme.colors.black,
     fontSize: 16,
     textOverflow: "ellipsis",
     overflow: "hidden",
+    gap: 4,
   },
   font: {
-    fontFamily: theme.fonts.regular,
+    fontFamily: theme.fonts.semibold,
+    fontSize: 16,
   },
   colorText: {
     color: theme.colors.text,
     fontFamily: theme.fonts.regular,
   },
-  description: {
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    flexDirection: "row",
-  },
   edit: {
+    marginTop: 18,
     display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    gap: 4,
-  },
-
-  date: {
-    textAlign: "right",
-    color: theme.colors.text,
-    fontSize: 14,
-    fontFamily: theme.fonts.regular,
-    lineHeight: 24,
-    letterSpacing: 0.15,
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "flex-end",
   },
   price: {
     fontSize: 16,
-    fontStyle: "normal",
-    fontWeight: "600",
+    fontFamily: theme.fonts.semibold,
     lineHeight: 24,
     letterSpacing: 0.15,
-    textAlign: "right",
   },
-
   debit: {
     color: theme.colors.dangerDark,
   },
-
   credit: {
     color: theme.colors.successDark,
   },
-
   buttonTransaction: {
     padding: 6,
     borderRadius: 50,
@@ -81,8 +61,9 @@ export const styles = StyleSheet.create({
     borderColor: theme.colors.gray10,
     backgroundColor: theme.colors.white,
     color: theme.colors.gray20,
+    width: 40,
+    height: 40,
   },
-
   icon: {
     display: "flex",
     justifyContent: "center",
@@ -91,12 +72,17 @@ export const styles = StyleSheet.create({
     height: 42,
     borderRadius: 50,
   },
-
   iconCredit: {
     backgroundColor: theme.colors.success,
   },
-
   iconDebit: {
     backgroundColor: theme.colors.danger,
+  },
+  transactionData: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    width: "100%",
+    justifyContent: "space-between",
   },
 });
