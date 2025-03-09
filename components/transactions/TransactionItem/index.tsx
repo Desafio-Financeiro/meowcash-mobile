@@ -17,7 +17,7 @@ export interface Props {
 }
 
 export interface Transaction {
-  id: string;
+  id?: string;
   type: "Credit" | "Debit";
   value: number;
   date: string;
@@ -58,7 +58,7 @@ const TransactionItem = (transactionModal: TransactionModal) => {
       <View style={styles.description}>
         <View>
           <Text style={styles.colorText}>
-            {format(new Date(date), "dd/MM/yyyy")}
+            {format(new Date(`${date}T00:00:00`), "dd/MM/yyyy")}
           </Text>
           <Text style={{ ...styles.price, ...styleValue }}>
             {"R$ " + formatCurrency(value)}
