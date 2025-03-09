@@ -102,7 +102,7 @@ const deleteTransaction = async (transaction: Transaction) => {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
     await updateDoc(transactionRef, {
-      deletedAt: new Date(),
+      deletedAt: new Date().toISOString().split("T")[0],
     });
 
     const balance = await getBalance(transaction.userId);
