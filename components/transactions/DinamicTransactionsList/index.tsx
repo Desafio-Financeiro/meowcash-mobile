@@ -6,8 +6,13 @@ import { TransactionFilters } from "../filters";
 import { View } from "react-native";
 
 const DinamicTransactionsList = () => {
-  const { transactions, isLoading, fetchNextPage, hasNextPage } =
-    useTransactions();
+  const {
+    transactions,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    showDeleteAlert,
+  } = useTransactions();
   const [transactionsList, setTransactionsList] = useState<
     { id: string; body: React.ReactNode }[]
   >([]);
@@ -29,11 +34,15 @@ const DinamicTransactionsList = () => {
         return {
           id: transaction.id as string,
           body: (
-            <TransactionItem
-              transaction={transaction}
-              edit={() => {}}
-              exclude={() => {}}
-            />
+            <View style={{ width: "100%" }}>
+              <TransactionItem
+                transaction={transaction}
+                edit={() => {}}
+                exclude={() => {
+                  showDeleteAlert(transaction);
+                }}
+              />
+            </View>
           ),
         };
       }) || [];
@@ -48,7 +57,7 @@ const DinamicTransactionsList = () => {
   }, [isLoading, transactions]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <View style={{ paddingHorizontal: 16 }}>
         <TransactionFilters
           handleTransactionDate={(date) => setTransactionDate(date)}
@@ -62,7 +71,7 @@ const DinamicTransactionsList = () => {
         isLoading={isLoading}
         hasNextPage={hasNextPage}
       />
-    </View>
+    </>
   );
 };
 

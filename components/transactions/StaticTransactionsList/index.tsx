@@ -5,9 +5,11 @@ import { styles } from "./style";
 import { View } from "react-native";
 import { Button } from "@/components/button";
 import { useNavigation } from "@react-navigation/native";
+import { useTransactions } from "@/context/TransactionsContext";
 
 const StaticTransactionsList = ({ data }: { data: Transaction[] }) => {
   const navigation = useNavigation();
+  const { showDeleteAlert } = useTransactions();
 
   return (
     <View>
@@ -16,7 +18,9 @@ const StaticTransactionsList = ({ data }: { data: Transaction[] }) => {
           <TransactionItem
             transaction={transaction}
             edit={() => {}}
-            exclude={() => {}}
+            exclude={() => {
+              showDeleteAlert(transaction);
+            }}
           />
         </View>
       ))}

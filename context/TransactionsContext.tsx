@@ -1,4 +1,4 @@
-import type { Transaction } from "@/components/Transactions/TransactionItem";
+import type { Transaction } from "@/components/transactions/TransactionItem";
 import {
   createContext,
   ReactNode,
@@ -16,11 +16,15 @@ import {
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
-import { getTransactions } from "@/api/transaction";
+import { deleteTransaction, getTransactions } from "@/api/transaction";
+import { Alert } from "react-native";
+import { getBalance } from "@/api/balance";
 
 interface ITransactionsContext {
+  balance: number;
   transactions: Transaction[];
   isLoading: boolean;
+  balanceIsLoading: boolean;
   hasNextPage: boolean;
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
@@ -48,6 +52,10 @@ interface ITransactionsContext {
       Error
     >
   >;
+  refetchBalance: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<any, Error>>;
+  showDeleteAlert: (transaction: Transaction) => void;
 }
 
 const TransactionsContext = createContext<ITransactionsContext | undefined>(
@@ -57,6 +65,17 @@ const TransactionsContext = createContext<ITransactionsContext | undefined>(
 export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  const {
+    isLoading: balanceIsLoading,
+    data: balance,
+    refetch: refetchBalance,
+    isRefetching: balanceIsRefetching,
+  } = useQuery({
+    queryKey: ["balanceInfo"],
+    queryFn: () => getBalance(user?.uid || ""),
+    enabled: !!user?.uid,
+  });
 
   const {
     data,
@@ -77,6 +96,29 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     enabled: !!user?.uid,
   });
 
+  const showDeleteAlert = (transaction: Transaction) => {
+    Alert.alert(
+      "Deletar transação",
+      "Tem certeza de que deseja deletar esta transação?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Deletar",
+          onPress: () => {
+            deleteTransaction(transaction).then(() => {
+              refetch();
+              refetchBalance();
+            });
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
     if (!isLoading && data?.pages[0]) {
       setTransactions(
@@ -88,11 +130,15 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   return (
     <TransactionsContext.Provider
       value={{
+        balance,
         transactions,
         isLoading: isLoading || isFetchingNextPage || isRefetching,
+        balanceIsLoading: balanceIsLoading || balanceIsRefetching,
         fetchNextPage,
         hasNextPage,
         refetchTransactions: refetch,
+        refetchBalance,
+        showDeleteAlert,
       }}
     >
       {children}
