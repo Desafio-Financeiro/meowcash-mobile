@@ -16,15 +16,12 @@ export const styles = StyleSheet.create({
   hello: {
     fontSize: 24,
     fontFamily: theme.fonts.bold,
-    color: theme.colors.primary70
+    color: theme.colors.primary70,
   },
 
   date: {
     fontSize: 14,
     fontFamily: theme.fonts.medium,
-    color: theme.colors.textSecondary
+    color: theme.colors.textSecondary,
   },
-  transactions: {
-    height: "100%",
-  }
 });

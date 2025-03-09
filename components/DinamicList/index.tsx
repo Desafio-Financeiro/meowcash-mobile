@@ -18,10 +18,12 @@ const DinamicList = ({
   return (
     <View
       style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
+        // display: "flex",
+        // flexDirection: "column",
+        // justifyContent: "center",
         alignItems: "center",
+        flex: 1,
+        // paddingBottom: 24,
       }}
     >
       <FlatList
