@@ -11,7 +11,7 @@ const StaticTransactionsList = ({ data }: { data: Transaction[] }) => {
 
   return (
     <View>
-      {data.slice(0, 6).map((transaction) => (
+      {data.map((transaction) => (
         <View key={transaction.id} style={styles.row}>
           <TransactionItem
             transaction={transaction}
@@ -20,14 +20,12 @@ const StaticTransactionsList = ({ data }: { data: Transaction[] }) => {
           />
         </View>
       ))}
-      {data.length > 6 && (
-        <Button
-          variant="primary"
-          title="Ver extrato"
-          style={{ marginTop: 24 }}
-          onPress={() => navigation.navigate("Extract" as never)}
-        />
-      )}
+      <Button
+        variant="primary"
+        title="Ver extrato"
+        style={{ marginTop: 24 }}
+        onPress={() => navigation.navigate("Extract" as never)}
+      />
     </View>
   );
 };

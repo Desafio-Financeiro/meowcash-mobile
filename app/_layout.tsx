@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Routes from "./routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TransactionsProvider } from "@/context/TransactionsContext";
 
 const queryClient = new QueryClient();
 
@@ -43,8 +44,10 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Routes />
-          <Toast />
+          <TransactionsProvider>
+            <Routes />
+            <Toast />
+          </TransactionsProvider>
         </AuthProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
