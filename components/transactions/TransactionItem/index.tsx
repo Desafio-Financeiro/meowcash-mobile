@@ -4,6 +4,7 @@ import { Button } from "@/components/button";
 import { styles } from "./style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export interface TransactionModal extends Omit<Props, "transactionsList"> {
   transaction: Transaction;
@@ -16,12 +17,13 @@ export interface Props {
 }
 
 export interface Transaction {
-  id: string;
+  id?: string;
   type: "Credit" | "Debit";
   value: number;
   date: string;
   from?: string;
   to?: string;
+  userId: string;
 }
 
 const TransactionItem = (transactionModal: TransactionModal) => {
@@ -56,10 +58,10 @@ const TransactionItem = (transactionModal: TransactionModal) => {
       <View style={styles.description}>
         <View>
           <Text style={styles.colorText}>
-            {format(new Date(date), "dd/MM/yyyy")}
+            {format(new Date(`${date}T00:00:00`), "dd/MM/yyyy")}
           </Text>
           <Text style={{ ...styles.price, ...styleValue }}>
-            {"R$ " + value}
+            {"R$ " + formatCurrency(value)}
           </Text>
         </View>
         <View style={styles.edit}>

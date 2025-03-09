@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
 import DinamicList from "@/components/DinamicList";
-import { transactionsMOCK } from "@/components/Transactions/mock";
 import TransactionItem from "@/components/Transactions/TransactionItem";
-import { styles } from "./style";
+import { useTransactions } from "@/context/TransactionsContext";
 
 const DinamicTransactionsList = () => {
-  const [transactions, setTransactions] = useState<
+  const { transactions, isLoading, fetchNextPage, hasNextPage } =
+    useTransactions();
+  const [transactionsList, setTransactionsList] = useState<
     { id: string; body: React.ReactNode }[]
   >([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
 
-  const fetchTransactions = async () => {
-    if (loading) return;
-    setLoading(true);
-
-    setTimeout(() => {
-      const transactions = transactionsMOCK.map((transaction) => {
+  const processTransactions = () => {
+    const transactionsList =
+      transactions?.map((transaction) => {
         return {
           id: transaction.id as string,
           body: (
@@ -27,24 +23,23 @@ const DinamicTransactionsList = () => {
             />
           ),
         };
-      });
+      }) || [];
 
-      setTransactions(transactions);
-      setPage(page + 1);
-      setLoading(false);
-    }, 1500);
+    setTransactionsList(transactionsList);
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (!isLoading && transactions) {
+      processTransactions();
+    }
+  }, [isLoading, transactions]);
 
   return (
     <DinamicList
-      style={styles.list}
-      data={transactions}
-      onLoadMore={fetchTransactions}
-      isLoading={loading}
+      data={transactionsList}
+      onLoadMore={fetchNextPage}
+      isLoading={isLoading}
+      hasNextPage={hasNextPage}
     />
   );
 };

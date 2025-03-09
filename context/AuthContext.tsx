@@ -3,14 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  UserCredential,
+  User,
   updateProfile,
 } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
 import Toast from "react-native-toast-message";
 
 interface IAuthContext {
-  user: UserCredential | null;
+  user: User | undefined;
   handleLogin: (email: string, password: string) => Promise<boolean>;
   handleSignUp: (email: string, password: string, userName: string) => void;
   handleLogout: () => void;
@@ -21,7 +21,7 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigation = useNavigation();
-  const [user, setUser] = useState<UserCredential | null>(null);
+  const [user, setUser] = useState<User | undefined>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = async (email: string, password: string) => {
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password
       );
-      setUser(userCredential);
+      setUser(userCredential.user);
       setIsAuthenticated(true);
       Toast.show({
         type: "success",
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       position: "bottom",
     });
     auth.signOut();
-    setUser(null);
+    setUser(undefined);
     setIsAuthenticated(false);
     navigation.navigate("LandingPage" as never);
   };
@@ -118,7 +118,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error(
-      "Contexto não encontado, useAuth deve estar dentro de AuthProvider"
+      "Contexto não encontrado, useAuth deve estar dentro de AuthProvider"
     );
   }
   return context;
