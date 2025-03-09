@@ -21,18 +21,18 @@ export function CustomContent({ handleDateChange, date }: CustomContentProps) {
           onChange={(data) => {
             handleDateChange("start", data);
           }}
-          label="Data"
+          label="Data inicial"
         />
       </View>
       <View style={styles.customOption}>
-        <Text>Data inicial</Text>
+        <Text>Data final</Text>
         <DatePicker
           dateStyle={styles.dateStyle}
           value={date.end}
           onChange={(data) => {
             handleDateChange("end", data);
           }}
-          label="Data"
+          label="Data final"
         />
       </View>
     </View>

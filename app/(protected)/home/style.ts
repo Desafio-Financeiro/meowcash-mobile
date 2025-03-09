@@ -24,30 +24,4 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.medium,
     color: theme.colors.textSecondary,
   },
-
-  filtersContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 4,
-    gap: 24,
-  },
-
-  filterButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: theme.colors.gray10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-
-  filterButtonText: {
-    fontFamily: theme.fonts.medium,
-  },
-
-  transactions: {
-    height: "100%",
-  },
 });

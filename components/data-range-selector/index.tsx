@@ -7,7 +7,7 @@ import { Title } from "./title";
 import { CustomContent } from "./custom-content";
 
 interface DateRangeSelectorProps {
-  onDateChange: (start: Date, end: Date) => void;
+  onDateChange: (start: Date | null, end: Date | null) => void;
   open: boolean;
   onClose: () => void;
 }
