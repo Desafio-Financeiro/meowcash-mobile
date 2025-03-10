@@ -9,7 +9,7 @@ interface Props {
   setFile: (file: DocumentPicker.DocumentPickerAsset | null) => void;
 }
 
-function FileUploader({ file, setFile }: Props) {
+export default function FileUploader({ file, setFile }: Props) {
 
   const removeFile = () => {
     setFile(null);
@@ -60,6 +60,3 @@ function FileUploader({ file, setFile }: Props) {
     </>
   );
 }
-
-
-export default FileUploader;
