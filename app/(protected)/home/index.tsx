@@ -3,8 +3,6 @@ import { SummaryCard } from "@/components/summary-card";
 import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { styles } from "./style";
 import { getFullCurrentDate } from "@/utils/getCurrentDate";
-import { getBalance } from "@/api/balance";
-import { useQuery } from "@tanstack/react-query";
 import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -13,8 +11,10 @@ import { Button } from "@/components/button";
 import { addTransaction } from "@/api/transaction";
 import { theme } from "@/theme";
 import { TransactionFilters } from "@/components/transactions/filters";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
+  const navigation = useNavigation();
   const { user } = useAuth();
   const {
     transactions,
@@ -58,7 +58,23 @@ export default function Home() {
             type="outcome"
             isLoading={statisticsIsLoading}
           />
+          <View
+            style={{
+              width: 200,
+              marginHorizontal: "auto",
+              marginBottom: 24,
+              marginTop: 10,
+            }}
+          >
+            <Button
+              title="Ver relatório completo"
+              variant="primary"
+              onPress={() => navigation.navigate("Reports" as never)}
+            />
+          </View>
         </View>
+
+        <Text style={styles.hello}>Transações recentes</Text>
 
         <Button
           title="Criar transação de débito"
