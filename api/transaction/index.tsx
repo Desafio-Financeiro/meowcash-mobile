@@ -1,5 +1,5 @@
 import Toast from "react-native-toast-message";
-import { db } from "../../firebase/config";
+import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
@@ -10,10 +10,11 @@ import {
   query,
   startAfter,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
+import { uploadFile } from "@/utils/file";
 
 type TransactionType = "credit" | "debit";
 
@@ -24,9 +25,9 @@ const getTransactions = async (
   pageParam?: number | null
 ): Promise<
   | {
-      data: Transaction[];
-      lastDoc: any;
-    }
+  data: Transaction[];
+  lastDoc: any;
+}
   | undefined
 > => {
   try {
@@ -55,7 +56,7 @@ const getTransactions = async (
     if (!querySnapshot.empty) {
       const transactions = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
       const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
@@ -65,7 +66,7 @@ const getTransactions = async (
       Toast.show({
         type: "error",
         text1: "Nenhuma transação encontrada",
-        position: "bottom",
+        position: "bottom"
       });
     }
   } catch (error) {
@@ -73,7 +74,7 @@ const getTransactions = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -90,10 +91,10 @@ const getStatistics = async (
     if (!querySnapshot.empty) {
       const transactions = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
-      const statistics = transactions.reduce(
+      return transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
           acc[key] = (acc[key] || 0) + value;
@@ -101,8 +102,6 @@ const getStatistics = async (
         },
         { credit: 0, debit: 0 }
       );
-
-      return statistics;
     } else {
       return { credit: 0, debit: 0 };
     }
@@ -111,14 +110,21 @@ const getStatistics = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
 
 const addTransaction = async (transaction: Transaction) => {
   try {
-    await addDoc(collection(db, "transaction"), transaction);
+
+    let fileUrl = null;
+    if (transaction.attachment) {
+      fileUrl = await uploadFile(transaction.attachment);
+      delete transaction.attachment;
+    }
+
+    await addDoc(collection(db, "transaction"), { ...transaction, attachmentUrl: fileUrl });
 
     const balance = await getBalance(transaction.userId);
     const newBalance =
@@ -131,14 +137,14 @@ const addTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação adicionada!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao adicionar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao adicionar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -148,7 +154,7 @@ const deleteTransaction = async (transaction: Transaction) => {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
     await updateDoc(transactionRef, {
-      deletedAt: new Date().toISOString().split("T")[0],
+      deletedAt: new Date().toISOString().split("T")[0]
     });
 
     const balance = await getBalance(transaction.userId);
@@ -162,14 +168,14 @@ const deleteTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação deletada com sucesso!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao deletar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao deletar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
