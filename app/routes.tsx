@@ -9,6 +9,7 @@ import Login from "./(auth)/login";
 import Register from "./(auth)/register";
 import Home from "./(protected)/home";
 import Extract from "./(protected)/extract";
+import Reports from "./(protected)/reports";
 
 type DrawerParamList = {
   LandingPage: undefined;
@@ -16,6 +17,7 @@ type DrawerParamList = {
   Register: undefined;
   Home: undefined;
   Extract: undefined;
+  Reports: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -75,6 +77,15 @@ export default function Routes() {
         component={Extract}
         options={{
           drawerLabel: "Extrato",
+          drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
+          sceneStyle: styles.sceneStyle,
+        }}
+      />
+      <Drawer.Screen
+        name="Reports"
+        component={Reports}
+        options={{
+          drawerLabel: "Relatórios",
           drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
