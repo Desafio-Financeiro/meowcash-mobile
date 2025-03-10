@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
   font: {
     fontFamily: theme.fonts.semibold,
     fontSize: 16,
+    gap: 8,
   },
   colorText: {
     color: theme.colors.text,
