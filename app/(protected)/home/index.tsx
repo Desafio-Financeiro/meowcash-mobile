@@ -13,7 +13,7 @@ import { Button } from "@/components/button";
 import { addTransaction } from "@/api/transaction";
 import { theme } from "@/theme";
 import { TransactionFilters } from "@/components/transactions/filters";
-import FileUploader from "@/components/fileUploader";
+import FileUploader from "@/components/fileUploader/FileUploader";
 import * as DocumentPicker from "expo-document-picker";
 
 export default function Home() {

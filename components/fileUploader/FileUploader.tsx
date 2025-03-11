@@ -10,13 +10,14 @@ interface Props {
 }
 
 export default function FileUploader({ file, setFile }: Props) {
+  const MAX_FILE_SIZE = 1024 * 1024;
 
   const removeFile = () => {
     setFile(null);
   };
 
   const getNameBytes = (size?: number) => {
-    if (!size) return 0;
+    if (!size) return "0 B";
     const i = Math.floor(Math.log(size) / Math.log(1024));
     return `${(size / Math.pow(1024, i)).toFixed(2)} ${["B", "KB", "MB", "GB", "TB"][i]}`;
   };
@@ -33,9 +34,20 @@ export default function FileUploader({ file, setFile }: Props) {
         return;
       }
 
-      setFile(result.assets[0]);
+      const selectedFile = result.assets[0];
 
-      Alert.alert("Arquivo Selecionado", `Nome: ${result.assets[0].name}\nTamanho: ${getNameBytes(result.assets[0].size)}`);
+      if (!selectedFile.size) {
+        Alert.alert("Erro", "O arquivo selecionado não possui tamanho.");
+        return;
+      }
+
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        Alert.alert("Erro", "O arquivo selecionado excede o limite de 1 MB.");
+        return;
+      }
+
+      setFile(selectedFile);
+      Alert.alert("Arquivo Selecionado", `Nome: ${selectedFile.name}\nTamanho: ${getNameBytes(selectedFile.size)}`);
     } catch (error) {
       console.error("Erro ao selecionar arquivo:", error);
     }
@@ -45,13 +57,13 @@ export default function FileUploader({ file, setFile }: Props) {
     <>
       <Button
         variant="primary"
-        title={file ? "Trocar arquivo" : "Selecionar arquivo"}
+        title={file ? "Trocar arquivo" : "Selecionar arquivo (1 MB)"}
         onPress={pickFile}
       />
       {file && (
         <View style={styles.fileInfo}>
           <Text style={styles.fileName}>{file.name}</Text>
-          <Text style={styles.fileSize}> {getNameBytes(file.size)}</Text>
+          <Text style={styles.fileSize}>{getNameBytes(file.size)}</Text>
           <TouchableOpacity onPress={removeFile}>
             <Text style={styles.removeFile}>Remover arquivo</Text>
           </TouchableOpacity>
