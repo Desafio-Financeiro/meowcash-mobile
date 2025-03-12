@@ -56,8 +56,10 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
             <Text style={styles.font}>
               {type === "Credit" ? "Entrada" : "Saída"}
               {transaction.attachmentUrl &&
-                <MaterialCommunityIcons name={"attachment"} size={16} color={theme.colors.primary80}
-                                        onPress={() => downloadFile(transaction.attachmentUrl as string, "download")} />}
+                <View style={styles.attachmentIcon}>
+                  <MaterialCommunityIcons name={"attachment"} size={16} color={theme.colors.primary80}
+                                          onPress={() => downloadFile(transaction.attachmentUrl as string, "download")} />
+                </View>}
             </Text>
             {type === "Credit" && from && (
               <Text style={styles.colorText}>Origem: {from}</Text>
