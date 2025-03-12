@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { theme } from "@/theme";
 
 export const styles = StyleSheet.create({
   fileInfo: {
@@ -7,13 +8,13 @@ export const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 16,
-    fontWeight: "bold"
+    fontFamily: theme.fonts.bold
   },
   fileSize: {
     fontSize: 16,
-    color: "gray"
+    color: theme.colors.text
   },
   removeFile: {
-    color: "red"
+    color: theme.colors.dangerDark
   }
 });
