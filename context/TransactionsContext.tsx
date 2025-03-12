@@ -23,6 +23,7 @@ import {
 } from "@/api/transaction";
 import { Alert } from "react-native";
 import { getBalance } from "@/api/balance";
+import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
 
 interface ITransactionsContext {
   balance: number;
@@ -30,7 +31,11 @@ interface ITransactionsContext {
   isLoading: boolean;
   balanceIsLoading: boolean;
   hasNextPage: boolean;
-  statistics?: { credit: number; debit: number };
+  statistics?: {
+    credit: number;
+    debit: number;
+    groupedTransactions: GroupedTransaction[];
+  };
   statisticsIsLoading: boolean;
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
