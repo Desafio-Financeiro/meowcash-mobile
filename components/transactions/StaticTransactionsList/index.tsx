@@ -24,12 +24,14 @@ const StaticTransactionsList = ({ data }: { data: Transaction[] }) => {
           />
         </View>
       ))}
-      <Button
-        variant="primary"
-        title="Ver extrato"
-        style={{ marginTop: 24 }}
-        onPress={() => navigation.navigate("Extract" as never)}
-      />
+      <View style={{ width: 150, marginHorizontal: "auto" }}>
+        <Button
+          variant="primary"
+          title="Ver extrato"
+          style={{ marginTop: 24 }}
+          onPress={() => navigation.navigate("Extract" as never)}
+        />
+      </View>
     </View>
   );
 };

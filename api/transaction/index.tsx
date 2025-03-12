@@ -15,6 +15,9 @@ import {
 import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
 import { uploadFile } from "@/utils/file";
+import {
+  GroupedTransaction,
+} from "@/utils/groupTransactionsByMonth";
 
 type TransactionType = "credit" | "debit";
 
@@ -81,7 +84,14 @@ const getTransactions = async (
 
 const getStatistics = async (
   user: string
-): Promise<{ credit: number; debit: number } | undefined> => {
+): Promise<
+  | {
+      credit: number;
+      debit: number;
+      groupedTransactions: GroupedTransaction[];
+    }
+  | undefined
+> => {
   try {
     const transactionsRef = collection(db, "transaction");
     let q = query(transactionsRef, where("userId", "==", user));
@@ -94,16 +104,17 @@ const getStatistics = async (
         ...doc.data()
       })) as Transaction[];
 
-      return transactions.reduce(
+      const groupedTransactions = groupTransactionsByMonth(transactions);
+      const statistics = transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
           acc[key] = (acc[key] || 0) + value;
           return acc;
         },
-        { credit: 0, debit: 0 }
+        { credit: 0, debit: 0, groupedTransactions }
       );
     } else {
-      return { credit: 0, debit: 0 };
+      return { credit: 0, debit: 0, groupedTransactions: [] };
     }
   } catch (error) {
     console.error("Erro ao buscar transações:", error);
