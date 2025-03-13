@@ -163,7 +163,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   return (
     <TransactionsContext.Provider
       value={{
-        balance,
+        balance: balance,
         transactions,
         isLoading: isLoading || isFetchingNextPage || isRefetching,
         balanceIsLoading: balanceIsLoading || balanceIsRefetching,

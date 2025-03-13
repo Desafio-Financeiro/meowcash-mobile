@@ -21,8 +21,8 @@ export interface Transaction {
   type: "Credit" | "Debit";
   value: number;
   date: string;
-  from?: string;
-  to?: string;
+  from: string | null;
+  to: string | null;
   userId: string;
   deletedAt?: string;
 }
