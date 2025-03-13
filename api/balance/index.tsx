@@ -1,5 +1,5 @@
 import Toast from "react-native-toast-message";
-import { db } from "../../firebase/config";
+import { db } from "@/firebase/config";
 import {
   collection,
   addDoc,

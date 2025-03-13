@@ -10,6 +10,8 @@ import { Button } from "@/components/button";
 import { addTransaction } from "@/api/transaction";
 import { theme } from "@/theme";
 import { TransactionFilters } from "@/components/transactions/filters";
+import FileUploader from "@/components/fileUploader/FileUploader";
+import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
@@ -26,8 +28,19 @@ export default function Home() {
     statisticsIsLoading,
     refetchStatistics,
     transactionFilter,
-    setTransactionFilter
+    setTransactionFilter,
   } = useTransactions();
+
+  const [transactionDate, setTransactionDate] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({
+    start: new Date(),
+    end: new Date()
+  });
+  const [transactionFilter, setTransactionFilter] = useState("");
+  const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+
 
   return (
     <View style={styles.container}>
@@ -68,16 +81,19 @@ export default function Home() {
 
         <Text style={styles.hello}>Transações recentes</Text>
 
+        <FileUploader file={file} setFile={setFile}></FileUploader>
+
         <Button
           title="Criar transação de débito"
           variant="link"
           onPress={() =>
             addTransaction({
               type: "Debit",
-              value: 454444,
-              date: "2021-03-09",
-              to: "Paulo",
-              userId: user!.uid
+              value: 100,
+              date: "2025-03-09",
+              to: "John Doe",
+              userId: user!.uid,
+              attachment: file
             }).then(() => {
               refetchTransactions();
               refetchBalance();

@@ -16,6 +16,7 @@ import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
 import { GroupedTransaction, groupTransactionsByMonth } from "@/utils/groupTransactionsByMonth";
 import { Filter } from "@/utils/types";
+import { uploadFile } from "@/utils/file";
 
 export type TransactionType = "credit" | "debit";
 
@@ -138,7 +139,6 @@ const getStatistics = async (
       })) as Transaction[];
 
       const groupedTransactions = groupTransactionsByMonth(transactions);
-
       return transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
@@ -162,7 +162,14 @@ const getStatistics = async (
 
 const addTransaction = async (transaction: Transaction) => {
   try {
-    await addDoc(collection(db, "transaction"), transaction);
+
+    let fileUrl = null;
+    if (transaction.attachment) {
+      fileUrl = await uploadFile(transaction.attachment);
+      delete transaction.attachment;
+    }
+
+    await addDoc(collection(db, "transaction"), { ...transaction, attachmentUrl: fileUrl });
 
     const balance = await getBalance(transaction.userId);
     const newBalance =
