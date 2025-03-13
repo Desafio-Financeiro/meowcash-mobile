@@ -4,7 +4,6 @@ import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { styles } from "./style";
 import { getFullCurrentDate } from "@/utils/getCurrentDate";
 import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
-import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { Button } from "@/components/button";
@@ -26,16 +25,9 @@ export default function Home() {
     statistics,
     statisticsIsLoading,
     refetchStatistics,
+    transactionFilter,
+    setTransactionFilter
   } = useTransactions();
-
-  const [transactionDate, setTransactionDate] = useState<{
-    start: Date | null;
-    end: Date | null;
-  }>({
-    start: new Date(),
-    end: new Date(),
-  });
-  const [transactionFilter, setTransactionFilter] = useState("");
 
   return (
     <View style={styles.container}>
@@ -63,7 +55,7 @@ export default function Home() {
               width: 200,
               marginHorizontal: "auto",
               marginBottom: 24,
-              marginTop: 10,
+              marginTop: 10
             }}
           >
             <Button
@@ -82,10 +74,10 @@ export default function Home() {
           onPress={() =>
             addTransaction({
               type: "Debit",
-              value: 100,
-              date: "2025-03-09",
-              to: "John Doe",
-              userId: user!.uid,
+              value: 454444,
+              date: "2021-03-09",
+              to: "Paulo",
+              userId: user!.uid
             }).then(() => {
               refetchTransactions();
               refetchBalance();
@@ -99,10 +91,10 @@ export default function Home() {
           onPress={() =>
             addTransaction({
               type: "Credit",
-              value: 300,
-              date: "2025-03-09",
-              from: "John Doe",
-              userId: user!.uid,
+              value: 5300,
+              date: "2021-03-09",
+              from: "Rapaz",
+              userId: user!.uid
             }).then(() => {
               refetchTransactions();
               refetchBalance();
@@ -111,6 +103,17 @@ export default function Home() {
           }
         />
 
+        <TransactionFilters
+          handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
+          handleTransactionType={(filter) => setTransactionFilter({
+            ...transactionFilter,
+            transactionType: filter
+          })}
+          handleTransactionText={(filter) => setTransactionFilter({
+            ...transactionFilter,
+            transactionText: filter
+          })}
+        />
         {transactionsIsLoading ? (
           <ActivityIndicator
             size="large"
@@ -119,10 +122,6 @@ export default function Home() {
           />
         ) : transactions.length > 0 ? (
           <>
-            <TransactionFilters
-              handleTransactionDate={(date) => setTransactionDate(date)}
-              handleTransactionFilter={(filter) => setTransactionFilter(filter)}
-            />
             <StaticTransactionsList data={transactions} />
           </>
         ) : (

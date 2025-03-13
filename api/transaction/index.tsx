@@ -1,5 +1,5 @@
 import Toast from "react-native-toast-message";
-import { db } from "../../firebase/config";
+import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
@@ -10,66 +10,98 @@ import {
   query,
   startAfter,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
-import {
-  GroupedTransaction,
-  groupTransactionsByMonth,
-} from "@/utils/groupTransactionsByMonth";
+import { GroupedTransaction, groupTransactionsByMonth } from "@/utils/groupTransactionsByMonth";
+import { Filter } from "@/utils/types";
 
-type TransactionType = "credit" | "debit";
+export type TransactionType = "credit" | "debit";
 
 const TRANSACTIONS_LIMIT = 6;
 
 const getTransactions = async (
   user: string,
-  pageParam?: number | null
+  pageParam?: number | null,
+  transactionFilter?: Filter
 ): Promise<
   | {
-      data: Transaction[];
-      lastDoc: any;
-    }
+  data: Transaction[];
+  lastDoc: any;
+}
   | undefined
 > => {
   try {
     const transactionsRef = collection(db, "transaction");
-    let q = query(
+    let conditions = [where("userId", "==", user)];
+
+    if (transactionFilter?.date?.start) {
+      conditions.push(where("date", ">=", transactionFilter.date.start));
+    }
+    if (transactionFilter?.date?.end) {
+      conditions.push(where("date", "<=", transactionFilter.date.end));
+    }
+
+    if (transactionFilter?.transactionType) {
+      conditions.push(where("type", "==", transactionFilter.transactionType));
+    }
+
+    let baseQuery = query(
       transactionsRef,
-      where("userId", "==", user),
-      // orderBy("date"), // Default "asc"
+      ...conditions,
       orderBy("date", "desc"),
+      ...(pageParam ? [startAfter(pageParam)] : []),
       limit(TRANSACTIONS_LIMIT)
     );
 
-    if (pageParam) {
-      q = query(
+    if (transactionFilter?.transactionText) {
+      const fromQuery = query(
         transactionsRef,
-        where("userId", "==", user),
-        // orderBy("date"), // Default "asc"
+        ...conditions,
+        where("from", "==", transactionFilter.transactionText),
         orderBy("date", "desc"),
-        startAfter(pageParam),
+        ...(pageParam ? [startAfter(pageParam)] : []),
         limit(TRANSACTIONS_LIMIT)
       );
+
+      const toQuery = query(
+        transactionsRef,
+        ...conditions,
+        where("to", "==", transactionFilter.transactionText),
+        orderBy("date", "desc"),
+        ...(pageParam ? [startAfter(pageParam)] : []),
+        limit(TRANSACTIONS_LIMIT)
+      );
+
+      const [fromSnapshot, toSnapshot] = await Promise.all([
+        getDocs(fromQuery),
+        getDocs(toQuery)
+      ]);
+
+      const fromResults = fromSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Transaction[];
+      const toResults = toSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Transaction[];
+
+      const transactions = [...new Map([...fromResults, ...toResults].map(item => [item.id, item])).values()];
+      const lastDoc = transactions.length ? transactions[transactions.length - 1] : null;
+
+      return { data: transactions, lastDoc };
     }
 
-    const querySnapshot = await getDocs(q);
-
+    const querySnapshot = await getDocs(baseQuery);
     if (!querySnapshot.empty) {
-      const transactions = querySnapshot.docs.map((doc) => ({
+      const transactions = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
       const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
-
-      return { data: transactions as Transaction[], lastDoc };
+      return { data: transactions, lastDoc };
     } else {
       Toast.show({
         type: "error",
         text1: "Nenhuma transação encontrada",
-        position: "bottom",
+        position: "bottom"
       });
     }
   } catch (error) {
@@ -77,19 +109,20 @@ const getTransactions = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
+
 
 const getStatistics = async (
   user: string
 ): Promise<
   | {
-      credit: number;
-      debit: number;
-      groupedTransactions: GroupedTransaction[];
-    }
+  credit: number;
+  debit: number;
+  groupedTransactions: GroupedTransaction[];
+}
   | undefined
 > => {
   try {
@@ -101,12 +134,12 @@ const getStatistics = async (
     if (!querySnapshot.empty) {
       const transactions = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
       const groupedTransactions = groupTransactionsByMonth(transactions);
 
-      const statistics = transactions.reduce(
+      return transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
           acc[key] = (acc[key] || 0) + value;
@@ -114,8 +147,6 @@ const getStatistics = async (
         },
         { credit: 0, debit: 0, groupedTransactions }
       );
-
-      return statistics;
     } else {
       return { credit: 0, debit: 0, groupedTransactions: [] };
     }
@@ -124,7 +155,7 @@ const getStatistics = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -144,14 +175,14 @@ const addTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação adicionada!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao adicionar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao adicionar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -161,7 +192,7 @@ const deleteTransaction = async (transaction: Transaction) => {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
     await updateDoc(transactionRef, {
-      deletedAt: new Date().toISOString().split("T")[0],
+      deletedAt: new Date().toISOString().split("T")[0]
     });
 
     const balance = await getBalance(transaction.userId);
@@ -175,14 +206,14 @@ const deleteTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação deletada com sucesso!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao deletar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao deletar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DinamicList from "@/components/DinamicList";
 import TransactionItem from "@/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
@@ -13,19 +13,13 @@ const DinamicTransactionsList = () => {
     fetchNextPage,
     hasNextPage,
     showDeleteAlert,
+    transactionFilter,
+    setTransactionFilter
   } = useTransactions();
   const [transactionsList, setTransactionsList] = useState<
     { id: string; body: React.ReactNode }[]
   >([]);
   const [page, setPage] = useState(1);
-  const [transactionDate, setTransactionDate] = useState<{
-    start: Date | null;
-    end: Date | null;
-  }>({
-    start: new Date(),
-    end: new Date(),
-  });
-  const [transactionFilter, setTransactionFilter] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -38,13 +32,14 @@ const DinamicTransactionsList = () => {
             <View style={{ width: "100%" }}>
               <TransactionItem
                 transaction={transaction}
-                edit={() => {}}
+                edit={() => {
+                }}
                 exclude={() => {
                   showDeleteAlert(transaction);
                 }}
               />
             </View>
-          ),
+          )
         };
       }) || [];
 
@@ -57,14 +52,16 @@ const DinamicTransactionsList = () => {
     }
   }, [isLoading, transactions]);
 
-  return transactions.length > 0 ? (
-    <>
-      <View style={{ paddingHorizontal: 16 }}>
-        <TransactionFilters
-          handleTransactionDate={(date) => setTransactionDate(date)}
-          handleTransactionFilter={(filter) => setTransactionFilter(filter)}
-        />
-      </View>
+  return <>
+    <View style={{ paddingHorizontal: 16 }}>
+      <TransactionFilters
+        handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
+        handleTransactionType={(filter) => setTransactionFilter({ ...transactionFilter, transactionType: filter })}
+        handleTransactionText={(filter) => setTransactionFilter({ ...transactionFilter, transactionText: filter })}
+      />
+    </View>
+    {transactions.length > 0 ? (
+
 
       <DinamicList
         data={transactionsList}
@@ -72,10 +69,10 @@ const DinamicTransactionsList = () => {
         isLoading={isLoading}
         hasNextPage={hasNextPage}
       />
-    </>
-  ) : (
-    <Text style={styles.emptyHistory}>Não existe histórico de transações</Text>
-  );
+    ) : (
+      <Text style={styles.emptyHistory}>Não existe histórico de transações</Text>
+    )}
+  </>;
 };
 
 export default DinamicTransactionsList;
