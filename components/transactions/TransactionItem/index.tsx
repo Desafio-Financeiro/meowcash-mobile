@@ -5,6 +5,8 @@ import { styles } from "./style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";
 import { formatCurrency } from "@/utils/formatCurrency";
+import * as DocumentPicker from "expo-document-picker";
+import { downloadFile } from "@/utils/file";
 
 export interface TransactionModal extends Omit<Props, "transactionsList"> {
   transaction: Transaction;
@@ -25,6 +27,8 @@ export interface Transaction {
   to: string | null;
   userId: string;
   deletedAt?: string;
+  attachment?: DocumentPicker.DocumentPickerAsset | null;
+  attachmentUrl?: string;
 }
 
 const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
@@ -33,8 +37,8 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
   const styleValue = deletedAt
     ? ""
     : type === "Credit"
-    ? styles.credit
-    : styles.debit;
+      ? styles.credit
+      : styles.debit;
   const styleIcon = type === "Credit" ? styles.iconCredit : styles.iconDebit;
 
   return (
@@ -51,6 +55,11 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
           <View style={styles.listTitle}>
             <Text style={styles.font}>
               {type === "Credit" ? "Entrada" : "Saída"}
+              {transaction.attachmentUrl &&
+                <View style={styles.attachmentIcon}>
+                  <MaterialCommunityIcons name={"attachment"} size={16} color={theme.colors.primary80}
+                                          onPress={() => downloadFile(transaction.attachmentUrl as string, "download")} />
+                </View>}
             </Text>
             {type === "Credit" && from && (
               <Text style={styles.colorText}>Origem: {from}</Text>
@@ -64,7 +73,7 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
           style={{
             ...styles.price,
             ...styleValue,
-            textDecorationLine: deletedAt ? "line-through" : undefined,
+            textDecorationLine: deletedAt ? "line-through" : undefined
           }}
         >
           R$ {formatCurrency(value)}

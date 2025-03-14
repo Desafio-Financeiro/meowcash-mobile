@@ -17,6 +17,8 @@ import { useTransactions } from "@/context/TransactionsContext";
 import { Button } from "@/components/button";
 import { theme } from "@/theme";
 import { TransactionFilters } from "@/components/transactions/filters";
+import FileUploader from "@/components/fileUploader/FileUploader";
+import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
 import { CreateTransaction } from "@/components/transactions/CreateTransaction";
 
@@ -42,6 +44,9 @@ export default function Home() {
   const [transactionFilter, setTransactionFilter] = useState("");
   const [showAddTransactionDialog, setShowAddTransactionDialog] =
     useState(false);
+  const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(
+    null
+  );
 
   return (
     <>
@@ -52,6 +57,8 @@ export default function Home() {
         </View>
 
         <Balance balance={balance} isLoading={balanceIsLoading} />
+
+        <FileUploader file={file} setFile={setFile} />
 
         <ScrollView>
           <View style={styles.summaryContainer}>
