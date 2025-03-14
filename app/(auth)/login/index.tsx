@@ -13,6 +13,13 @@ export default function Index() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function makeLogin(email: string, password: string) {
+    setLoading(true);
+    await handleLogin(email, password);
+    setLoading(false);
+  }
   return (
     <>
       <View style={styles.loginContainer}>
@@ -41,9 +48,10 @@ export default function Index() {
           />
 
           <Button
-            title="Entrar"
+            title={loading ? "Entrando..." : "Entrar"}
             variant="primary"
-            onPress={() => handleLogin(email, password)}
+            disabled={loading}
+            onPress={() => makeLogin(email, password)}
           />
 
           <View style={styles.registerTextContainer}>
