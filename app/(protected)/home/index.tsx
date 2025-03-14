@@ -13,6 +13,7 @@ import { TransactionFilters } from "@/components/transactions/filters";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -28,17 +29,9 @@ export default function Home() {
     statisticsIsLoading,
     refetchStatistics,
     transactionFilter,
-    setTransactionFilter,
+    setTransactionFilter
   } = useTransactions();
 
-  const [transactionDate, setTransactionDate] = useState<{
-    start: Date | null;
-    end: Date | null;
-  }>({
-    start: new Date(),
-    end: new Date()
-  });
-  const [transactionFilter, setTransactionFilter] = useState("");
   const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
 
 

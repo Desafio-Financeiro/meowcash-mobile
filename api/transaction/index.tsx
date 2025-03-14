@@ -60,7 +60,9 @@ const getTransactions = async (
       const fromQuery = query(
         transactionsRef,
         ...conditions,
-        where("from", "==", transactionFilter.transactionText),
+        where("from", ">=", transactionFilter.transactionText),
+        where("from", "<=", transactionFilter.transactionText + "\uf8ff"),
+        orderBy("from"),
         orderBy("date", "desc"),
         ...(pageParam ? [startAfter(pageParam)] : []),
         limit(TRANSACTIONS_LIMIT)
@@ -69,7 +71,9 @@ const getTransactions = async (
       const toQuery = query(
         transactionsRef,
         ...conditions,
-        where("to", "==", transactionFilter.transactionText),
+        where("to", ">=", transactionFilter.transactionText),
+        where("to", "<=", transactionFilter.transactionText + "\uf8ff"),
+        orderBy("to"),
         orderBy("date", "desc"),
         ...(pageParam ? [startAfter(pageParam)] : []),
         limit(TRANSACTIONS_LIMIT)
