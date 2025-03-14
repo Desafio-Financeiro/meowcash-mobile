@@ -33,12 +33,18 @@ function DialogActions({ children }: { children: React.ReactNode }) {
 function DialogButton({
   value,
   onClick,
+  disabled,
 }: {
   value: React.ReactNode;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
-    <TouchableOpacity onPress={onClick}>
+    <TouchableOpacity
+      onPress={onClick}
+      disabled={disabled}
+      style={disabled ? { opacity: 0.3 } : {}}
+    >
       <Text style={styles.buttonText}>{value}</Text>
     </TouchableOpacity>
   );

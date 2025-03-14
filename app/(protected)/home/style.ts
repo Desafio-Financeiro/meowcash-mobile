@@ -31,4 +31,20 @@ export const styles = StyleSheet.create({
     color: theme.colors.text,
     marginTop: 24,
   },
+
+  fab: {
+    width: 50,
+    height: 50,
+    backgroundColor: theme.colors.white,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 40,
+    right: 30,
+    elevation: 5,
+    shadowColor: theme.colors.black,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
 });
