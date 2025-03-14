@@ -12,8 +12,9 @@ import { useTransactions } from "@/context/TransactionsContext";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
-  value: number;
-  date: string;
+  value: string;
+  date: Date;
+  dictKey: string | null;
 }
 
 interface CreateTransactionProps {
@@ -30,31 +31,33 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
   const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey">(
     "value"
   );
-  const [transactionValue, setTransactionValue] = useState<string>("");
-  const [transactionType, setTransactionType] = useState<string>("Debit");
-  const [transactionDate, setTransactionDate] = useState<Date>(new Date());
-  const [transactionDictKey, setTransactionDictKey] = useState<string>("");
+  const [transaction, setTransaction] = useState<AddTransactionArgs>({
+    type: "Debit",
+    value: "0",
+    date: new Date(),
+    dictKey: "",
+  });
 
   const disableNextBtn = useMemo(() => {
     if (steps === "value") {
-      return !transactionValue;
+      return !transaction.type;
     }
     if (steps === "date") {
-      return !transactionDate;
+      return !transaction.date;
     }
     if (steps === "type") {
-      return !transactionType;
+      return !transaction.type;
     }
-  }, [steps, transactionValue, transactionDate, transactionType]);
+  }, [steps, transaction.type, transaction.date, transaction.type]);
 
   function handleAddTransaction() {
     setLoading(true);
     addTransaction({
-      type: transactionType as "Credit" | "Debit",
-      value: parseFloat(transactionValue),
-      date: transactionDate.toISOString().split("T")[0],
-      to: transactionType === "Debit" ? transactionDictKey : null,
-      from: transactionType === "Credit" ? transactionDictKey : null,
+      type: transaction.type as "Credit" | "Debit",
+      value: parseFloat(transaction.value),
+      date: transaction.date.toISOString().split("T")[0],
+      to: transaction.type === "Debit" ? transaction.dictKey : null,
+      from: transaction.type === "Credit" ? transaction.dictKey : null,
       userId: user!.uid,
     })
       .then(() => {
@@ -88,10 +91,12 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
   }
 
   function clearState() {
-    setTransactionDate(new Date());
-    setTransactionValue("");
-    setTransactionType("");
-    setTransactionDictKey("");
+    setTransaction({
+      type: "Debit",
+      value: "0",
+      date: new Date(),
+      dictKey: "",
+    });
     setSteps("value");
   }
 
@@ -108,7 +113,11 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
       {steps === "value" && (
         <>
           <Dialog.Title value="Qual é o valor da transação?" />
-          <CurrencyInput onChange={(v) => setTransactionValue(v)} />
+          <CurrencyInput
+            onChange={(v) =>
+              setTransaction((oldState) => ({ ...oldState, value: v }))
+            }
+          />
         </>
       )}
 
@@ -117,9 +126,9 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
           <Dialog.Title value="Qual a data da transação?" />
           <DatePicker
             dateStyle={styles.datePicker}
-            value={transactionDate}
-            onChange={(data) => {
-              setTransactionDate(data);
+            value={transaction.date}
+            onChange={(date) => {
+              setTransaction((oldState) => ({ ...oldState, date }));
             }}
             label="Data da transação"
           />
@@ -131,8 +140,10 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
           <Dialog.Title value="Como você gostaria de classificar essa transação?" />
           <View style={styles.selectContainer}>
             <Picker
-              selectedValue={transactionType}
-              onValueChange={(itemValue) => setTransactionType(itemValue)}
+              selectedValue={transaction.type}
+              onValueChange={(itemValue) =>
+                setTransaction((oldState) => ({ ...oldState, type: itemValue }))
+              }
               mode="dialog"
             >
               <Picker.Item label="Crédito" value="Credit" />
@@ -144,11 +155,20 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
 
       {steps == "dictKey" && (
         <>
-          <Dialog.Title value="Para quem você gostaria de fazer essa essa transação" />
+          <Dialog.Title
+            value={
+              transaction.type === "Debit"
+                ? "Para quem você gostaria de fazer essa essa transação"
+                : "De quem você recebeu essa essa transação"
+            }
+          />
           <TextInput
             placeholder="Insira a chave pix"
-            value={transactionDictKey}
-            onChangeText={(v) => setTransactionDictKey(v)}
+            value={transaction.dictKey ?? undefined}
+            inputMode="email"
+            onChangeText={(v) =>
+              setTransaction((oldState) => ({ ...oldState, dictKey: v }))
+            }
           />
         </>
       )}
