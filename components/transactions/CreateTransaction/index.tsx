@@ -9,12 +9,15 @@ import { styles } from "./style";
 import { addTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
+import * as DocumentPicker from "expo-document-picker";
+import FileUploader from "@/components/fileUploader/FileUploader";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
   value: string;
   date: Date;
   dictKey: string | null;
+  attachment?: DocumentPicker.DocumentPickerAsset | null;
 }
 
 interface CreateTransactionProps {
@@ -28,14 +31,14 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
     useTransactions();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey">(
+  const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey" | "attachment">(
     "value"
   );
   const [transaction, setTransaction] = useState<AddTransactionArgs>({
     type: "Debit",
     value: "0",
     date: new Date(),
-    dictKey: "",
+    dictKey: ""
   });
 
   const disableNextBtn = useMemo(() => {
@@ -50,6 +53,7 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
     }
   }, [steps, transaction.type, transaction.date, transaction.type]);
 
+
   function handleAddTransaction() {
     setLoading(true);
     addTransaction({
@@ -59,6 +63,7 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
       to: transaction.type === "Debit" ? transaction.dictKey : null,
       from: transaction.type === "Credit" ? transaction.dictKey : null,
       userId: user!.uid,
+      attachment: transaction.attachment
     })
       .then(() => {
         refetchTransactions();
@@ -86,6 +91,10 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
         return "dictKey";
       }
 
+      if (prev === "dictKey") {
+        return "attachment";
+      }
+
       return "value";
     });
   }
@@ -95,14 +104,14 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
       type: "Debit",
       value: "0",
       date: new Date(),
-      dictKey: "",
+      dictKey: ""
     });
     setSteps("value");
   }
 
   function getNexBtnText() {
     if (loading) return "Criando";
-    if (steps === "dictKey") {
+    if (steps === "attachment") {
       return "Criar";
     }
     return "Avançar";
@@ -146,8 +155,8 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
               }
               mode="dialog"
             >
-              <Picker.Item label="Crédito" value="Credit" />
-              <Picker.Item label="Débito" value="Debit" />
+              <Picker.Item color={theme.colors.text} label="Crédito" value="Credit" />
+              <Picker.Item color={theme.colors.text} label="Débito" value="Debit" />
             </Picker>
           </View>
         </>
@@ -164,12 +173,27 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
           />
           <TextInput
             placeholder="Insira a chave pix"
+            placeholderTextColor={theme.colors.text}
             value={transaction.dictKey ?? undefined}
             inputMode="email"
             onChangeText={(v) =>
               setTransaction((oldState) => ({ ...oldState, dictKey: v }))
             }
           />
+        </>
+      )}
+
+      {steps == "attachment" && (
+        <>
+          <Dialog.Title value="Anexar comprovante" />
+          <View style={styles.attachmentContainer}>
+            <FileUploader
+              setFile={(file) => {
+                setTransaction((oldState) => ({ ...oldState, attachment: file }));
+              }}
+              file={transaction.attachment}
+            />
+          </View>
         </>
       )}
       <Dialog.Actions>
@@ -182,7 +206,7 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
         />
         <Dialog.Button
           onClick={() => {
-            if (steps === "dictKey") {
+            if (steps === "attachment") {
               handleAddTransaction();
               return;
             }

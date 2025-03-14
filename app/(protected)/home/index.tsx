@@ -39,9 +39,6 @@ export default function Home() {
 
   const [showAddTransactionDialog, setShowAddTransactionDialog] =
     useState(false);
-  const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(
-    null
-  );
 
   return (
     <>
@@ -50,11 +47,7 @@ export default function Home() {
           <Text style={styles.hello}>Olá, {user?.displayName}</Text>
           <Text style={styles.date}>{getFullCurrentDate()}</Text>
         </View>
-
         <Balance balance={balance} isLoading={balanceIsLoading} />
-
-        <FileUploader file={file} setFile={setFile} />
-
         <ScrollView>
           <View style={styles.summaryContainer}>
             <SummaryCard
@@ -82,9 +75,31 @@ export default function Home() {
               />
             </View>
           </View>
-
-          <Text style={styles.hello}>Transações recentes</Text>
-
+          <View style={styles.transactionsContainer}>
+            <Text style={styles.hello}>Transações recentes
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowAddTransactionDialog(true)}
+              style={styles.fab}
+            >
+              <AntDesign name="pluscircle" size={50} color={theme.colors.primary70} />
+            </TouchableOpacity>
+          </View>
+          <CreateTransaction
+            onClose={() => setShowAddTransactionDialog(false)}
+            open={showAddTransactionDialog}
+          />
+          <TransactionFilters
+            handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
+            handleTransactionType={(filter) => setTransactionFilter({
+              ...transactionFilter,
+              transactionType: filter
+            })}
+            handleTransactionText={(filter) => setTransactionFilter({
+              ...transactionFilter,
+              transactionText: filter
+            })}
+          />
           {transactionsIsLoading ? (
             <ActivityIndicator
               size="large"
@@ -93,12 +108,6 @@ export default function Home() {
             />
           ) : transactions.length > 0 ? (
             <>
-              <TransactionFilters
-                handleTransactionDate={(date) => setTransactionDate(date)}
-                handleTransactionFilter={(filter) =>
-                  setTransactionFilter(filter)
-                }
-              />
               <StaticTransactionsList data={transactions} />
             </>
           ) : (
@@ -108,86 +117,6 @@ export default function Home() {
           )}
         </ScrollView>
       </View>
-      <CreateTransaction
-        onClose={() => setShowAddTransactionDialog(false)}
-        open={showAddTransactionDialog}
-      />
-
-      <TouchableOpacity
-        onPress={() => setShowAddTransactionDialog(true)}
-        style={styles.fab}
-      >
-        <AntDesign name="pluscircle" size={50} color={theme.colors.primary70} />
-      </TouchableOpacity>
     </>
-  <FileUploader file={file} setFile={setFile}></FileUploader>;
-
-  <Button
-    title="Criar transação de débito"
-    variant="link"
-    onPress={() =>
-      addTransaction({
-        type: "Debit",
-        value: 100,
-        date: "2025-03-09",
-        to: "John Doe",
-        userId: user!.uid,
-        attachment: file
-      }).then(() => {
-        refetchTransactions();
-        refetchBalance();
-        refetchStatistics();
-      })
-    }
-  />;
-  <Button
-    title="Criar transação de crédito"
-    variant="link"
-    onPress={() =>
-      addTransaction({
-        type: "Credit",
-        value: 5300,
-        date: "2021-03-09",
-        from: "Rapaz",
-        userId: user!.uid
-      }).then(() => {
-        refetchTransactions();
-        refetchBalance();
-        refetchStatistics();
-      })
-    }
-  />;
-
-  <TransactionFilters
-    handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
-    handleTransactionType={(filter) => setTransactionFilter({
-      ...transactionFilter,
-      transactionType: filter
-    })}
-    handleTransactionText={(filter) => setTransactionFilter({
-      ...transactionFilter,
-      transactionText: filter
-    })}
-  />;
-  {
-    transactionsIsLoading ? (
-      <ActivityIndicator
-        size="large"
-        color={theme.colors.primary60}
-        style={{ marginVertical: 24 }}
-      />
-    ) : transactions.length > 0 ? (
-      <>
-        <StaticTransactionsList data={transactions} />
-      </>
-    ) : (
-      <Text style={styles.emptyHistory}>
-        Não existe histórico de transações
-      </Text>
-    );
-  }
-</ScrollView>
-</View>
-)
-  ;
+  );
 }
