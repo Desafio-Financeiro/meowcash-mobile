@@ -6,13 +6,13 @@ import {
   Modal,
   TouchableWithoutFeedback,
   StyleProp,
-  TextStyle,
+  TextStyle
 } from "react-native";
 import { Appearance } from "react-native";
 import { theme } from "@/theme";
 import React, { useState } from "react";
 import RNDateTimePicker, {
-  DateTimePickerEvent,
+  DateTimePickerEvent
 } from "@react-native-community/datetimepicker";
 import { styles } from "./styles";
 
@@ -24,11 +24,11 @@ interface DatePickerProps {
 }
 
 export function DatePicker({
-  label,
-  value,
-  onChange,
-  dateStyle,
-}: DatePickerProps) {
+                             label,
+                             value,
+                             onChange,
+                             dateStyle
+                           }: DatePickerProps) {
   const colorScheme = Appearance.getColorScheme();
 
   const [show, setShow] = useState(false);
@@ -87,12 +87,13 @@ export function DatePicker({
                   locale={"pt-BR"}
                   display={"spinner"}
                   onChange={onChangeDate}
+                  textColor={theme.colors.text}
                 />
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-around",
-                    width: "100%",
+                    width: "100%"
                   }}
                 >
                   <TouchableOpacity

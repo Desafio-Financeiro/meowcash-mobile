@@ -4,7 +4,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
-  useState,
+  useState
 } from "react";
 import { useAuth } from "./AuthContext";
 import {
@@ -14,16 +14,17 @@ import {
   QueryObserverResult,
   RefetchOptions,
   useInfiniteQuery,
-  useQuery,
+  useQuery
 } from "@tanstack/react-query";
 import {
   deleteTransaction,
   getStatistics,
-  getTransactions,
+  getTransactions
 } from "@/api/transaction";
 import { Alert } from "react-native";
 import { getBalance } from "@/api/balance";
 import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
+import { Filter } from "@/utils/types";
 
 interface ITransactionsContext {
   balance: number;
@@ -41,9 +42,9 @@ interface ITransactionsContext {
     InfiniteQueryObserverResult<
       InfiniteData<
         | {
-            data: Transaction[];
-            lastDoc: any;
-          }
+        data: Transaction[];
+        lastDoc: any;
+      }
         | undefined,
         unknown
       >,
@@ -54,9 +55,9 @@ interface ITransactionsContext {
     QueryObserverResult<
       InfiniteData<
         | {
-            data: Transaction[];
-            lastDoc: any;
-          }
+        data: Transaction[];
+        lastDoc: any;
+      }
         | undefined,
         unknown
       >,
@@ -70,13 +71,15 @@ interface ITransactionsContext {
   refetchStatistics: (options?: RefetchOptions) => Promise<
     QueryObserverResult<
       | {
-          credit: number;
-          debit: number;
-        }
+      credit: number;
+      debit: number;
+    }
       | undefined,
       Error
     >
   >;
+  transactionFilter: Filter;
+  setTransactionFilter: (filter: Filter) => void;
 }
 
 const TransactionsContext = createContext<ITransactionsContext | undefined>(
@@ -86,27 +89,36 @@ const TransactionsContext = createContext<ITransactionsContext | undefined>(
 export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactionFilter, setTransactionFilter] = useState<Filter>({
+    date: {
+      start: null,
+      end: null
+    },
+    transactionType: null,
+    hasAttachment: null,
+    transactionText: null
+  });
 
   const {
     isLoading: balanceIsLoading,
     data: balance,
     refetch: refetchBalance,
-    isRefetching: balanceIsRefetching,
+    isRefetching: balanceIsRefetching
   } = useQuery({
     queryKey: ["balanceInfo"],
     queryFn: () => getBalance(user?.uid || ""),
-    enabled: !!user?.uid,
+    enabled: !!user?.uid
   });
 
   const {
     isLoading: statisticsIsLoading,
     data: statistics,
     refetch: refetchStatistics,
-    isRefetching: statisticsIsRefetching,
+    isRefetching: statisticsIsRefetching
   } = useQuery({
     queryKey: ["statistics"],
     queryFn: () => getStatistics(user?.uid || ""),
-    enabled: !!user?.uid,
+    enabled: !!user?.uid
   });
 
   const {
@@ -116,16 +128,17 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     fetchNextPage,
     hasNextPage,
     refetch,
-    isRefetching,
+    isRefetching
   } = useInfiniteQuery({
-    queryKey: ["transactions"],
-    queryFn: ({ pageParam }) => getTransactions(user?.uid || "", pageParam),
+    queryKey: ["transactions", transactionFilter],
+    queryFn: ({ pageParam }) => getTransactions(user?.uid || "", pageParam, transactionFilter),
     getNextPageParam: (lastPage) =>
       lastPage?.data && lastPage?.data?.length > 0
         ? lastPage?.lastDoc
         : undefined,
     initialPageParam: null,
-    enabled: !!user?.uid,
+    enabled: !!user?.uid
+
   });
 
   const showDeleteAlert = (transaction: Transaction) => {
@@ -135,8 +148,9 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
       [
         {
           text: "Cancelar",
-          onPress: () => {},
-          style: "cancel",
+          onPress: () => {
+          },
+          style: "cancel"
         },
         {
           text: "Deletar",
@@ -146,8 +160,8 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
               refetchBalance();
               refetchStatistics();
             });
-          },
-        },
+          }
+        }
       ]
     );
   };
@@ -175,6 +189,8 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
         statistics,
         statisticsIsLoading: statisticsIsLoading || statisticsIsRefetching,
         refetchStatistics,
+        transactionFilter,
+        setTransactionFilter
       }}
     >
       {children}
