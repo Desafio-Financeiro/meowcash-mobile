@@ -4,11 +4,14 @@ import { useState } from "react";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 interface CurrencyInputProps {
+  defaultValue?: string;
   onChange: (value: string) => void;
 }
 
-export function CurrencyInput({ onChange }: CurrencyInputProps) {
-  const [value, setValue] = useState<string | undefined>();
+export function CurrencyInput({ onChange, defaultValue }: CurrencyInputProps) {
+  const [value, setValue] = useState<string | undefined>(() =>
+    defaultValue ? formatCurrency(parseFloat(defaultValue)) : undefined
+  );
 
   function handleChange(inputValue: string) {
     const unformatedValue = parseFloat(inputValue.replace(/[,.]/g, ""));

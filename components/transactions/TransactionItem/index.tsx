@@ -37,8 +37,8 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
   const styleValue = deletedAt
     ? ""
     : type === "Credit"
-      ? styles.credit
-      : styles.debit;
+    ? styles.credit
+    : styles.debit;
   const styleIcon = type === "Credit" ? styles.iconCredit : styles.iconDebit;
 
   return (
@@ -55,11 +55,21 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
           <View style={styles.listTitle}>
             <Text style={styles.font}>
               {type === "Credit" ? "Entrada" : "Saída"}
-              {transaction.attachmentUrl &&
+              {transaction.attachmentUrl && (
                 <View style={styles.attachmentIcon}>
-                  <MaterialCommunityIcons name={"attachment"} size={16} color={theme.colors.primary80}
-                                          onPress={() => downloadFile(transaction.attachmentUrl as string, "download")} />
-                </View>}
+                  <MaterialCommunityIcons
+                    name={"attachment"}
+                    size={16}
+                    color={theme.colors.primary80}
+                    onPress={() =>
+                      downloadFile(
+                        transaction.attachmentUrl as string,
+                        "download"
+                      )
+                    }
+                  />
+                </View>
+              )}
             </Text>
             {type === "Credit" && from && (
               <Text style={styles.colorText}>Origem: {from}</Text>
@@ -73,7 +83,7 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
           style={{
             ...styles.price,
             ...styleValue,
-            textDecorationLine: deletedAt ? "line-through" : undefined
+            textDecorationLine: deletedAt ? "line-through" : undefined,
           }}
         >
           R$ {formatCurrency(value)}
@@ -81,7 +91,7 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
       </View>
       <View>
         <Text style={styles.colorText}>
-          {format(new Date(`${date}T00:00:00`), "dd/MM/yyyy")}
+          {format(new Date(`${date}T00:00`), "dd/MM/yyyy")}
         </Text>
         {!deletedAt && (
           <View style={styles.edit}>
