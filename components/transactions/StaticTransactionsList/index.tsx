@@ -60,7 +60,7 @@ const StaticTransactionsList = ({ data }: StaticTransactionsListProps) => {
             onPress={() => navigation.navigate("Extract" as never)}
           />
         </View>
-      </View>{" "}
+      </View>
     </>
   );
 };

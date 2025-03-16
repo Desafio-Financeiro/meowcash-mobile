@@ -1,12 +1,21 @@
+import { addBalance } from "@/api/balance";
 import { auth } from "@/firebase/config";
+import { getUserData } from "@/utils/getUserData";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   User,
   updateProfile,
 } from "firebase/auth";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import Toast from "react-native-toast-message";
 
 interface IAuthContext {
@@ -24,6 +33,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  useEffect(() => {
+    getUserData(setUser);
+  }, []);
+
   const handleLogin = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -32,6 +45,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password
       );
       setUser(userCredential.user);
+      await SecureStore.setItemAsync(
+        "user",
+        JSON.stringify(userCredential.user)
+      );
       setIsAuthenticated(true);
       navigation.navigate("Home" as never);
       return true;
@@ -46,7 +63,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleSignUp = (email: string, password: string, userName: string) => {
+  const handleSignUp = async (
+    email: string,
+    password: string,
+    userName: string
+  ) => {
+    await SecureStore.deleteItemAsync("userToken");
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         if (auth?.currentUser) {
@@ -69,6 +92,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               });
               console.log("AuthProvider :: signUp - falha", error);
             });
+
+          addBalance(auth.currentUser.uid, 0);
         }
       })
       .catch((error) => {
@@ -81,13 +106,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log("AuthProvider :: logout - usuário deslogado com sucesso");
     Toast.show({
       type: "success",
       text1: "Usuário deslogado com sucesso",
       position: "bottom",
     });
+    await SecureStore.deleteItemAsync("userToken");
     auth.signOut();
     setUser(undefined);
     setIsAuthenticated(false);
