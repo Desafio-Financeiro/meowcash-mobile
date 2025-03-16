@@ -67,11 +67,7 @@ const getTransactions = async (
 
       return { data: transactions as Transaction[], lastDoc };
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Nenhuma transação encontrada",
-        position: "bottom",
-      });
+      return { data: [] as Transaction[], lastDoc: undefined };
     }
   } catch (error) {
     console.error("Erro ao buscar transações:", error);
@@ -106,6 +102,7 @@ const getStatistics = async (
       })) as Transaction[];
 
       const groupedTransactions = groupTransactionsByMonth(transactions);
+
       const statistics = transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
@@ -114,6 +111,8 @@ const getStatistics = async (
         },
         { credit: 0, debit: 0, groupedTransactions }
       );
+
+      return statistics;
     } else {
       return { credit: 0, debit: 0, groupedTransactions: [] };
     }
