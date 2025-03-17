@@ -209,7 +209,6 @@ const updateTransaction = async (transaction: Transaction) => {
     }
     delete transaction.attachment;
 
-    delete transaction.attachment;
     await updateDoc(transactionRef, {
       type: transaction.type,
       value: transaction.value,
