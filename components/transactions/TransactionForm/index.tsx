@@ -61,27 +61,42 @@ export function TransactionForm({
     });
   }, [open, transactionToEdit]);
 
-  const disableNextBtn = useMemo(() => {
-    if (steps === "value") {
-      return !transaction.type;
-    }
-    if (steps === "date") {
-      return !transaction.date;
-    }
-    if (steps === "type") {
-      return !transaction.type;
-    }
-  }, [steps, transaction.type, transaction.date, transaction.type]);
+  const isValueValid = useMemo(() => {
+    const parsedValue = parseFloat(transaction.value);
+    return !isNaN(parsedValue) && parsedValue > 0;
+  }, [transaction.value]);
 
+  const isTypeValid = useMemo(() => {
+    return transaction.type === "Credit" || transaction.type === "Debit";
+  }, [transaction.type]);
+
+  const isDictKeyValid = useMemo(() => {
+    if (steps !== "dictKey") return true;
+    if (!transaction?.dictKey) return false;
+    return transaction?.dictKey.trim().length > 0;
+  }, [transaction.dictKey, steps]);
+
+  const disableNextBtn = useMemo(() => {
+    switch (steps) {
+      case "value":
+        return !isValueValid;
+      case "date":
+        return !transaction.date;
+      case "type":
+        return !isTypeValid;
+      case "dictKey":
+        return !isDictKeyValid;
+      default:
+        return false;
+    }
+  }, [steps, isValueValid, transaction.date, isTypeValid, isDictKeyValid]);
 
   function formatDateToSave(date: Date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
 
-    const formattedDate = `${year}-${month}-${day}`;
-
-    return formattedDate;
+    return `${year}-${month}-${day}`;
   }
 
   async function handleAddTransaction() {
@@ -112,7 +127,6 @@ export function TransactionForm({
       refetchTransactions();
       refetchBalance();
       refetchStatistics();
-      setLoading(false);
     } catch (error) {
       console.error("Erro ao adicionar transação: ", error);
     } finally {
@@ -124,21 +138,10 @@ export function TransactionForm({
 
   function handleNextStep() {
     setSteps((prev) => {
-      if (prev === "value") {
-        return "date";
-      }
-      if (prev === "date") {
-        return "type";
-      }
-
-      if (prev === "type") {
-        return "dictKey";
-      }
-
-      if (prev === "dictKey") {
-        return "attachment";
-      }
-
+      if (prev === "value") return "date";
+      if (prev === "date") return "type";
+      if (prev === "type") return "dictKey";
+      if (prev === "dictKey") return "attachment";
       return "value";
     });
   }
@@ -153,12 +156,10 @@ export function TransactionForm({
     setSteps("value");
   }
 
-  function getNexBtnText() {
+  function getNextBtnText() {
     if (loading && transactionToEdit?.id) return "Editando";
     if (loading) return "Criando";
-    if (steps === "attachment") {
-      return transactionToEdit?.id ? "Editar" : "Criar";
-    }
+    if (steps === "attachment") return transactionToEdit?.id ? "Editar" : "Criar";
     return "Avançar";
   }
 
@@ -176,7 +177,7 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "date" && (
+      {steps === "date" && (
         <>
           <Dialog.Title value="Qual a data da transação?" />
           <DatePicker
@@ -190,7 +191,7 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "type" && (
+      {steps === "type" && (
         <>
           <Dialog.Title value="Como você gostaria de classificar essa transação?" />
           <View style={styles.selectContainer}>
@@ -208,13 +209,13 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "dictKey" && (
+      {steps === "dictKey" && (
         <>
           <Dialog.Title
             value={
               transaction.type === "Debit"
-                ? "Para quem você gostaria de fazer essa essa transação"
-                : "De quem você recebeu essa essa transação"
+                ? "Para quem você gostaria de fazer essa transação?"
+                : "De quem você recebeu essa transação?"
             }
           />
           <TextInput
@@ -229,7 +230,7 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "attachment" && (
+      {steps === "attachment" && (
         <>
           <Dialog.Title value="Anexar comprovante" />
           <View style={styles.attachmentContainer}>
@@ -243,22 +244,10 @@ export function TransactionForm({
         </>
       )}
       <Dialog.Actions>
+        <Dialog.Button onClick={onClose} value="Fechar" />
         <Dialog.Button
-          onClick={() => {
-            onClose();
-            clearState();
-          }}
-          value="Fechar"
-        />
-        <Dialog.Button
-          onClick={() => {
-            if (steps === "attachment") {
-              handleAddTransaction();
-              return;
-            }
-            handleNextStep();
-          }}
-          value={getNexBtnText()}
+          onClick={() => (steps === "attachment" ? handleAddTransaction() : handleNextStep())}
+          value={getNextBtnText()}
           disabled={disableNextBtn || loading}
         />
       </Dialog.Actions>

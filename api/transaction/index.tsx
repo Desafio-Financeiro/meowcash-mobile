@@ -166,12 +166,12 @@ const addTransaction = async (transaction: Transaction) => {
     let fileUrl = null;
     if (transaction.attachment) {
       fileUrl = await uploadFile(transaction.attachment);
-      delete transaction.attachment;
+      transaction.attachmentUrl = fileUrl;
     }
+    delete transaction.attachment;
 
     await addDoc(collection(db, "transaction"), {
-      ...transaction,
-      attachmentUrl: fileUrl
+      ...transaction
     });
 
     const balance = await getBalance(transaction.userId);
