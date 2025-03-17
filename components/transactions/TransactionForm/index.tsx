@@ -110,7 +110,8 @@ export function TransactionForm({
           value: parseFloat(transaction.value),
           date: formatDateToSave(transaction.date),
           to: transaction.type === "Debit" ? transaction.dictKey : null,
-          from: transaction.type === "Credit" ? transaction.dictKey : null
+          from: transaction.type === "Credit" ? transaction.dictKey : null,
+          attachment: transaction.attachment
         });
       } else {
         await addTransaction({

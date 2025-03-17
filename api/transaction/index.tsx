@@ -201,6 +201,15 @@ const updateTransaction = async (transaction: Transaction) => {
   try {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
+    let fileUrl = null;
+
+    if (transaction.attachment) {
+      fileUrl = await uploadFile(transaction.attachment);
+      transaction.attachmentUrl = fileUrl;
+    }
+    delete transaction.attachment;
+
+    delete transaction.attachment;
     await updateDoc(transactionRef, {
       type: transaction.type,
       value: transaction.value,
