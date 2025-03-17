@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import DinamicList from "@/components/DinamicList";
-import TransactionItem from "@/components/transactions/TransactionItem";
+import TransactionItem, {
+  Transaction,
+} from "@/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionFilters } from "../filters";
 import { View, Text } from "react-native";
 import { styles } from "./style";
+import { TransactionForm } from "../TransactionForm";
 
 const DinamicTransactionsList = () => {
   const {
@@ -20,6 +23,26 @@ const DinamicTransactionsList = () => {
     { id: string; body: React.ReactNode }[]
   >([]);
   const [page, setPage] = useState(1);
+  const [showAddTransactionDialog, setShowAddTransactionDialog] =
+    useState(false);
+  const [transactionToEdit, setTransactionToEdit] = useState<
+    Transaction | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (transactionToEdit) {
+      setShowAddTransactionDialog(true);
+    }
+  }, [transactionToEdit, setShowAddTransactionDialog]);
+
+  const [transactionDate, setTransactionDate] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({
+    start: new Date(),
+    end: new Date(),
+  });
+  const [transactionFilter, setTransactionFilter] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +56,7 @@ const DinamicTransactionsList = () => {
               <TransactionItem
                 transaction={transaction}
                 edit={() => {
+                setTransactionToEdit(transaction);
                 }}
                 exclude={() => {
                   showDeleteAlert(transaction);
@@ -53,7 +77,16 @@ const DinamicTransactionsList = () => {
   }, [isLoading, transactions]);
 
   return <>
-    <View style={{ paddingHorizontal: 16 }}>
+    <TransactionForm
+        onClose={() => {
+          setShowAddTransactionDialog(false);
+          setTransactionToEdit(undefined);
+        }}
+        open={showAddTransactionDialog}
+        transactionToEdit={transactionToEdit}
+      />
+
+      <View style={{ paddingHorizontal: 16 }}>
       <TransactionFilters
         handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
         handleTransactionType={(filter) => setTransactionFilter({ ...transactionFilter, transactionType: filter })}
@@ -61,7 +94,6 @@ const DinamicTransactionsList = () => {
       />
     </View>
     {transactions.length > 0 ? (
-
 
       <DinamicList
         data={transactionsList}

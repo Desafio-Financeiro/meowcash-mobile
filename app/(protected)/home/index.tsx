@@ -20,7 +20,8 @@ import FileUploader from "@/components/fileUploader/FileUploader";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { CreateTransaction } from "@/components/transactions/CreateTransaction";
+import { TransactionForm } from "@/components/transactions/TransactionForm";
+import { type Transaction } from "@/components/transactions/TransactionItem";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -85,8 +86,10 @@ export default function Home() {
               <AntDesign name="pluscircle" size={50} color={theme.colors.primary70} />
             </TouchableOpacity>
           </View>
-          <CreateTransaction
-            onClose={() => setShowAddTransactionDialog(false)}
+          <TransactionForm
+            onClose={() => {
+              setShowAddTransactionDialog(false);
+            }}
             open={showAddTransactionDialog}
           />
           <TransactionFilters

@@ -1,14 +1,15 @@
 import { Picker } from "@react-native-picker/picker";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Dialog } from "@/components/dialog";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "@/components/datePicker";
-import { theme } from "@/theme";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
-import { addTransaction } from "@/api/transaction";
+import { addTransaction, updateTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
+import { type Transaction } from "@/components/transactions/TransactionItem";
+import { format, startOfDay } from "date-fns";
 import * as DocumentPicker from "expo-document-picker";
 import FileUploader from "@/components/fileUploader/FileUploader";
 
@@ -20,12 +21,17 @@ export interface AddTransactionArgs {
   attachment?: DocumentPicker.DocumentPickerAsset | null;
 }
 
-interface CreateTransactionProps {
+interface TransactionFormProps {
+  transactionToEdit?: Transaction;
   open: boolean;
   onClose: () => void;
 }
 
-export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
+export function TransactionForm({
+  onClose,
+  open,
+  transactionToEdit,
+}: TransactionFormProps) {
   const { user } = useAuth();
   const { refetchTransactions, refetchBalance, refetchStatistics } =
     useTransactions();
@@ -41,6 +47,20 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
     dictKey: ""
   });
 
+  useEffect(() => {
+    setTransaction({
+      type: transactionToEdit?.type ?? "Debit",
+      value: transactionToEdit?.value ? String(transactionToEdit?.value) : "0",
+      date: transactionToEdit?.date
+        ? new Date(transactionToEdit?.date)
+        : new Date(),
+      dictKey:
+        transactionToEdit?.type === "Debit"
+          ? transactionToEdit?.to ?? ""
+          : transactionToEdit?.from ?? "",
+    });
+  }, [open, transactionToEdit]);
+
   const disableNextBtn = useMemo(() => {
     if (steps === "value") {
       return !transaction.type;
@@ -54,28 +74,52 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
   }, [steps, transaction.type, transaction.date, transaction.type]);
 
 
-  function handleAddTransaction() {
+ function formatDateToSave(date: Date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
+  }
+
+  async function handleAddTransaction() {
     setLoading(true);
-    addTransaction({
-      type: transaction.type as "Credit" | "Debit",
-      value: parseFloat(transaction.value),
-      date: transaction.date.toISOString().split("T")[0],
+
+    try {
+      if (transactionToEdit?.id) {
+        await updateTransaction({
+          ...transactionToEdit,
+          type: transaction.type as "Credit" | "Debit",
+          value: parseFloat(transaction.value),
+          date: formatDateToSave(transaction.date),
+          to: transaction.type === "Debit" ? transaction.dictKey : null,
+          from: transaction.type === "Credit" ? transaction.dictKey : null,
+        });
+      } else {
+        await addTransaction({
+          type: transaction.type as "Credit" | "Debit",
+          value: parseFloat(transaction.value),
+          date: formatDateToSave(transaction.date),
       to: transaction.type === "Debit" ? transaction.dictKey : null,
       from: transaction.type === "Credit" ? transaction.dictKey : null,
       userId: user!.uid,
       attachment: transaction.attachment
-    })
-      .then(() => {
-        refetchTransactions();
-        refetchBalance();
-        refetchStatistics();
-        setLoading(false);
-      })
-      .finally(() => {
-        setLoading(false);
-        onClose();
-        clearState();
-      });
+    });
+      }
+
+      refetchTransactions();
+      refetchBalance();
+      refetchStatistics();
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao adicionar transação: ", error);
+    } finally {
+      setLoading(false);
+      onClose();
+      clearState();
+    }
   }
 
   function handleNextStep() {
@@ -110,9 +154,10 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
   }
 
   function getNexBtnText() {
+    if (loading && transactionToEdit?.id) return "Editando";
     if (loading) return "Criando";
     if (steps === "attachment") {
-      return "Criar";
+      return transactionToEdit?.id ? "Editar" : "Criar";
     }
     return "Avançar";
   }
@@ -123,6 +168,7 @@ export function CreateTransaction({ onClose, open }: CreateTransactionProps) {
         <>
           <Dialog.Title value="Qual é o valor da transação?" />
           <CurrencyInput
+            defaultValue={transaction.value}
             onChange={(v) =>
               setTransaction((oldState) => ({ ...oldState, value: v }))
             }
