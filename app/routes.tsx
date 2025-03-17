@@ -10,8 +10,10 @@ import Register from "./(auth)/register";
 import Home from "./(protected)/home";
 import Extract from "./(protected)/extract";
 import Reports from "./(protected)/reports";
+import SplashScreen from "./(auth)/splash-screen";
 
 type DrawerParamList = {
+  SplashScreen: undefined;
   LandingPage: undefined;
   Login: undefined;
   Register: undefined;
@@ -34,8 +36,16 @@ export default function Routes() {
         drawerActiveTintColor: theme.colors.white,
         drawerLabelStyle: styles.drawerLabel,
       }}
-      initialRouteName="LandingPage"
+      initialRouteName="SplashScreen"
     >
+      <Drawer.Screen
+        name="SplashScreen"
+        options={{
+          drawerItemStyle: { display: "none" },
+          header: () => <></>,
+        }}
+        component={SplashScreen}
+      />
       <Drawer.Screen
         name="LandingPage"
         options={{
