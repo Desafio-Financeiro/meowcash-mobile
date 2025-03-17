@@ -2,6 +2,7 @@ import { TextInput } from "react-native-gesture-handler";
 
 import { useState } from "react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { theme } from "@/theme";
 
 interface CurrencyInputProps {
   defaultValue?: string;
@@ -26,6 +27,7 @@ export function CurrencyInput({ onChange, defaultValue }: CurrencyInputProps) {
   return (
     <TextInput
       inputMode="decimal"
+      placeholderTextColor={theme.colors.text}
       value={value}
       onChange={(e) => handleChange(e.nativeEvent.text)}
       placeholder="0,00"

@@ -9,13 +9,16 @@ import { addTransaction, updateTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { type Transaction } from "@/components/transactions/TransactionItem";
-import { format, startOfDay } from "date-fns";
+import * as DocumentPicker from "expo-document-picker";
+import FileUploader from "@/components/fileUploader/FileUploader";
+import { theme } from "@/theme";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
   value: string;
   date: Date;
   dictKey: string | null;
+  attachment?: DocumentPicker.DocumentPickerAsset | null;
 }
 
 interface TransactionFormProps {
@@ -25,23 +28,23 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({
-  onClose,
-  open,
-  transactionToEdit,
-}: TransactionFormProps) {
+                                  onClose,
+                                  open,
+                                  transactionToEdit
+                                }: TransactionFormProps) {
   const { user } = useAuth();
   const { refetchTransactions, refetchBalance, refetchStatistics } =
     useTransactions();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey">(
+  const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey" | "attachment">(
     "value"
   );
   const [transaction, setTransaction] = useState<AddTransactionArgs>({
     type: "Debit",
     value: "0",
     date: new Date(),
-    dictKey: "",
+    dictKey: ""
   });
 
   useEffect(() => {
@@ -54,30 +57,46 @@ export function TransactionForm({
       dictKey:
         transactionToEdit?.type === "Debit"
           ? transactionToEdit?.to ?? ""
-          : transactionToEdit?.from ?? "",
+          : transactionToEdit?.from ?? ""
     });
   }, [open, transactionToEdit]);
 
+  const isValueValid = useMemo(() => {
+    const parsedValue = parseFloat(transaction.value);
+    return !isNaN(parsedValue) && parsedValue > 0;
+  }, [transaction.value]);
+
+  const isTypeValid = useMemo(() => {
+    return transaction.type === "Credit" || transaction.type === "Debit";
+  }, [transaction.type]);
+
+  const isDictKeyValid = useMemo(() => {
+    if (steps !== "dictKey") return true;
+    if (!transaction?.dictKey) return false;
+    return transaction?.dictKey.trim().length > 0;
+  }, [transaction.dictKey, steps]);
+
   const disableNextBtn = useMemo(() => {
-    if (steps === "value") {
-      return !transaction.type;
+    switch (steps) {
+      case "value":
+        return !isValueValid;
+      case "date":
+        return !transaction.date;
+      case "type":
+        return !isTypeValid;
+      case "dictKey":
+        return !isDictKeyValid;
+      default:
+        return false;
     }
-    if (steps === "date") {
-      return !transaction.date;
-    }
-    if (steps === "type") {
-      return !transaction.type;
-    }
-  }, [steps, transaction.type, transaction.date, transaction.type]);
+  }, [steps, isValueValid, transaction.date, isTypeValid, isDictKeyValid]);
 
   function formatDateToSave(date: Date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
 
-    const formattedDate = `${year}-${month}-${day}`;
-
-    return formattedDate;
+    return `${year}-${month}-${day}`;
   }
 
   async function handleAddTransaction() {
@@ -92,6 +111,7 @@ export function TransactionForm({
           date: formatDateToSave(transaction.date),
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
+          attachment: transaction.attachment
         });
       } else {
         await addTransaction({
@@ -101,13 +121,13 @@ export function TransactionForm({
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
           userId: user!.uid,
+          attachment: transaction.attachment
         });
       }
 
       refetchTransactions();
       refetchBalance();
       refetchStatistics();
-      setLoading(false);
     } catch (error) {
       console.error("Erro ao adicionar transação: ", error);
     } finally {
@@ -119,17 +139,10 @@ export function TransactionForm({
 
   function handleNextStep() {
     setSteps((prev) => {
-      if (prev === "value") {
-        return "date";
-      }
-      if (prev === "date") {
-        return "type";
-      }
-
-      if (prev === "type") {
-        return "dictKey";
-      }
-
+      if (prev === "value") return "date";
+      if (prev === "date") return "type";
+      if (prev === "type") return "dictKey";
+      if (prev === "dictKey") return "attachment";
       return "value";
     });
   }
@@ -139,17 +152,15 @@ export function TransactionForm({
       type: "Debit",
       value: "0",
       date: new Date(),
-      dictKey: "",
+      dictKey: ""
     });
     setSteps("value");
   }
 
-  function getNexBtnText() {
+  function getNextBtnText() {
     if (loading && transactionToEdit?.id) return "Editando";
     if (loading) return "Criando";
-    if (steps === "dictKey") {
-      return transactionToEdit?.id ? "Editar" : "Criar";
-    }
+    if (steps === "attachment") return transactionToEdit?.id ? "Editar" : "Criar";
     return "Avançar";
   }
 
@@ -167,7 +178,7 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "date" && (
+      {steps === "date" && (
         <>
           <Dialog.Title value="Qual a data da transação?" />
           <DatePicker
@@ -181,7 +192,7 @@ export function TransactionForm({
         </>
       )}
 
-      {steps == "type" && (
+      {steps === "type" && (
         <>
           <Dialog.Title value="Como você gostaria de classificar essa transação?" />
           <View style={styles.selectContainer}>
@@ -192,24 +203,25 @@ export function TransactionForm({
               }
               mode="dialog"
             >
-              <Picker.Item label="Crédito" value="Credit" />
-              <Picker.Item label="Débito" value="Debit" />
+              <Picker.Item color={theme.colors.text} label="Crédito" value="Credit" />
+              <Picker.Item color={theme.colors.text} label="Débito" value="Debit" />
             </Picker>
           </View>
         </>
       )}
 
-      {steps == "dictKey" && (
+      {steps === "dictKey" && (
         <>
           <Dialog.Title
             value={
               transaction.type === "Debit"
-                ? "Para quem você gostaria de fazer essa essa transação"
-                : "De quem você recebeu essa essa transação"
+                ? "Para quem você gostaria de fazer essa transação?"
+                : "De quem você recebeu essa transação?"
             }
           />
           <TextInput
             placeholder="Insira a chave pix"
+            placeholderTextColor={theme.colors.text}
             value={transaction.dictKey ?? undefined}
             inputMode="email"
             onChangeText={(v) =>
@@ -218,23 +230,25 @@ export function TransactionForm({
           />
         </>
       )}
+
+      {steps === "attachment" && (
+        <>
+          <Dialog.Title value="Anexar comprovante" />
+          <View style={styles.attachmentContainer}>
+            <FileUploader
+              setFile={(file) => {
+                setTransaction((oldState) => ({ ...oldState, attachment: file }));
+              }}
+              file={transaction.attachment}
+            />
+          </View>
+        </>
+      )}
       <Dialog.Actions>
+        <Dialog.Button onClick={onClose} value="Fechar" />
         <Dialog.Button
-          onClick={() => {
-            onClose();
-            clearState();
-          }}
-          value="Fechar"
-        />
-        <Dialog.Button
-          onClick={() => {
-            if (steps === "dictKey") {
-              handleAddTransaction();
-              return;
-            }
-            handleNextStep();
-          }}
-          value={getNexBtnText()}
+          onClick={() => (steps === "attachment" ? handleAddTransaction() : handleNextStep())}
+          value={getNextBtnText()}
           disabled={disableNextBtn || loading}
         />
       </Dialog.Actions>

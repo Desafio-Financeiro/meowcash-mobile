@@ -28,7 +28,7 @@ export interface Transaction {
   userId: string;
   deletedAt?: string;
   attachment?: DocumentPicker.DocumentPickerAsset | null;
-  attachmentUrl?: string;
+  attachmentUrl?: string | null;
 }
 
 const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {

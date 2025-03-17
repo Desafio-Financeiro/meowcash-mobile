@@ -5,12 +5,16 @@ export const styles = StyleSheet.create({
   selectContainer: {
     borderWidth: 1,
     borderColor: theme.colors.gray10,
-    borderRadius: 4,
+    borderRadius: 4
   },
   datePicker: {
     borderWidth: 1,
     borderColor: theme.colors.gray10,
     borderRadius: 4,
-    padding: 12,
+    padding: 12
   },
+  attachmentContainer: {
+    padding: 12,
+    marginTop: 12
+  }
 });

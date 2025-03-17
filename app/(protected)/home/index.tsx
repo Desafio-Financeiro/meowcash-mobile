@@ -6,12 +6,11 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import { styles } from "./style";
 import { getFullCurrentDate } from "@/utils/getCurrentDate";
 import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
-import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { Button } from "@/components/button";
@@ -20,6 +19,7 @@ import { TransactionFilters } from "@/components/transactions/filters";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import { TransactionForm } from "@/components/transactions/TransactionForm";
 import { type Transaction } from "@/components/transactions/TransactionItem";
 
@@ -33,21 +33,13 @@ export default function Home() {
     balance,
     statistics,
     statisticsIsLoading,
+    refetchStatistics,
+    transactionFilter,
+    setTransactionFilter
   } = useTransactions();
 
-  const [transactionDate, setTransactionDate] = useState<{
-    start: Date | null;
-    end: Date | null;
-  }>({
-    start: new Date(),
-    end: new Date(),
-  });
-  const [transactionFilter, setTransactionFilter] = useState("");
   const [showAddTransactionDialog, setShowAddTransactionDialog] =
     useState(false);
-  const [file, setFile] = useState<DocumentPicker.DocumentPickerAsset | null>(
-    null
-  );
 
   return (
     <>
@@ -56,11 +48,7 @@ export default function Home() {
           <Text style={styles.hello}>Olá, {user?.displayName}</Text>
           <Text style={styles.date}>{getFullCurrentDate()}</Text>
         </View>
-
         <Balance balance={balance} isLoading={balanceIsLoading} />
-
-        <FileUploader file={file} setFile={setFile} />
-
         <ScrollView>
           <View style={styles.summaryContainer}>
             <SummaryCard
@@ -78,7 +66,7 @@ export default function Home() {
                 width: 200,
                 marginHorizontal: "auto",
                 marginBottom: 24,
-                marginTop: 10,
+                marginTop: 10
               }}
             >
               <Button
@@ -88,9 +76,33 @@ export default function Home() {
               />
             </View>
           </View>
-
-          <Text style={styles.hello}>Transações recentes</Text>
-
+          <View style={styles.transactionsContainer}>
+            <Text style={styles.hello}>Transações recentes
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowAddTransactionDialog(true)}
+              style={styles.fab}
+            >
+              <AntDesign name="pluscircle" size={50} color={theme.colors.primary70} />
+            </TouchableOpacity>
+          </View>
+          <TransactionForm
+            onClose={() => {
+              setShowAddTransactionDialog(false);
+            }}
+            open={showAddTransactionDialog}
+          />
+          <TransactionFilters
+            handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
+            handleTransactionType={(filter) => setTransactionFilter({
+              ...transactionFilter,
+              transactionType: filter
+            })}
+            handleTransactionText={(filter) => setTransactionFilter({
+              ...transactionFilter,
+              transactionText: filter
+            })}
+          />
           {transactionsIsLoading ? (
             <ActivityIndicator
               size="large"
@@ -99,12 +111,6 @@ export default function Home() {
             />
           ) : transactions.length > 0 ? (
             <>
-              <TransactionFilters
-                handleTransactionDate={(date) => setTransactionDate(date)}
-                handleTransactionFilter={(filter) =>
-                  setTransactionFilter(filter)
-                }
-              />
               <StaticTransactionsList data={transactions} />
             </>
           ) : (
@@ -114,19 +120,6 @@ export default function Home() {
           )}
         </ScrollView>
       </View>
-      <TransactionForm
-        onClose={() => {
-          setShowAddTransactionDialog(false);
-        }}
-        open={showAddTransactionDialog}
-      />
-
-      <TouchableOpacity
-        onPress={() => setShowAddTransactionDialog(true)}
-        style={styles.fab}
-      >
-        <AntDesign name="pluscircle" size={50} color={theme.colors.primary70} />
-      </TouchableOpacity>
     </>
   );
 }

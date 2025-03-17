@@ -10,62 +10,98 @@ import {
   query,
   startAfter,
   updateDoc,
-  where,
+  where
 } from "firebase/firestore";
 import type { Transaction } from "@/components/transactions/TransactionItem";
 import { getBalance, updateBalance } from "../balance";
+import { GroupedTransaction, groupTransactionsByMonth } from "@/utils/groupTransactionsByMonth";
+import { Filter } from "@/utils/types";
 import { uploadFile } from "@/utils/file";
-import {
-  GroupedTransaction,
-  groupTransactionsByMonth,
-} from "@/utils/groupTransactionsByMonth";
 
-type TransactionType = "credit" | "debit";
+export type TransactionType = "credit" | "debit";
 
 const TRANSACTIONS_LIMIT = 6;
 
 const getTransactions = async (
   user: string,
-  pageParam?: number | null
+  pageParam?: number | null,
+  transactionFilter?: Filter
 ): Promise<
   | {
-      data: Transaction[];
-      lastDoc: any;
-    }
+  data: Transaction[];
+  lastDoc: any;
+}
   | undefined
 > => {
   try {
     const transactionsRef = collection(db, "transaction");
-    let q = query(
+    let conditions = [where("userId", "==", user)];
+
+    if (transactionFilter?.date?.start) {
+      conditions.push(where("date", ">=", transactionFilter.date.start));
+    }
+    if (transactionFilter?.date?.end) {
+      conditions.push(where("date", "<=", transactionFilter.date.end));
+    }
+
+    if (transactionFilter?.transactionType) {
+      conditions.push(where("type", "==", transactionFilter.transactionType));
+    }
+
+    let baseQuery = query(
       transactionsRef,
-      where("userId", "==", user),
-      // orderBy("date"), // Default "asc"
+      ...conditions,
       orderBy("date", "desc"),
+      ...(pageParam ? [startAfter(pageParam)] : []),
       limit(TRANSACTIONS_LIMIT)
     );
 
-    if (pageParam) {
-      q = query(
+    if (transactionFilter?.transactionText) {
+      const fromQuery = query(
         transactionsRef,
-        where("userId", "==", user),
-        // orderBy("date"), // Default "asc"
+        ...conditions,
+        where("from", ">=", transactionFilter.transactionText),
+        where("from", "<=", transactionFilter.transactionText + "\uf8ff"),
+        orderBy("from"),
         orderBy("date", "desc"),
-        startAfter(pageParam),
+        ...(pageParam ? [startAfter(pageParam)] : []),
         limit(TRANSACTIONS_LIMIT)
       );
+
+      const toQuery = query(
+        transactionsRef,
+        ...conditions,
+        where("to", ">=", transactionFilter.transactionText),
+        where("to", "<=", transactionFilter.transactionText + "\uf8ff"),
+        orderBy("to"),
+        orderBy("date", "desc"),
+        ...(pageParam ? [startAfter(pageParam)] : []),
+        limit(TRANSACTIONS_LIMIT)
+      );
+
+      const [fromSnapshot, toSnapshot] = await Promise.all([
+        getDocs(fromQuery),
+        getDocs(toQuery)
+      ]);
+
+      const fromResults = fromSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Transaction[];
+      const toResults = toSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Transaction[];
+
+      const transactions = [...new Map([...fromResults, ...toResults].map(item => [item.id, item])).values()];
+      const lastDoc = transactions.length ? transactions[transactions.length - 1] : null;
+
+      return { data: transactions, lastDoc };
     }
 
-    const querySnapshot = await getDocs(q);
-
+    const querySnapshot = await getDocs(baseQuery);
     if (!querySnapshot.empty) {
-      const transactions = querySnapshot.docs.map((doc) => ({
+      const transactions = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
       const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1] || null;
-
-      return { data: transactions as Transaction[], lastDoc };
+      return { data: transactions, lastDoc };
     } else {
       return { data: [] as Transaction[], lastDoc: undefined };
     }
@@ -74,19 +110,20 @@ const getTransactions = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
+
 
 const getStatistics = async (
   user: string
 ): Promise<
   | {
-      credit: number;
-      debit: number;
-      groupedTransactions: GroupedTransaction[];
-    }
+  credit: number;
+  debit: number;
+  groupedTransactions: GroupedTransaction[];
+}
   | undefined
 > => {
   try {
@@ -98,12 +135,12 @@ const getStatistics = async (
     if (!querySnapshot.empty) {
       const transactions = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       })) as Transaction[];
 
       const groupedTransactions = groupTransactionsByMonth(transactions);
 
-      const statistics = transactions.reduce(
+      return transactions.reduce(
         (acc, { type, value }) => {
           const key: TransactionType = type.toLowerCase() as TransactionType;
           acc[key] = (acc[key] || 0) + value;
@@ -111,8 +148,6 @@ const getStatistics = async (
         },
         { credit: 0, debit: 0, groupedTransactions }
       );
-
-      return statistics;
     } else {
       return { credit: 0, debit: 0, groupedTransactions: [] };
     }
@@ -121,7 +156,7 @@ const getStatistics = async (
     Toast.show({
       type: "error",
       text1: "Erro ao buscar transações",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -131,12 +166,12 @@ const addTransaction = async (transaction: Transaction) => {
     let fileUrl = null;
     if (transaction.attachment) {
       fileUrl = await uploadFile(transaction.attachment);
-      delete transaction.attachment;
+      transaction.attachmentUrl = fileUrl;
     }
+    delete transaction.attachment;
 
     await addDoc(collection(db, "transaction"), {
-      ...transaction,
-      attachmentUrl: fileUrl,
+      ...transaction
     });
 
     const balance = await getBalance(transaction.userId);
@@ -150,14 +185,14 @@ const addTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação adicionada!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao adicionar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao adicionar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -166,12 +201,20 @@ const updateTransaction = async (transaction: Transaction) => {
   try {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
+    let fileUrl = null;
+
+    if (transaction.attachment) {
+      fileUrl = await uploadFile(transaction.attachment);
+      transaction.attachmentUrl = fileUrl;
+    }
+    delete transaction.attachment;
+
     await updateDoc(transactionRef, {
       type: transaction.type,
       value: transaction.value,
       date: transaction.date,
       from: transaction.from,
-      to: transaction.to,
+      to: transaction.to
     });
 
     const balance = await getBalance(transaction.userId);
@@ -185,14 +228,14 @@ const updateTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação editada com sucesso!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao editar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao editar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -202,7 +245,7 @@ const deleteTransaction = async (transaction: Transaction) => {
     const transactionRef = doc(db, "transaction", transaction.id!);
 
     await updateDoc(transactionRef, {
-      deletedAt: new Date().toISOString().split("T")[0],
+      deletedAt: new Date().toISOString().split("T")[0]
     });
 
     const balance = await getBalance(transaction.userId);
@@ -216,14 +259,14 @@ const deleteTransaction = async (transaction: Transaction) => {
     Toast.show({
       type: "success",
       text1: "Transação deletada com sucesso!",
-      position: "bottom",
+      position: "bottom"
     });
   } catch (error) {
     console.error("Erro ao deletar transação: ", error);
     Toast.show({
       type: "error",
       text1: "Erro ao deletar transação",
-      position: "bottom",
+      position: "bottom"
     });
   }
 };
@@ -233,5 +276,5 @@ export {
   addTransaction,
   updateTransaction,
   deleteTransaction,
-  getStatistics,
+  getStatistics
 };
