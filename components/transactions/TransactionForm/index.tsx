@@ -9,9 +9,9 @@ import { addTransaction, updateTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { type Transaction } from "@/components/transactions/TransactionItem";
-import { format, startOfDay } from "date-fns";
 import * as DocumentPicker from "expo-document-picker";
 import FileUploader from "@/components/fileUploader/FileUploader";
+import { theme } from "@/theme";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -28,10 +28,10 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({
-  onClose,
-  open,
-  transactionToEdit,
-}: TransactionFormProps) {
+                                  onClose,
+                                  open,
+                                  transactionToEdit
+                                }: TransactionFormProps) {
   const { user } = useAuth();
   const { refetchTransactions, refetchBalance, refetchStatistics } =
     useTransactions();
@@ -57,7 +57,7 @@ export function TransactionForm({
       dictKey:
         transactionToEdit?.type === "Debit"
           ? transactionToEdit?.to ?? ""
-          : transactionToEdit?.from ?? "",
+          : transactionToEdit?.from ?? ""
     });
   }, [open, transactionToEdit]);
 
@@ -74,7 +74,7 @@ export function TransactionForm({
   }, [steps, transaction.type, transaction.date, transaction.type]);
 
 
- function formatDateToSave(date: Date) {
+  function formatDateToSave(date: Date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -95,18 +95,18 @@ export function TransactionForm({
           value: parseFloat(transaction.value),
           date: formatDateToSave(transaction.date),
           to: transaction.type === "Debit" ? transaction.dictKey : null,
-          from: transaction.type === "Credit" ? transaction.dictKey : null,
+          from: transaction.type === "Credit" ? transaction.dictKey : null
         });
       } else {
         await addTransaction({
           type: transaction.type as "Credit" | "Debit",
           value: parseFloat(transaction.value),
           date: formatDateToSave(transaction.date),
-      to: transaction.type === "Debit" ? transaction.dictKey : null,
-      from: transaction.type === "Credit" ? transaction.dictKey : null,
-      userId: user!.uid,
-      attachment: transaction.attachment
-    });
+          to: transaction.type === "Debit" ? transaction.dictKey : null,
+          from: transaction.type === "Credit" ? transaction.dictKey : null,
+          userId: user!.uid,
+          attachment: transaction.attachment
+        });
       }
 
       refetchTransactions();

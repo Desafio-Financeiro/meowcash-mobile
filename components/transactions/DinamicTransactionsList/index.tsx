@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DinamicList from "@/components/DinamicList";
 import TransactionItem, {
-  Transaction,
+  Transaction
 } from "@/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionFilters } from "../filters";
@@ -40,9 +40,8 @@ const DinamicTransactionsList = () => {
     end: Date | null;
   }>({
     start: new Date(),
-    end: new Date(),
+    end: new Date()
   });
-  const [transactionFilter, setTransactionFilter] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +55,7 @@ const DinamicTransactionsList = () => {
               <TransactionItem
                 transaction={transaction}
                 edit={() => {
-                setTransactionToEdit(transaction);
+                  setTransactionToEdit(transaction);
                 }}
                 exclude={() => {
                   showDeleteAlert(transaction);
@@ -78,15 +77,15 @@ const DinamicTransactionsList = () => {
 
   return <>
     <TransactionForm
-        onClose={() => {
-          setShowAddTransactionDialog(false);
-          setTransactionToEdit(undefined);
-        }}
-        open={showAddTransactionDialog}
-        transactionToEdit={transactionToEdit}
-      />
+      onClose={() => {
+        setShowAddTransactionDialog(false);
+        setTransactionToEdit(undefined);
+      }}
+      open={showAddTransactionDialog}
+      transactionToEdit={transactionToEdit}
+    />
 
-      <View style={{ paddingHorizontal: 16 }}>
+    <View style={{ paddingHorizontal: 16 }}>
       <TransactionFilters
         handleTransactionDate={(date) => setTransactionFilter({ ...transactionFilter, date: date })}
         handleTransactionType={(filter) => setTransactionFilter({ ...transactionFilter, transactionType: filter })}
