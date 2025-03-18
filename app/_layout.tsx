@@ -9,7 +9,6 @@ import {
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
-import { SplashScreen } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -54,8 +53,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
-      navigation.navigate("LandingPage" as never);
+      navigation.navigate("SplashScreen" as never);
     }
   }, [fontsLoaded]);
 
