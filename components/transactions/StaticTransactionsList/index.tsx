@@ -3,7 +3,7 @@ import TransactionItem, {
 } from "@/components/transactions/TransactionItem";
 import { styles } from "./style";
 import { View } from "react-native";
-import { Button } from "@/components/button";
+import { Button } from "../../Button";
 import { useNavigation } from "@react-navigation/native";
 import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionForm } from "../TransactionForm";

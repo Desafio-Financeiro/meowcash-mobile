@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { DatePicker } from "../datePicker";
+import { DatePicker } from "../DatePicker";
 import { styles } from "./styles";
 
 interface CustomContentProps {

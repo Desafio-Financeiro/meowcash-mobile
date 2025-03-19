@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import { Button } from "@/components/button";
+import { Button } from "../Button";
 import { styles } from "./style";
 
 interface Props {

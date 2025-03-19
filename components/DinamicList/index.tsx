@@ -1,6 +1,6 @@
 import { View, FlatList } from "react-native";
 import { styles } from "./style";
-import { Button } from "../button";
+import { Button } from "../Button";
 
 interface DinamicListProps {
   data: { id: string; body: React.ReactNode }[];

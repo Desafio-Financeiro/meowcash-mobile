@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { BottomSheet } from "../bottom-sheet";
+import { BottomSheet } from "../BottomSheet";
 import { styles } from "./styles";
 import { useState } from "react";
 import { periods } from "./constant";

@@ -1,6 +1,6 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Balance } from "@/components/balance";
-import { SummaryCard } from "@/components/summary-card";
+import { Balance } from "../../../components/Balance";
+import { SummaryCard } from "../../../components/SummaryCard";
 import {
   Text,
   View,
@@ -13,9 +13,9 @@ import { getFullCurrentDate } from "@/utils/getCurrentDate";
 import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
-import { Button } from "@/components/button";
+import { Button } from "@/components/Button";
 import { theme } from "@/theme";
-import { TransactionFilters } from "@/components/transactions/filters";
+import { TransactionFilters } from "@/components/transactions/Filters";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";

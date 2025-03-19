@@ -2,8 +2,8 @@ import { TouchableOpacity, View, Text, ScrollView, TextInput } from "react-nativ
 import { styles } from "./style";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { DateRangeSelector } from "@/components/data-range-selector";
-import { OptionsSelector } from "@/components/options-selector";
+import { DateRangeSelector } from "../../DataRangeSelector";
+import { OptionsSelector } from "../../OptionsSelector";
 import { formatDate } from "date-fns";
 import { transactionTranslate } from "@/utils/transactionTranslate";
 import { theme } from "@/theme";

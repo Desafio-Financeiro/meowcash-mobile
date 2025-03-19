@@ -5,7 +5,7 @@ import type { DrawerHeaderProps } from "@react-navigation/drawer";
 import { theme } from "@/theme";
 import Logo from "../Illustrations/Logo";
 import { useState } from "react";
-import { Button } from "../button";
+import { Button } from "../Button";
 import { useAuth } from "@/context/AuthContext";
 import { styles } from "./style";
 

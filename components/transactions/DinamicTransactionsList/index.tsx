@@ -4,7 +4,7 @@ import TransactionItem, {
   Transaction
 } from "@/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
-import { TransactionFilters } from "../filters";
+import { TransactionFilters } from "../Filters";
 import { View, Text } from "react-native";
 import { styles } from "./style";
 import { TransactionForm } from "../TransactionForm";
