@@ -1,5 +1,4 @@
 import { View, Text } from "react-native";
-import { format } from "date-fns";
 import { Button } from "../../Button";
 import { styles } from "./style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -7,6 +6,7 @@ import { theme } from "@/theme";
 import { formatCurrency } from "@/utils/formatCurrency";
 import * as DocumentPicker from "expo-document-picker";
 import { downloadFile } from "@/utils/file";
+import { Timestamp } from "firebase/firestore";
 
 export interface TransactionModal extends Omit<Props, "transactionsList"> {
   transaction: Transaction;
@@ -22,7 +22,7 @@ export interface Transaction {
   id?: string;
   type: "Credit" | "Debit";
   value: number;
-  date: string;
+  date: Timestamp | Date;
   from: string | null;
   to: string | null;
   userId: string;
@@ -40,6 +40,18 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
     ? styles.credit
     : styles.debit;
   const styleIcon = type === "Credit" ? styles.iconCredit : styles.iconDebit;
+
+  const formatDate = (timestamp: Timestamp) => {
+    if (!timestamp) return "";
+
+    const date = timestamp.toDate();
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <View style={styles.transaction}>
@@ -75,9 +87,7 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
         </Text>
       </View>
       <View>
-        <Text style={styles.colorText}>
-          {format(new Date(`${date}T00:00`), "dd/MM/yyyy")}
-        </Text>
+        <Text style={styles.colorText}>{formatDate(date as Timestamp)}</Text>
         {!deletedAt && (
           <View style={styles.edit}>
             {transaction.attachmentUrl && (

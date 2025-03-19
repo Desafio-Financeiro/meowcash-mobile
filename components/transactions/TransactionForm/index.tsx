@@ -12,6 +12,7 @@ import { type Transaction } from "@/components/transactions/TransactionItem";
 import * as DocumentPicker from "expo-document-picker";
 import FileUploader from "@/components/fileUploader/FileUploader";
 import { theme } from "@/theme";
+import { Timestamp } from "firebase/firestore";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -52,7 +53,7 @@ export function TransactionForm({
       type: transactionToEdit?.type ?? "Debit",
       value: transactionToEdit?.value ? String(transactionToEdit?.value) : "0",
       date: transactionToEdit?.date
-        ? new Date(transactionToEdit?.date)
+        ? (transactionToEdit.date as unknown as Timestamp).toDate()
         : new Date(),
       dictKey:
         transactionToEdit?.type === "Debit"
@@ -95,14 +96,6 @@ export function TransactionForm({
     }
   }, [steps, isValueValid, transaction.date, isTypeValid, isDictKeyValid]);
 
-  function formatDateToSave(date: Date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
   async function handleAddTransaction() {
     setLoading(true);
 
@@ -112,7 +105,7 @@ export function TransactionForm({
           ...transactionToEdit,
           type: transaction.type as "Credit" | "Debit",
           value: parseFloat(transaction.value),
-          date: formatDateToSave(transaction.date),
+          date: transaction.date,
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
           attachment: transaction.attachment,
@@ -121,7 +114,7 @@ export function TransactionForm({
         await addTransaction({
           type: transaction.type as "Credit" | "Debit",
           value: parseFloat(transaction.value),
-          date: formatDateToSave(transaction.date),
+          date: transaction.date,
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
           userId: user!.uid,
@@ -173,7 +166,7 @@ export function TransactionForm({
       return transactionToEdit?.id ? "Editar" : "Criar";
     return "Avançar";
   }
-
+  
   return (
     <Dialog.Root open={open} onClose={onClose}>
       {steps === "value" && (

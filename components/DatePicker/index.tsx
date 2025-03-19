@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Appearance } from "react-native";
 import { theme } from "@/theme";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -49,13 +49,6 @@ export function DatePicker({
   const confirmDate = () => {
     setShow(false);
   };
-
-  useEffect(() => {
-    if (value) {
-      const originalDate = new Date(value);
-      setUpdatedDate(new Date(originalDate.getTime() + 24 * 60 * 60 * 1000));
-    }
-  }, []);
 
   if (Platform.OS === "android") {
     return (
