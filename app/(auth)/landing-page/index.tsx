@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "../../../components/Button";
 import { View, Text, ScrollView } from "react-native";
 import { styles } from "./style";
 import CatPaw from "@/components/Illustrations/CatPaw";

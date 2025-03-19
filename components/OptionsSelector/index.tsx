@@ -1,5 +1,5 @@
 import { TouchableOpacity, View, Text } from "react-native";
-import { BottomSheet } from "../bottom-sheet";
+import { BottomSheet } from "../BottomSheet";
 import { styles } from "./styles";
 
 interface OptionsSelectorProps {

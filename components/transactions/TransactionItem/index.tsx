@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { format } from "date-fns";
-import { Button } from "@/components/button";
+import { Button } from "../../Button";
 import { styles } from "./style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";

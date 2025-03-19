@@ -21,13 +21,15 @@ interface DatePickerProps {
   value: Date;
   onChange: (date: Date) => void;
   dateStyle?: StyleProp<TextStyle>;
+  useFutureDate?: boolean;
 }
 
 export function DatePicker({
                              label,
                              value,
                              onChange,
-                             dateStyle
+                             dateStyle,
+                             useFutureDate = false
                            }: DatePickerProps) {
   const colorScheme = Appearance.getColorScheme();
 
@@ -60,6 +62,7 @@ export function DatePicker({
             locale={"pt-BR"}
             display={"spinner"}
             onChange={onChangeDate}
+            maximumDate={useFutureDate ? new Date() : undefined}
             textColor={
               colorScheme === "dark" ? theme.colors.white : theme.colors.text
             }
@@ -88,6 +91,7 @@ export function DatePicker({
                   display={"spinner"}
                   onChange={onChangeDate}
                   textColor={theme.colors.text}
+                  maximumDate={useFutureDate ? new Date() : undefined}
                 />
                 <View
                   style={{

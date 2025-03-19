@@ -1,8 +1,8 @@
 import { Picker } from "@react-native-picker/picker";
 import { CurrencyInput } from "@/components/CurrencyInput";
-import { Dialog } from "@/components/dialog";
+import { Dialog } from "../../Dialog";
 import { useEffect, useMemo, useState } from "react";
-import { DatePicker } from "@/components/datePicker";
+import { DatePicker } from "../../DatePicker";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
 import { addTransaction, updateTransaction } from "@/api/transaction";
@@ -76,12 +76,16 @@ export function TransactionForm({
     return transaction?.dictKey.trim().length > 0;
   }, [transaction.dictKey, steps]);
 
+  const isInvalidDate = useMemo(() => {
+    return transaction.date < new Date();
+  }, [transaction.date]);
+
   const disableNextBtn = useMemo(() => {
     switch (steps) {
       case "value":
         return !isValueValid;
       case "date":
-        return !transaction.date;
+        return !isInvalidDate;
       case "type":
         return !isTypeValid;
       case "dictKey":
@@ -184,6 +188,7 @@ export function TransactionForm({
           <DatePicker
             dateStyle={styles.datePicker}
             value={transaction.date}
+            useFutureDate={false}
             onChange={(date) => {
               setTransaction((oldState) => ({ ...oldState, date }));
             }}
