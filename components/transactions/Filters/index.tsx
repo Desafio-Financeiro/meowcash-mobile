@@ -1,4 +1,10 @@
-import { TouchableOpacity, View, Text, ScrollView, TextInput } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import { styles } from "./style";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -8,20 +14,22 @@ import { formatDate } from "date-fns";
 import { transactionTranslate } from "@/utils/transactionTranslate";
 import { theme } from "@/theme";
 import { TransactionType } from "@/api/transaction";
+import { useTransactions } from "@/context/TransactionsContext";
 
 interface TransactionFiltersProps {
   handleTransactionDate(date: { start: Date | null; end: Date | null }): void;
 
   handleTransactionType(type: TransactionType | null): void;
 
-  handleTransactionText(text: string): void;
+  handleTransactionText(text: string | null): void;
 }
 
 export function TransactionFilters({
-                                     handleTransactionDate,
-                                     handleTransactionText,
-                                     handleTransactionType
-                                   }: TransactionFiltersProps) {
+  handleTransactionDate,
+  handleTransactionText,
+  handleTransactionType,
+}: TransactionFiltersProps) {
+  const { handleClearFilter } = useTransactions();
   const [showDateFilter, setShowDateFilter] = useState(false);
   const [showTransactionFilter, setShowTransactionFilter] = useState(false);
 
@@ -33,7 +41,9 @@ export function TransactionFilters({
     setCurrentDateFiltered("");
     setCurrentTransactionFiltered("");
     handleTransactionType(null);
-    handleTransactionDate({ start: new Date(), end: new Date() });
+    handleTransactionText(null);
+    handleTransactionDate({ start: null, end: null });
+    handleClearFilter();
   }
 
   return (
@@ -71,13 +81,13 @@ export function TransactionFilters({
             onPress={() => setShowDateFilter(true)}
             style={[
               styles.filterButton,
-              currentDateFiltered && styles.filterButtonActive
+              currentDateFiltered && styles.filterButtonActive,
             ]}
           >
             <Text
               style={[
                 styles.filterButtonText,
-                currentDateFiltered && styles.filterButtonActiveText
+                currentDateFiltered && styles.filterButtonActiveText,
               ]}
             >
               {currentDateFiltered || "Período"}
@@ -86,7 +96,9 @@ export function TransactionFilters({
               name="arrow-drop-down"
               size={24}
               color={
-                currentDateFiltered ? theme.colors.primary60 : theme.colors.black
+                currentDateFiltered
+                  ? theme.colors.primary60
+                  : theme.colors.black
               }
             />
           </TouchableOpacity>
@@ -95,13 +107,13 @@ export function TransactionFilters({
             onPress={() => setShowTransactionFilter(true)}
             style={[
               styles.filterButton,
-              currentTransactionFiltered && styles.filterButtonActive
+              currentTransactionFiltered && styles.filterButtonActive,
             ]}
           >
             <Text
               style={[
                 styles.filterButtonText,
-                currentTransactionFiltered && styles.filterButtonActiveText
+                currentTransactionFiltered && styles.filterButtonActiveText,
               ]}
             >
               {transactionTranslate(currentTransactionFiltered) ||
@@ -131,13 +143,16 @@ export function TransactionFilters({
       </View>
 
       <View style={styles.searchContainer}>
-        <TextInput placeholder={"Buscar"} placeholderTextColor={theme.colors.text} style={styles.searchInput}
-                   onChangeText={(text) => handleTransactionText(text)} />
+        <TextInput
+          placeholder={"Buscar"}
+          placeholderTextColor={theme.colors.text}
+          style={styles.searchInput}
+          onChangeText={(text) => handleTransactionText(text)}
+        />
         <View style={styles.searchIcon}>
           <MaterialIcons name="search" size={24} color={theme.colors.black} />
         </View>
       </View>
-
     </>
   );
 }
