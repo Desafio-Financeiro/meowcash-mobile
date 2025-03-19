@@ -6,13 +6,13 @@ import {
   Modal,
   TouchableWithoutFeedback,
   StyleProp,
-  TextStyle
+  TextStyle,
 } from "react-native";
 import { Appearance } from "react-native";
 import { theme } from "@/theme";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RNDateTimePicker, {
-  DateTimePickerEvent
+  DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { styles } from "./styles";
 
@@ -25,19 +25,21 @@ interface DatePickerProps {
 }
 
 export function DatePicker({
-                             label,
-                             value,
-                             onChange,
-                             dateStyle,
-                             useFutureDate = false
-                           }: DatePickerProps) {
+  label,
+  value,
+  onChange,
+  dateStyle,
+  useFutureDate,
+}: DatePickerProps) {
   const colorScheme = Appearance.getColorScheme();
 
   const [show, setShow] = useState(false);
+  const [updatedDate, setUpdatedDate] = useState<Date>(new Date(value));
 
-  const onChangeDate = (event: DateTimePickerEvent, date?: Date) => {
+  const onChangeDate = (_: DateTimePickerEvent, date?: Date) => {
     if (date) {
       onChange(date);
+      setUpdatedDate(new Date(date));
     }
     if (Platform.OS === "android") {
       setShow(false);
@@ -48,16 +50,23 @@ export function DatePicker({
     setShow(false);
   };
 
+  useEffect(() => {
+    if (value) {
+      const originalDate = new Date(value);
+      setUpdatedDate(new Date(originalDate.getTime() + 24 * 60 * 60 * 1000));
+    }
+  }, []);
+
   if (Platform.OS === "android") {
     return (
       <View>
         <Text onPress={() => setShow(true)} style={[styles.input, dateStyle]}>
-          {value.toLocaleDateString()}
+          {updatedDate.toLocaleDateString()}
         </Text>
 
         {show && (
           <RNDateTimePicker
-            value={value}
+            value={updatedDate}
             mode="date"
             locale={"pt-BR"}
             display={"spinner"}
@@ -77,7 +86,7 @@ export function DatePicker({
       <Text style={styles.label}>{label}</Text>
       <View style={styles.inputContainer}>
         <Text onPress={() => setShow(true)} style={styles.input}>
-          {value.toLocaleDateString()}
+          {updatedDate.toLocaleDateString()}
         </Text>
 
         <Modal transparent visible={show} animationType="fade">
@@ -85,7 +94,7 @@ export function DatePicker({
             <View style={styles.modalOverlay}>
               <View style={styles.datePickerContainer}>
                 <RNDateTimePicker
-                  value={value}
+                  value={updatedDate}
                   mode="date"
                   locale={"pt-BR"}
                   display={"spinner"}
@@ -97,7 +106,7 @@ export function DatePicker({
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-around",
-                    width: "100%"
+                    width: "100%",
                   }}
                 >
                   <TouchableOpacity
