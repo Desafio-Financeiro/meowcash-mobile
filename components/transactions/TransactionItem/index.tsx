@@ -55,21 +55,6 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
           <View style={styles.listTitle}>
             <Text style={styles.font}>
               {type === "Credit" ? "Entrada" : "Saída"}
-              {transaction.attachmentUrl && (
-                <View style={styles.attachmentIcon}>
-                  <MaterialCommunityIcons
-                    name={"attachment"}
-                    size={16}
-                    color={theme.colors.primary80}
-                    onPress={() =>
-                      downloadFile(
-                        transaction.attachmentUrl as string,
-                        "download"
-                      )
-                    }
-                  />
-                </View>
-              )}
             </Text>
             {type === "Credit" && from && (
               <Text style={styles.colorText}>Origem: {from}</Text>
@@ -95,6 +80,26 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
         </Text>
         {!deletedAt && (
           <View style={styles.edit}>
+            {transaction.attachmentUrl && (
+              <Button
+                variant={"ghost"}
+                style={styles.buttonTransaction}
+                onPress={() =>
+                  downloadFile(
+                    transaction.attachmentUrl as string,
+                    "download.pdf"
+                  )
+                }
+                icon={
+                  <MaterialCommunityIcons
+                    size={18}
+                    color={theme.colors.primary80}
+                    name={"attachment"}
+                  />
+                }
+              />
+            )}
+
             <Button
               variant={"ghost"}
               style={styles.buttonTransaction}
@@ -109,6 +114,7 @@ const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
                 />
               }
             />
+
             <Button
               variant={"ghost"}
               style={styles.buttonTransaction}
