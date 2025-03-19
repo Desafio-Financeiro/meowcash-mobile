@@ -28,23 +28,23 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({
-                                  onClose,
-                                  open,
-                                  transactionToEdit
-                                }: TransactionFormProps) {
+  onClose,
+  open,
+  transactionToEdit,
+}: TransactionFormProps) {
   const { user } = useAuth();
   const { refetchTransactions, refetchBalance, refetchStatistics } =
     useTransactions();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [steps, setSteps] = useState<"value" | "date" | "type" | "dictKey" | "attachment">(
-    "value"
-  );
+  const [steps, setSteps] = useState<
+    "value" | "date" | "type" | "dictKey" | "attachment"
+  >("value");
   const [transaction, setTransaction] = useState<AddTransactionArgs>({
     type: "Debit",
     value: "0",
     date: new Date(),
-    dictKey: ""
+    dictKey: "",
   });
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export function TransactionForm({
       dictKey:
         transactionToEdit?.type === "Debit"
           ? transactionToEdit?.to ?? ""
-          : transactionToEdit?.from ?? ""
+          : transactionToEdit?.from ?? "",
     });
   }, [open, transactionToEdit]);
 
@@ -115,7 +115,7 @@ export function TransactionForm({
           date: formatDateToSave(transaction.date),
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
-          attachment: transaction.attachment
+          attachment: transaction.attachment,
         });
       } else {
         await addTransaction({
@@ -125,7 +125,7 @@ export function TransactionForm({
           to: transaction.type === "Debit" ? transaction.dictKey : null,
           from: transaction.type === "Credit" ? transaction.dictKey : null,
           userId: user!.uid,
-          attachment: transaction.attachment
+          attachment: transaction.attachment,
         });
       }
 
@@ -156,15 +156,21 @@ export function TransactionForm({
       type: "Debit",
       value: "0",
       date: new Date(),
-      dictKey: ""
+      dictKey: "",
     });
     setSteps("value");
+  }
+
+  function handleClose() {
+    onClose();
+    clearState();
   }
 
   function getNextBtnText() {
     if (loading && transactionToEdit?.id) return "Editando";
     if (loading) return "Criando";
-    if (steps === "attachment") return transactionToEdit?.id ? "Editar" : "Criar";
+    if (steps === "attachment")
+      return transactionToEdit?.id ? "Editar" : "Criar";
     return "Avançar";
   }
 
@@ -208,8 +214,16 @@ export function TransactionForm({
               }
               mode="dialog"
             >
-              <Picker.Item color={theme.colors.text} label="Crédito" value="Credit" />
-              <Picker.Item color={theme.colors.text} label="Débito" value="Debit" />
+              <Picker.Item
+                color={theme.colors.text}
+                label="Crédito"
+                value="Credit"
+              />
+              <Picker.Item
+                color={theme.colors.text}
+                label="Débito"
+                value="Debit"
+              />
             </Picker>
           </View>
         </>
@@ -242,7 +256,10 @@ export function TransactionForm({
           <View style={styles.attachmentContainer}>
             <FileUploader
               setFile={(file) => {
-                setTransaction((oldState) => ({ ...oldState, attachment: file }));
+                setTransaction((oldState) => ({
+                  ...oldState,
+                  attachment: file,
+                }));
               }}
               file={transaction.attachment}
             />
@@ -250,9 +267,11 @@ export function TransactionForm({
         </>
       )}
       <Dialog.Actions>
-        <Dialog.Button onClick={onClose} value="Fechar" />
+        <Dialog.Button onClick={handleClose} value="Fechar" />
         <Dialog.Button
-          onClick={() => (steps === "attachment" ? handleAddTransaction() : handleNextStep())}
+          onClick={() =>
+            steps === "attachment" ? handleAddTransaction() : handleNextStep()
+          }
           value={getNextBtnText()}
           disabled={disableNextBtn || loading}
         />

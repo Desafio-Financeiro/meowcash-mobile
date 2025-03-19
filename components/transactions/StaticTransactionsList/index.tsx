@@ -39,19 +39,21 @@ const StaticTransactionsList = ({ data }: StaticTransactionsListProps) => {
         transactionToEdit={transactionToEdit}
       />
       <View>
-        {data.map((transaction) => (
-          <View key={transaction.id} style={styles.row}>
-            <TransactionItem
-              transaction={transaction}
-              edit={() => {
-                setTransactionToEdit(transaction);
-              }}
-              exclude={() => {
-                showDeleteAlert(transaction);
-              }}
-            />
-          </View>
-        ))}
+        {data
+          .filter((transaction) => !transaction.deletedAt)
+          .map((transaction) => (
+            <View key={transaction.id} style={styles.row}>
+              <TransactionItem
+                transaction={transaction}
+                edit={() => {
+                  setTransactionToEdit(transaction);
+                }}
+                exclude={() => {
+                  showDeleteAlert(transaction);
+                }}
+              />
+            </View>
+          ))}
         <View style={{ width: 150, marginHorizontal: "auto" }}>
           <Button
             variant="primary"
