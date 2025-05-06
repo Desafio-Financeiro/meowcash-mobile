@@ -4,6 +4,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useAuth } from "./AuthContext";
@@ -119,7 +120,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     isRefetching: balanceIsRefetching,
   } = useQuery({
     queryKey: ["balanceInfo"],
-    queryFn: () => getBalance(user?.uid || ""),
+    queryFn: () => getBalance(user?.uid ?? ""),
     enabled: !!user?.uid,
   });
 
@@ -130,7 +131,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     isRefetching: statisticsIsRefetching,
   } = useQuery({
     queryKey: ["statistics"],
-    queryFn: () => getStatistics(user?.uid || ""),
+    queryFn: () => getStatistics(user?.uid ?? ""),
     enabled: !!user?.uid,
   });
 
@@ -145,7 +146,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
   } = useInfiniteQuery({
     queryKey: ["transactions", transactionFilter],
     queryFn: ({ pageParam }) =>
-      getTransactions(user?.uid || "", pageParam, transactionFilter),
+      getTransactions(user?.uid ?? "", pageParam, transactionFilter),
     getNextPageParam: (lastPage) =>
       lastPage?.data && lastPage?.data?.length > 0
         ? lastPage?.lastDoc
@@ -186,26 +187,48 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isLoading, data]);
 
+  const memoizedValue = useMemo(() => {
+    return {
+      balance,
+      transactions,
+      isLoading: isLoading || isFetchingNextPage || isRefetching,
+      balanceIsLoading: balanceIsLoading || balanceIsRefetching,
+      fetchNextPage,
+      hasNextPage,
+      refetchTransactions: refetch,
+      refetchBalance,
+      showDeleteAlert,
+      statistics,
+      statisticsIsLoading: statisticsIsLoading || statisticsIsRefetching,
+      refetchStatistics,
+      transactionFilter,
+      setTransactionFilter,
+      handleClearFilter,
+    };
+  }, [
+    balance,
+    transactions,
+    isLoading,
+    isFetchingNextPage,
+    isRefetching,
+    balanceIsLoading,
+    balanceIsRefetching,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    refetchBalance,
+    showDeleteAlert,
+    statistics,
+    statisticsIsLoading,
+    statisticsIsRefetching,
+    refetchStatistics,
+    transactionFilter,
+    setTransactionFilter,
+    handleClearFilter,
+  ]);
+
   return (
-    <TransactionsContext.Provider
-      value={{
-        balance: balance,
-        transactions,
-        isLoading: isLoading || isFetchingNextPage || isRefetching,
-        balanceIsLoading: balanceIsLoading || balanceIsRefetching,
-        fetchNextPage,
-        hasNextPage,
-        refetchTransactions: refetch,
-        refetchBalance,
-        showDeleteAlert,
-        statistics,
-        statisticsIsLoading: statisticsIsLoading || statisticsIsRefetching,
-        refetchStatistics,
-        transactionFilter,
-        setTransactionFilter,
-        handleClearFilter,
-      }}
-    >
+    <TransactionsContext.Provider value={memoizedValue}>
       {children}
     </TransactionsContext.Provider>
   );

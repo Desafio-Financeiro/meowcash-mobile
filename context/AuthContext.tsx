@@ -14,6 +14,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import Toast from "react-native-toast-message";
@@ -120,16 +121,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigation.navigate("LandingPage" as never);
   };
 
+  const memoizedValue = useMemo(() => {
+    return {
+      user,
+      handleLogin,
+      handleSignUp,
+      handleLogout,
+      isAuthenticated,
+    };
+  }, [user, handleLogin, handleSignUp, handleLogout, isAuthenticated]);
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        handleLogin,
-        handleSignUp,
-        handleLogout,
-        isAuthenticated,
-      }}
-    >
+    <AuthContext.Provider value={memoizedValue}>
       {children}
     </AuthContext.Provider>
   );

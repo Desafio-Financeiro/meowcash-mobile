@@ -9,7 +9,10 @@ interface CurrencyInputProps {
   onChange: (value: string) => void;
 }
 
-export function CurrencyInput({ onChange, defaultValue }: CurrencyInputProps) {
+export function CurrencyInput({
+  onChange,
+  defaultValue,
+}: Readonly<CurrencyInputProps>) {
   const [value, setValue] = useState<string | undefined>(() =>
     defaultValue ? formatCurrency(parseFloat(defaultValue)) : undefined
   );

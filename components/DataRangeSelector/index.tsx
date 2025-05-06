@@ -3,8 +3,8 @@ import { BottomSheet } from "../BottomSheet";
 import { styles } from "./styles";
 import { useState } from "react";
 import { periods } from "./constant";
-import { Title } from "./title";
-import { CustomContent } from "./custom-content";
+import { Title } from "./Title";
+import { CustomContent } from "./CustomContent";
 
 interface DateRangeSelectorProps {
   onDateChange: (start: Date | null, end: Date | null) => void;
@@ -18,7 +18,7 @@ export function DateRangeSelector({
   onDateChange,
   onClose,
   open,
-}: DateRangeSelectorProps) {
+}: Readonly<DateRangeSelectorProps>) {
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [date, setDate] = useState({
     start: new Date(),

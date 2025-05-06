@@ -12,7 +12,7 @@ export default function ImageCard({
   Icon,
   Illustration,
   text,
-}: ImageCardProps) {
+}: Readonly<ImageCardProps>) {
   return (
     <View style={styles.container}>
       <Icon />

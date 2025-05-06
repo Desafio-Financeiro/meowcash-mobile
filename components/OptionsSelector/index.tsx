@@ -12,7 +12,7 @@ export function OptionsSelector({
   onClose,
   open,
   handleOptionSelection,
-}: OptionsSelectorProps) {
+}: Readonly<OptionsSelectorProps>) {
   return (
     <BottomSheet onClose={onClose} title={"Movimentações"} visible={open}>
       <View style={styles.container}>

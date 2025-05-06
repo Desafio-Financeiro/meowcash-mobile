@@ -15,7 +15,7 @@ export function BottomSheet({
   children,
   visible,
   onClose,
-}: BottomSheetProps) {
+}: Readonly<BottomSheetProps>) {
   return (
     <Modal
       animationType="slide"

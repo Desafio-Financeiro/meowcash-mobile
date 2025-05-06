@@ -16,7 +16,7 @@ export default function Select({
   options,
   placeholder,
   setSelectedValue,
-}: SelectProps) {
+}: Readonly<SelectProps>) {
   return (
     <SelectDropdown
       data={options}
@@ -27,7 +27,7 @@ export default function Select({
         return (
           <View style={styles.dropdownStyle}>
             <Text style={styles.text}>
-              {(selectedItem && selectedItem.label) || placeholder}
+              {selectedItem ? selectedItem.label : placeholder}
             </Text>
             {isOpened ? (
               <AntDesign name="caretup" size={12} color={theme.colors.text} />

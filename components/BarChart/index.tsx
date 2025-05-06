@@ -4,7 +4,7 @@ import { styles } from "./style";
 import { theme } from "@/theme";
 import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
 
-const monthMapper = {
+const monthMapper: Record<number, string> = {
   0: "Jan",
   1: "Fev",
   2: "Mar",
@@ -21,9 +21,9 @@ const monthMapper = {
 
 export default function BarChart({
   data = [],
-}: {
+}: Readonly<{
   data?: GroupedTransaction[];
-}) {
+}>) {
   const barData = data.map((item) => {
     const object = [
       {
@@ -37,7 +37,7 @@ export default function BarChart({
       { value: 0, frontColor: theme.colors.danger },
     ];
 
-    item.transactions.map((transaction) => {
+    item.transactions.forEach((transaction) => {
       if (transaction.type === "Credit") {
         object[0].value += transaction.value;
       } else {

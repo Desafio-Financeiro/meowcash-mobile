@@ -8,7 +8,12 @@ interface InputProps extends TextInputProps {
   endIcon?: keyof typeof MaterialCommunityIcons.glyphMap;
   endIconOnPress?: () => void;
 }
-export function Input({ label, endIconOnPress, endIcon, ...rest }: InputProps) {
+export function Input({
+  label,
+  endIconOnPress,
+  endIcon,
+  ...rest
+}: Readonly<InputProps>) {
   return (
     <View>
       <Text style={styles.label}>{label}</Text>

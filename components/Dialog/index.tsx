@@ -7,7 +7,7 @@ interface DialogProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
-function DialogRoot({ onClose, open, children }: DialogProps) {
+function DialogRoot({ onClose, open, children }: Readonly<DialogProps>) {
   return (
     <Modal
       visible={open}
@@ -22,11 +22,11 @@ function DialogRoot({ onClose, open, children }: DialogProps) {
   );
 }
 
-function DialogTitle({ value }: { value: string }) {
+function DialogTitle({ value }: Readonly<{ value: string }>) {
   return <Text style={styles.title}>{value}</Text>;
 }
 
-function DialogActions({ children }: { children: React.ReactNode }) {
+function DialogActions({ children }: Readonly<{ children: React.ReactNode }>) {
   return <View style={styles.actions}>{children}</View>;
 }
 
@@ -34,11 +34,11 @@ function DialogButton({
   value,
   onClick,
   disabled,
-}: {
+}: Readonly<{
   value: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
-}) {
+}>) {
   return (
     <TouchableOpacity
       onPress={onClick}

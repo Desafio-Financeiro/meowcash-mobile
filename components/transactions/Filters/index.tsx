@@ -28,7 +28,7 @@ export function TransactionFilters({
   handleTransactionDate,
   handleTransactionText,
   handleTransactionType,
-}: TransactionFiltersProps) {
+}: Readonly<TransactionFiltersProps>) {
   const { handleClearFilter } = useTransactions();
   const [showDateFilter, setShowDateFilter] = useState(false);
   const [showTransactionFilter, setShowTransactionFilter] = useState(false);

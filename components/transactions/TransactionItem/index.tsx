@@ -34,11 +34,8 @@ export interface Transaction {
 const TransactionItem = ({ transaction, edit, exclude }: TransactionModal) => {
   const { id, date, to, from, value, type, deletedAt } = transaction;
 
-  const styleValue = deletedAt
-    ? ""
-    : type === "Credit"
-    ? styles.credit
-    : styles.debit;
+  const stylesByType = type === "Credit" ? styles.credit : styles.debit;
+  const styleValue = deletedAt ? "" : stylesByType;
   const styleIcon = type === "Credit" ? styles.iconCredit : styles.iconDebit;
 
   const formatDate = (timestamp: Timestamp) => {

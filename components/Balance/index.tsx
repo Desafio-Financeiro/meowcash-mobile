@@ -11,7 +11,10 @@ interface BalanceProps {
   isLoading?: boolean;
 }
 
-export function Balance({ balance, isLoading = false }: BalanceProps) {
+export function Balance({
+  balance,
+  isLoading = false,
+}: Readonly<BalanceProps>) {
   const [showBalance, setShowBalance] = useState(true);
   const icon = showBalance ? "eye" : "eye-off";
 

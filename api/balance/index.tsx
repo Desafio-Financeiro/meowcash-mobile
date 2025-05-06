@@ -42,11 +42,7 @@ const getBalance = async (user: string) => {
       const doc = querySnapshot.docs[0];
       return doc.data().balance;
     } else {
-      Toast.show({
-        type: "error",
-        text1: "Nenhum usuário encontrado",
-        position: "bottom",
-      });
+      return 0;
     }
   } catch (error) {
     console.error("Erro ao buscar saldo:", error);

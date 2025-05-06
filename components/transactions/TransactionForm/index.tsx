@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { type Transaction } from "@/components/transactions/TransactionItem";
 import * as DocumentPicker from "expo-document-picker";
-import FileUploader from "@/components/fileUploader/FileUploader";
+import FileUploader from "@/components/FileUploader/FileUploader";
 import { theme } from "@/theme";
 import { Timestamp } from "firebase/firestore";
 
@@ -32,7 +32,7 @@ export function TransactionForm({
   onClose,
   open,
   transactionToEdit,
-}: TransactionFormProps) {
+}: Readonly<TransactionFormProps>) {
   const { user } = useAuth();
   const { refetchTransactions, refetchBalance, refetchStatistics } =
     useTransactions();
@@ -103,7 +103,7 @@ export function TransactionForm({
       if (transactionToEdit?.id) {
         await updateTransaction({
           ...transactionToEdit,
-          type: transaction.type as "Credit" | "Debit",
+          type: transaction.type,
           value: parseFloat(transaction.value),
           date: transaction.date,
           to: transaction.type === "Debit" ? transaction.dictKey : null,
@@ -112,7 +112,7 @@ export function TransactionForm({
         });
       } else {
         await addTransaction({
-          type: transaction.type as "Credit" | "Debit",
+          type: transaction.type,
           value: parseFloat(transaction.value),
           date: transaction.date,
           to: transaction.type === "Debit" ? transaction.dictKey : null,
@@ -166,7 +166,7 @@ export function TransactionForm({
       return transactionToEdit?.id ? "Editar" : "Criar";
     return "Avançar";
   }
-  
+
   return (
     <Dialog.Root open={open} onClose={onClose}>
       {steps === "value" && (

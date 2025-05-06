@@ -8,7 +8,7 @@ interface TitleProps {
   type: string;
 }
 
-export function Title({ handlePress, type }: TitleProps) {
+export function Title({ handlePress, type }: Readonly<TitleProps>) {
   if (type !== "custom") return "Período";
   return (
     <TouchableOpacity style={styles.customTitleContainer} onPress={handlePress}>

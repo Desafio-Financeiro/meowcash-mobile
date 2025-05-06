@@ -10,7 +10,7 @@ interface CustomContentProps {
   };
 }
 
-export function CustomContent({ handleDateChange, date }: CustomContentProps) {
+export function CustomContent({ handleDateChange, date }: Readonly<CustomContentProps>) {
   return (
     <View style={styles.customContent}>
       <View style={styles.customOption}>

@@ -12,7 +12,11 @@ interface SummaryCardProps {
   isLoading?: boolean;
 }
 
-export function SummaryCard({ value, type, isLoading }: SummaryCardProps) {
+export function SummaryCard({
+  value,
+  type,
+  isLoading,
+}: Readonly<SummaryCardProps>) {
   const iconBackgroundColor =
     type === "income" ? theme.colors.success : theme.colors.danger;
 

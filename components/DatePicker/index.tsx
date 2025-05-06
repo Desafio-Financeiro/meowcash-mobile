@@ -7,8 +7,8 @@ import {
   TouchableWithoutFeedback,
   StyleProp,
   TextStyle,
+  Appearance,
 } from "react-native";
-import { Appearance } from "react-native";
 import { theme } from "@/theme";
 import React, { useState } from "react";
 import RNDateTimePicker, {
@@ -30,7 +30,7 @@ export function DatePicker({
   onChange,
   dateStyle,
   useFutureDate,
-}: DatePickerProps) {
+}: Readonly<DatePickerProps>) {
   const colorScheme = Appearance.getColorScheme();
 
   const [show, setShow] = useState(false);

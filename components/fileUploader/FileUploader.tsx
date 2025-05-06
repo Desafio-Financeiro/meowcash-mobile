@@ -9,7 +9,7 @@ interface Props {
   setFile: (file: DocumentPicker.DocumentPickerAsset | null) => void;
 }
 
-export default function FileUploader({ file, setFile }: Props) {
+export default function FileUploader({ file, setFile }: Readonly<Props>) {
   const MAX_FILE_SIZE = 1024 * 1024;
 
   const removeFile = () => {
@@ -19,14 +19,16 @@ export default function FileUploader({ file, setFile }: Props) {
   const getNameBytes = (size?: number) => {
     if (!size) return "0 B";
     const i = Math.floor(Math.log(size) / Math.log(1024));
-    return `${(size / Math.pow(1024, i)).toFixed(2)} ${["B", "KB", "MB", "GB", "TB"][i]}`;
+    return `${(size / Math.pow(1024, i)).toFixed(2)} ${
+      ["B", "KB", "MB", "GB", "TB"][i]
+    }`;
   };
 
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: ["application/pdf", "image/*"],
-        copyToCacheDirectory: true
+        copyToCacheDirectory: true,
       });
 
       if (result.canceled || !result.assets || result.assets.length === 0) {
@@ -47,7 +49,12 @@ export default function FileUploader({ file, setFile }: Props) {
       }
 
       setFile(selectedFile);
-      Alert.alert("Arquivo Selecionado", `Nome: ${selectedFile.name}\nTamanho: ${getNameBytes(selectedFile.size)}`);
+      Alert.alert(
+        "Arquivo Selecionado",
+        `Nome: ${selectedFile.name}\nTamanho: ${getNameBytes(
+          selectedFile.size
+        )}`
+      );
     } catch (error) {
       console.error("Erro ao selecionar arquivo:", error);
     }
