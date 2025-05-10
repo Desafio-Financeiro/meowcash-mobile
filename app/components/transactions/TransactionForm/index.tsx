@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "../../DatePicker";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
-import { addTransaction, updateTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
 import { type Transaction } from "@/app/components/transactions/TransactionItem";
@@ -13,6 +12,10 @@ import * as DocumentPicker from "expo-document-picker";
 import FileUploader from "@/app/components/FileUploader/FileUploader";
 import { theme } from "@/theme";
 import { Timestamp } from "firebase/firestore";
+import {
+  updateTransaction,
+  addTransaction,
+} from "@/domain/usecases/TransactionsUseCases";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";

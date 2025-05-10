@@ -1,16 +1,16 @@
-import { BalanceRepository } from "../repositories/BalanceRepository";
+import { balanceApi } from "@/infrastructure/api/BalanceApi";
 
-export const addBalance =
-  (repo: BalanceRepository) => async (user: string, balance: number) => {
-    return await repo.addBalance(user, balance);
-  };
-
-export const getBalance = (repo: BalanceRepository) => async (user: string) => {
-  return await repo.getBalance(user);
+export const addBalance = async (user: string, balance: number) => {
+  return await balanceApi.addBalance(user, balance);
 };
 
-export const updateBalance =
-  (repo: BalanceRepository) =>
-  async (user: string, newData: { balance: number }) => {
-    return await repo.updateBalance(user, newData);
-  };
+export const getBalance = async (user: string) => {
+  return await balanceApi.getBalance(user);
+};
+
+export const updateBalance = async (
+  user: string,
+  newData: { balance: number }
+) => {
+  return await balanceApi.updateBalance(user, newData);
+};

@@ -17,16 +17,15 @@ import {
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
-import {
-  deleteTransaction,
-  getStatistics,
-  getTransactions,
-} from "@/api/transaction";
 import { Alert } from "react-native";
 import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
 import { Filter } from "@/utils/types";
 import { getBalance } from "@/domain/usecases/BalanceUseCases";
-import { balanceApi } from "@/infrastructure/api/BalanceApi";
+import {
+  deleteTransaction,
+  getStatistics,
+  getTransactions,
+} from "@/domain/usecases/TransactionsUseCases";
 
 interface ITransactionsContext {
   balance: number;
@@ -121,7 +120,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     isRefetching: balanceIsRefetching,
   } = useQuery({
     queryKey: ["balanceInfo"],
-    queryFn: () => getBalance(balanceApi)(user?.uid ?? ""),
+    queryFn: () => getBalance(user?.uid ?? ""),
     enabled: !!user?.uid,
   });
 
