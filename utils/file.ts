@@ -1,11 +1,13 @@
-import { storage } from "@/firebase/config";
+import { storage } from "@/infrastructure/firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { DocumentPickerAsset } from "expo-document-picker";
 import { Alert } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-export const uploadFile = async (attachment: DocumentPickerAsset): Promise<string | null> => {
+export const uploadFile = async (
+  attachment: DocumentPickerAsset
+): Promise<string | null> => {
   try {
     if (!attachment.uri) return null;
 

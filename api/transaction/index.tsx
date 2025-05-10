@@ -1,5 +1,5 @@
 import Toast from "react-native-toast-message";
-import { db } from "@/firebase/config";
+import { db } from "@/infrastructure/firebase/config";
 import {
   addDoc,
   collection,
@@ -13,15 +13,15 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import type { Transaction } from "@/components/transactions/TransactionItem";
-import { getBalance, updateBalance } from "../balance";
+import type { Transaction } from "@/app/components/transactions/TransactionItem";
 import {
   GroupedTransaction,
   groupTransactionsByMonth,
 } from "@/utils/groupTransactionsByMonth";
 import { Filter } from "@/utils/types";
 import { uploadFile } from "@/utils/file";
-import { add, addDays, addHours } from "date-fns";
+import { getBalance, updateBalance } from "@/domain/usecases/BalanceUseCases";
+import { balanceApi } from "@/infrastructure/api/BalanceApi";
 
 export type TransactionType = "credit" | "debit";
 
@@ -191,13 +191,15 @@ const addTransaction = async (transaction: Transaction) => {
       date: Timestamp.fromDate(new Date(transaction.date.toString())),
     });
 
-    const balance = await getBalance(transaction.userId);
+    const balance = await getBalance(balanceApi)(transaction.userId);
     const newBalance =
       transaction.type === "Credit"
         ? balance + transaction.value
         : balance - transaction.value;
 
-    await updateBalance(transaction.userId, { balance: newBalance });
+    await updateBalance(balanceApi)(transaction.userId, {
+      balance: newBalance,
+    });
 
     Toast.show({
       type: "success",
@@ -234,13 +236,15 @@ const updateTransaction = async (transaction: Transaction) => {
       to: transaction.to,
     });
 
-    const balance = await getBalance(transaction.userId);
+    const balance = await getBalance(balanceApi)(transaction.userId);
     const newBalance =
       transaction.type === "Credit"
         ? balance - transaction.value
         : balance + transaction.value;
 
-    await updateBalance(transaction.userId, { balance: newBalance });
+    await updateBalance(balanceApi)(transaction.userId, {
+      balance: newBalance,
+    });
 
     Toast.show({
       type: "success",
@@ -265,13 +269,15 @@ const deleteTransaction = async (transaction: Transaction) => {
       deletedAt: new Date().toISOString().split("T")[0],
     });
 
-    const balance = await getBalance(transaction.userId);
+    const balance = await getBalance(balanceApi)(transaction.userId);
     const newBalance =
       transaction.type === "Credit"
         ? balance - transaction.value
         : balance + transaction.value;
 
-    await updateBalance(transaction.userId, { balance: newBalance });
+    await updateBalance(balanceApi)(transaction.userId, {
+      balance: newBalance,
+    });
 
     Toast.show({
       type: "success",

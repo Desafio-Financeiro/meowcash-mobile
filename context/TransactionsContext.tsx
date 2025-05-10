@@ -1,4 +1,4 @@
-import type { Transaction } from "@/components/transactions/TransactionItem";
+import type { Transaction } from "@/app/components/transactions/TransactionItem";
 import {
   createContext,
   ReactNode,
@@ -23,9 +23,10 @@ import {
   getTransactions,
 } from "@/api/transaction";
 import { Alert } from "react-native";
-import { getBalance } from "@/api/balance";
 import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
 import { Filter } from "@/utils/types";
+import { getBalance } from "@/domain/usecases/BalanceUseCases";
+import { balanceApi } from "@/infrastructure/api/BalanceApi";
 
 interface ITransactionsContext {
   balance: number;
@@ -120,7 +121,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     isRefetching: balanceIsRefetching,
   } = useQuery({
     queryKey: ["balanceInfo"],
-    queryFn: () => getBalance(user?.uid ?? ""),
+    queryFn: () => getBalance(balanceApi)(user?.uid ?? ""),
     enabled: !!user?.uid,
   });
 
@@ -189,7 +190,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
 
   const memoizedValue = useMemo(() => {
     return {
-      balance,
+      balance: balance ?? 0,
       transactions,
       isLoading: isLoading || isFetchingNextPage || isRefetching,
       balanceIsLoading: balanceIsLoading || balanceIsRefetching,

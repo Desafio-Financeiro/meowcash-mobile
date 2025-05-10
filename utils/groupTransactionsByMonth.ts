@@ -1,4 +1,4 @@
-import { Transaction } from "@/components/transactions/TransactionItem";
+import { Transaction } from "@/app/components/transactions/TransactionItem";
 
 export type GroupedTransaction = {
   monthNumber: number;
