@@ -1,37 +1,33 @@
-import { Button } from "../../../components/Button";
-import { Input } from "../../../components/Input";
+import { Button } from "@/app/components/Button";
+import { Input } from "@/app/components/Input";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./style";
-import Cat from "@/components/Icons/Cat";
+import Cat from "@/app/components/Icons/Cat";
 
 export default function Index() {
   const navigation = useNavigation();
-  const { handleSignUp } = useAuth();
+  const { handleLogin } = useAuth();
   const [email, setEmail] = useState<string>("");
-  const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
+  async function makeLogin(email: string, password: string) {
+    setLoading(true);
+    await handleLogin(email, password);
+    setLoading(false);
+  }
   return (
     <View style={styles.loginContainer}>
       <View style={styles.headerContainer}>
         <Cat />
-        <Text style={styles.headerTitle}>Cadastre-se na MeowCash!</Text>
-        <Text style={styles.headerDescription}>
-          Faça seu cadastro e controle suas finanças com mais facilidade.
-        </Text>
+        <Text style={styles.headerTitle}>Faça login na sua MeowConta</Text>
+        <Text>Insira seu e-mail para fazer o login.</Text>
       </View>
       <View style={styles.formContainer}>
-        <Input
-          label="Nome Completo"
-          placeholder="Nome Completo"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="none"
-        />
         <Input
           label="E-mail"
           placeholder="email@gmail.com"
@@ -51,25 +47,19 @@ export default function Index() {
         />
 
         <Button
-          title="Começar agora"
+          title={loading ? "Entrando..." : "Entrar"}
           variant="primary"
-          onPress={() => handleSignUp(email, password, name)}
+          disabled={loading}
+          onPress={() => makeLogin(email, password)}
         />
 
-        <Text style={styles.registerTermsNotice}>
-          Ao criar uma conta, você concorda com nossos{" "}
-          <Text style={styles.highlightText}>Termos de Serviço</Text> e
-          reconhece o recebimento de nossa{" "}
-          <Text style={styles.highlightText}>Política de Privacidade</Text>.
-        </Text>
-
         <View style={styles.registerTextContainer}>
-          <Text>Já tem conta?</Text>
+          <Text>Não tem conta?</Text>
           <Text
             style={styles.registerLink}
-            onPress={() => navigation.navigate("Login" as never)}
+            onPress={() => navigation.navigate("Register" as never)}
           >
-            Entrar
+            Cadastre-se
           </Text>
         </View>
       </View>

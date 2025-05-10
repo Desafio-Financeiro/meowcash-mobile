@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef } from "react";
 import { View, Animated } from "react-native";
-import CatPaw from "@/components/Illustrations/CatPaw";
-import Cat from "@/components/Icons/Cat";
-import LogoLarge from "@/components/Illustrations/LogoLarge";
+import CatPaw from "@/app/components/Illustrations/CatPaw";
+import Cat from "@/app/components/Icons/Cat";
+import LogoLarge from "@/app/components/Illustrations/LogoLarge";
 import { styles } from "./style";
 
 export default function Index() {

@@ -1,8 +1,8 @@
 import { Text, ScrollView } from "react-native";
 import { styles } from "./style";
 import { useTransactions } from "@/context/TransactionsContext";
-import PieChart from "@/components/PieChart";
-import BarChart from "@/components/BarChart";
+import PieChart from "@/app/components/PieChart";
+import BarChart from "@/app/components/BarChart";
 
 export default function Reports() {
   const { statistics } = useTransactions();

@@ -1,6 +1,6 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Balance } from "../../../components/Balance";
-import { SummaryCard } from "../../../components/SummaryCard";
+import { Balance } from "@/app/components/Balance";
+import { SummaryCard } from "@/app/components/SummaryCard";
 import {
   Text,
   View,
@@ -10,15 +10,15 @@ import {
 } from "react-native";
 import { styles } from "./style";
 import { getFullCurrentDate } from "@/utils/getCurrentDate";
-import StaticTransactionsList from "@/components/transactions/StaticTransactionsList";
+import StaticTransactionsList from "@/app/components/transactions/StaticTransactionsList";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
-import { Button } from "@/components/Button";
+import { Button } from "@/app/components/Button";
 import { theme } from "@/theme";
-import { TransactionFilters } from "@/components/transactions/Filters";
+import { TransactionFilters } from "@/app/components/transactions/Filters";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { TransactionForm } from "@/components/transactions/TransactionForm";
+import { TransactionForm } from "@/app/components/transactions/TransactionForm";
 
 export default function Home() {
   const navigation = useNavigation();

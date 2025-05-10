@@ -1,16 +1,16 @@
-import { Button } from "../../../components/Button";
+import { Button } from "@/app/components/Button";
 import { View, Text, ScrollView } from "react-native";
 import { styles } from "./style";
-import CatPaw from "@/components/Illustrations/CatPaw";
-import Waves from "@/components/Illustrations/Waves";
+import CatPaw from "@/app/components/Illustrations/CatPaw";
+import Waves from "@/app/components/Illustrations/Waves";
 import { useNavigation } from "@react-navigation/native";
-import ImageCard from "@/components/ImageCard";
-import Coin from "@/components/Illustrations/Coin";
+import ImageCard from "@/app/components/ImageCard";
+import Coin from "@/app/components/Illustrations/Coin";
 import { theme } from "@/theme";
-import Notification from "@/components/Illustrations/Notification";
+import Notification from "@/app/components/Illustrations/Notification";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import Chart from "@/components/Illustrations/Chart";
-import Footer from "@/components/Footer";
+import Chart from "@/app/components/Illustrations/Chart";
+import Footer from "@/app/components/Footer";
 
 export default function Index() {
   const navigation = useNavigation();
