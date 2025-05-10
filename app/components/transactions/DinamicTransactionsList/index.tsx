@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import DinamicList from "@/components/DinamicList";
+import DinamicList from "@/app/components/DinamicList";
 import TransactionItem, {
   Transaction,
-} from "@/components/transactions/TransactionItem";
+} from "@/app/components/transactions/TransactionItem";
 import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionFilters } from "../Filters";
 import { View, Text } from "react-native";

@@ -1,5 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
-import { CurrencyInput } from "@/components/CurrencyInput";
+import { CurrencyInput } from "@/app/components/CurrencyInput";
 import { Dialog } from "../../Dialog";
 import { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "../../DatePicker";
@@ -8,9 +8,9 @@ import { styles } from "./style";
 import { addTransaction, updateTransaction } from "@/api/transaction";
 import { useAuth } from "@/context/AuthContext";
 import { useTransactions } from "@/context/TransactionsContext";
-import { type Transaction } from "@/components/transactions/TransactionItem";
+import { type Transaction } from "@/app/components/transactions/TransactionItem";
 import * as DocumentPicker from "expo-document-picker";
-import FileUploader from "@/components/FileUploader/FileUploader";
+import FileUploader from "@/app/components/FileUploader/FileUploader";
 import { theme } from "@/theme";
 import { Timestamp } from "firebase/firestore";
 
