@@ -1,5 +1,6 @@
-import { addBalance } from "@/api/balance";
-import { auth } from "@/firebase/config";
+import { addBalance } from "@/domain/usecases/BalanceUseCases";
+import { auth } from "@/infrastructure/firebase/config";
+import { balanceApi } from "@/infrastructure/api/BalanceApi";
 import { getUserData } from "@/utils/getUserData";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
@@ -94,7 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               console.log("AuthProvider :: signUp - falha", error);
             });
 
-          addBalance(auth.currentUser.uid, 0);
+          addBalance(balanceApi)(auth.currentUser.uid, 0);
         }
       })
       .catch((error) => {

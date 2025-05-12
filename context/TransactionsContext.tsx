@@ -1,4 +1,4 @@
-import type { Transaction } from "@/components/transactions/TransactionItem";
+import type { Transaction } from "@/app/components/transactions/TransactionItem";
 import {
   createContext,
   ReactNode,
@@ -17,15 +17,15 @@ import {
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
+import { Alert } from "react-native";
+import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
+import { Filter } from "@/utils/types";
+import { getBalance } from "@/domain/usecases/BalanceUseCases";
 import {
   deleteTransaction,
   getStatistics,
   getTransactions,
-} from "@/api/transaction";
-import { Alert } from "react-native";
-import { getBalance } from "@/api/balance";
-import { GroupedTransaction } from "@/utils/groupTransactionsByMonth";
-import { Filter } from "@/utils/types";
+} from "@/domain/usecases/TransactionsUseCases";
 
 interface ITransactionsContext {
   balance: number;
@@ -189,7 +189,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
 
   const memoizedValue = useMemo(() => {
     return {
-      balance,
+      balance: balance ?? 0,
       transactions,
       isLoading: isLoading || isFetchingNextPage || isRefetching,
       balanceIsLoading: balanceIsLoading || balanceIsRefetching,

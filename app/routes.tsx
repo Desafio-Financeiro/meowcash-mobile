@@ -1,16 +1,16 @@
-import Header from "@/components/Header";
+import Header from "@/app/components/Header";
 import { useAuth } from "@/context/AuthContext";
 import { StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import LandingPage from "./(auth)/landing-page";
-import Login from "./(auth)/login";
-import Register from "./(auth)/register";
-import Home from "./(protected)/home";
-import Extract from "./(protected)/extract";
-import Reports from "./(protected)/reports";
-import SplashScreen from "./(auth)/splash-screen";
+import LandingPage from "./screens/(auth)/landing-page";
+import Login from "./screens/(auth)/login";
+import Register from "./screens/(auth)/register";
+import Home from "./screens/(protected)/home";
+import Extract from "./screens/(protected)/extract";
+import Reports from "./screens/(protected)/reports";
+import SplashScreen from "./screens/(auth)/splash-screen";
 
 type DrawerParamList = {
   SplashScreen: undefined;
