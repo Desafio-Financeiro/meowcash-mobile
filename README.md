@@ -61,13 +61,16 @@ Utilizamos os princípios de Clean Architecture para organizar o projeto, separa
 ├── context
 ├── domain (camada de domínio)
 │   ├── repositories
+│   │   ├── AuthRepository.ts
 │   │   ├── BalanceRepository.ts
 │   │   └── TransactionsRepository.ts
 │   └── usecases
+│   │   ├── AuthUseCases.ts
 │   │   ├── BalanceUseCases.ts
 │   │   └── TransactionsUseCases.ts
 ├── infrastructure (camada de infraestrutura)
 │   ├── api
+│   │   ├── AuthApi.ts
 │   │   ├── BalanceApi.ts
 │   │   └── TransactionApi.ts
 │   └── firebase
