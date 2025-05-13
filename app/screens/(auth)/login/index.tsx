@@ -15,11 +15,12 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function makeLogin(email: string, password: string) {
+  async function loginUser(email: string, password: string) {
     setLoading(true);
     await handleLogin(email, password);
     setLoading(false);
   }
+
   return (
     <View style={styles.loginContainer}>
       <View style={styles.headerContainer}>
@@ -50,7 +51,7 @@ export default function Index() {
           title={loading ? "Entrando..." : "Entrar"}
           variant="primary"
           disabled={loading}
-          onPress={() => makeLogin(email, password)}
+          onPress={() => loginUser(email, password)}
         />
 
         <View style={styles.registerTextContainer}>
