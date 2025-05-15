@@ -1,15 +1,14 @@
+import {
+  logoutUser,
+  signInUser,
+  signUpUser,
+} from "@/domain/usecases/AuthUseCases";
 import { addBalance } from "@/domain/usecases/BalanceUseCases";
 import { auth } from "@/infrastructure/firebase/config";
-import { balanceApi } from "@/infrastructure/api/BalanceApi";
 import { getUserData } from "@/utils/getUserData";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User,
-  updateProfile,
-} from "firebase/auth";
+import { User } from "firebase/auth";
 import {
   createContext,
   ReactNode,
@@ -22,7 +21,7 @@ import Toast from "react-native-toast-message";
 
 interface IAuthContext {
   user: User | undefined;
-  handleLogin: (email: string, password: string) => Promise<boolean>;
+  handleLogin: (email: string, password: string) => void;
   handleSignUp: (email: string, password: string, userName: string) => void;
   handleLogout: () => void;
   isAuthenticated: boolean;
@@ -41,11 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const { userCredential } = await signInUser(email, password);
       setUser(userCredential.user);
       await SecureStore.setItemAsync(
         "user",
@@ -53,15 +48,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       setIsAuthenticated(true);
       navigation.navigate("Home" as never);
-      return true;
-    } catch (error) {
+    } catch {
       Toast.show({
         type: "error",
         text1: "Falha ao logar usuário",
         position: "bottom",
       });
-      console.log("AuthProvider :: login - falha ao logar usuário", error);
-      return false;
     }
   };
 
@@ -70,56 +62,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     userName: string
   ) => {
-    await SecureStore.deleteItemAsync("userToken");
+    try {
+      await signUpUser(email, password, userName);
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        if (auth?.currentUser) {
-          updateProfile(auth.currentUser, {
-            displayName: userName,
-          })
-            .then(() => {
-              navigation.navigate("Login" as never);
-              Toast.show({
-                type: "success",
-                text1: "Usuário cadastrado com sucesso",
-                position: "bottom",
-              });
-            })
-            .catch((error) => {
-              Toast.show({
-                type: "error",
-                text1: "Falha ao cadastrar usuário",
-                position: "bottom",
-              });
-              console.log("AuthProvider :: signUp - falha", error);
-            });
-
-          addBalance(balanceApi)(auth.currentUser.uid, 0);
-        }
-      })
-      .catch((error) => {
+      if (auth?.currentUser) {
+        addBalance(auth.currentUser.uid, 0);
+        await SecureStore.deleteItemAsync("userToken");
+        navigation.navigate("Login" as never);
         Toast.show({
-          type: "error",
-          text1: "Falha ao cadastrar usuário",
+          type: "success",
+          text1: "Usuário cadastrado com sucesso",
           position: "bottom",
         });
-        console.log("AuthProvider :: signUp - falha", error);
+      }
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Falha ao cadastrar usuário",
+        position: "bottom",
       });
+    }
   };
 
   const handleLogout = async () => {
-    console.log("AuthProvider :: logout - usuário deslogado com sucesso");
-    Toast.show({
-      type: "success",
-      text1: "Usuário deslogado com sucesso",
-      position: "bottom",
-    });
-    await SecureStore.deleteItemAsync("userToken");
-    auth.signOut();
-    setUser(undefined);
-    setIsAuthenticated(false);
-    navigation.navigate("LandingPage" as never);
+    try {
+      await logoutUser();
+      Toast.show({
+        type: "success",
+        text1: "Usuário deslogado com sucesso",
+        position: "bottom",
+      });
+      await SecureStore.deleteItemAsync("userToken");
+      setUser(undefined);
+      setIsAuthenticated(false);
+      navigation.navigate("LandingPage" as never);
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Não foi possível deslogar o usuário",
+        position: "bottom",
+      });
+    }
   };
 
   const memoizedValue = useMemo(() => {
