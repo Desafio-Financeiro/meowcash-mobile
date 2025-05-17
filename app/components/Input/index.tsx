@@ -18,7 +18,7 @@ export function Input({
     <View>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.inputContainer}>
-        <TextInput {...rest} style={styles.input} />
+        <TextInput accessibilityLabel={label} {...rest} style={styles.input} />
         <MaterialCommunityIcons
           name={endIcon}
           size={16}

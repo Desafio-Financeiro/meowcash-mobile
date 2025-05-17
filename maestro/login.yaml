@@ -1,0 +1,23 @@
+appId: com.deuteront.meowcashmobile
+noScreenshots: true
+---
+- launchApp
+
+
+- tapOn: "Começar agora"
+
+- tapOn:
+    text: "Entrar"
+    index: 0
+
+- tapOn:
+    text: "E-mail"
+- inputText: "p@g.com"
+
+- tapOn:
+    text: "Senha"
+- inputText: "123456"
+
+- tapOn: "Entrar"
+
+- assertVisible: "Cadastre-se"
