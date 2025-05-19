@@ -3,14 +3,15 @@ import { useAuth } from "@/context/AuthContext";
 import { StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { lazy } from "react";
 
-import LandingPage from "./screens/(auth)/landing-page";
-import Login from "./screens/(auth)/login";
-import Register from "./screens/(auth)/register";
-import Home from "./screens/(protected)/home";
-import Extract from "./screens/(protected)/extract";
-import Reports from "./screens/(protected)/reports";
-import SplashScreen from "./screens/(auth)/splash-screen";
+const LandingPage = lazy(() => import("./screens/(auth)/landing-page"));
+const Login = lazy(() => import("./screens/(auth)/login"));
+const Register = lazy(() => import("./screens/(auth)/register"));
+const Home = lazy(() => import("./screens/(protected)/home"));
+const Extract = lazy(() => import("./screens/(protected)/extract"));
+const Reports = lazy(() => import("./screens/(protected)/reports"));
+const SplashScreen = lazy(() => import("./screens/(auth)/splash-screen"));
 
 type DrawerParamList = {
   SplashScreen: undefined;
