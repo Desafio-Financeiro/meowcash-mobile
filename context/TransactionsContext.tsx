@@ -26,6 +26,7 @@ import {
   getStatistics,
   getTransactions,
 } from "@/domain/usecases/TransactionsUseCases";
+import Toast from "react-native-toast-message";
 
 interface ITransactionsContext {
   balance: number;
@@ -118,6 +119,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     data: balance,
     refetch: refetchBalance,
     isRefetching: balanceIsRefetching,
+    error: balanceError,
   } = useQuery({
     queryKey: ["balanceInfo"],
     queryFn: () => getBalance(user?.uid ?? ""),
@@ -129,6 +131,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     data: statistics,
     refetch: refetchStatistics,
     isRefetching: statisticsIsRefetching,
+    error: getStatisticsError,
   } = useQuery({
     queryKey: ["statistics"],
     queryFn: () => getStatistics(user?.uid ?? ""),
@@ -143,6 +146,7 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
     hasNextPage,
     refetch,
     isRefetching,
+    error: getTransactionsError,
   } = useInfiniteQuery({
     queryKey: ["transactions", transactionFilter],
     queryFn: ({ pageParam }) =>
@@ -168,11 +172,25 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
         {
           text: "Deletar",
           onPress: () => {
-            deleteTransaction(transaction).then(() => {
-              refetch();
-              refetchBalance();
-              refetchStatistics();
-            });
+            deleteTransaction(transaction)
+              .then(() => {
+                refetch();
+                refetchBalance();
+                refetchStatistics();
+
+                Toast.show({
+                  type: "success",
+                  text1: "Transação deletada com sucesso!",
+                  position: "bottom",
+                });
+              })
+              .catch(() => {
+                Toast.show({
+                  type: "error",
+                  text1: "Erro ao deletar transação",
+                  position: "bottom",
+                });
+              });
           },
         },
       ]
@@ -186,6 +204,36 @@ export const TransactionsProvider = ({ children }: { children: ReactNode }) => {
       );
     }
   }, [isLoading, data]);
+
+  useEffect(() => {
+    if (balanceError) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao buscar saldo",
+        position: "bottom",
+      });
+    }
+  }, [balanceError]);
+
+  useEffect(() => {
+    if (getTransactionsError) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao buscar transações",
+        position: "bottom",
+      });
+    }
+  }, [getTransactionsError]);
+
+  useEffect(() => {
+    if (getStatisticsError) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao buscar relatórios",
+        position: "bottom",
+      });
+    }
+  }, [getStatisticsError]);
 
   const memoizedValue = useMemo(() => {
     return {
