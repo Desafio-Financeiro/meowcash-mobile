@@ -1,4 +1,3 @@
-import Toast from "react-native-toast-message";
 import { db } from "@/infrastructure/firebase/config";
 import {
   addDoc,
@@ -21,7 +20,6 @@ import {
 import { Filter } from "@/utils/types";
 import { uploadFile } from "@/utils/file";
 import { getBalance, updateBalance } from "@/domain/usecases/BalanceUseCases";
-import { balanceApi } from "@/infrastructure/api/BalanceApi";
 import { TransactionsRepository } from "@/domain/repositories/TransactionsRepository";
 
 export type TransactionType = "credit" | "debit";
@@ -125,14 +123,8 @@ export const transactionsApi: TransactionsRepository = {
       } else {
         return { data: [] as Transaction[], lastDoc: undefined };
       }
-    } catch (error) {
-      console.error("Erro ao buscar transações:", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao buscar transações",
-        position: "bottom",
-      });
+    } catch {
+      throw new Error();
     }
   },
 
@@ -171,14 +163,8 @@ export const transactionsApi: TransactionsRepository = {
       } else {
         return { credit: 0, debit: 0, groupedTransactions: [] };
       }
-    } catch (error) {
-      console.error("Erro ao buscar transações:", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao buscar transações",
-        position: "bottom",
-      });
+    } catch {
+      throw new Error();
     }
   },
 
@@ -206,23 +192,9 @@ export const transactionsApi: TransactionsRepository = {
         balance: newBalance,
       });
 
-      Toast.show({
-        type: "success",
-        text1: "Transação adicionada!",
-        position: "bottom",
-      });
-
       return { success: true };
-    } catch (error) {
-      console.error("Erro ao adicionar transação: ", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao adicionar transação",
-        position: "bottom",
-      });
-
-      return { success: false };
+    } catch {
+      throw new Error();
     }
   },
 
@@ -256,23 +228,9 @@ export const transactionsApi: TransactionsRepository = {
         balance: newBalance,
       });
 
-      Toast.show({
-        type: "success",
-        text1: "Transação editada com sucesso!",
-        position: "bottom",
-      });
-
       return { success: true };
-    } catch (error) {
-      console.error("Erro ao editar transação: ", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao editar transação",
-        position: "bottom",
-      });
-
-      return { success: false };
+    } catch {
+      throw new Error();
     }
   },
 
@@ -294,23 +252,9 @@ export const transactionsApi: TransactionsRepository = {
         balance: newBalance,
       });
 
-      Toast.show({
-        type: "success",
-        text1: "Transação deletada com sucesso!",
-        position: "bottom",
-      });
-
       return { success: true };
     } catch (error) {
-      console.error("Erro ao deletar transação: ", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao deletar transação",
-        position: "bottom",
-      });
-
-      return { success: false };
+      throw new Error();
     }
   },
 };

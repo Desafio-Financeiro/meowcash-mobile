@@ -9,30 +9,14 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import Toast from "react-native-toast-message";
 
 export const balanceApi: BalanceRepository = {
   addBalance: async (user: string, balance: number) => {
     try {
       await addDoc(collection(db, "balance"), { user, balance });
-
-      Toast.show({
-        type: "success",
-        text1: "Saldo adicionado!",
-        position: "bottom",
-      });
-
       return { success: true };
-    } catch (error) {
-      console.error("Erro ao adicionar saldo: ", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao adicionar saldo",
-        position: "bottom",
-      });
-
-      return { success: false };
+    } catch {
+      throw new Error();
     }
   },
 
@@ -49,14 +33,8 @@ export const balanceApi: BalanceRepository = {
       } else {
         return 0;
       }
-    } catch (error) {
-      console.error("Erro ao buscar saldo:", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao buscar saldo",
-        position: "bottom",
-      });
+    } catch {
+      throw new Error();
     }
   },
 
@@ -75,24 +53,10 @@ export const balanceApi: BalanceRepository = {
 
         return { success: true };
       } else {
-        Toast.show({
-          type: "error",
-          text1: "Erro ao atualizar saldo",
-          position: "bottom",
-        });
-
-        return { success: false };
+        throw new Error();
       }
-    } catch (error) {
-      console.error("Erro ao atualizar saldo:", error);
-
-      Toast.show({
-        type: "error",
-        text1: "Erro ao atualizar saldo",
-        position: "bottom",
-      });
-
-      return { success: false };
+    } catch {
+      throw new Error();
     }
   },
 };

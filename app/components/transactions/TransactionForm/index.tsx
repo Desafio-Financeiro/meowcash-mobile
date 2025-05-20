@@ -16,6 +16,7 @@ import {
   updateTransaction,
   addTransaction,
 } from "@/domain/usecases/TransactionsUseCases";
+import Toast from "react-native-toast-message";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -104,25 +105,53 @@ export function TransactionForm({
 
     try {
       if (transactionToEdit?.id) {
-        await updateTransaction({
-          ...transactionToEdit,
-          type: transaction.type,
-          value: parseFloat(transaction.value),
-          date: transaction.date,
-          to: transaction.type === "Debit" ? transaction.dictKey : null,
-          from: transaction.type === "Credit" ? transaction.dictKey : null,
-          attachment: transaction.attachment,
-        });
+        try {
+          await updateTransaction({
+            ...transactionToEdit,
+            type: transaction.type,
+            value: parseFloat(transaction.value),
+            date: transaction.date,
+            to: transaction.type === "Debit" ? transaction.dictKey : null,
+            from: transaction.type === "Credit" ? transaction.dictKey : null,
+            attachment: transaction.attachment,
+          });
+
+          Toast.show({
+            type: "success",
+            text1: "Transação editada com sucesso!",
+            position: "bottom",
+          });
+        } catch {
+          Toast.show({
+            type: "error",
+            text1: "Erro ao editar transação",
+            position: "bottom",
+          });
+        }
       } else {
-        await addTransaction({
-          type: transaction.type,
-          value: parseFloat(transaction.value),
-          date: transaction.date,
-          to: transaction.type === "Debit" ? transaction.dictKey : null,
-          from: transaction.type === "Credit" ? transaction.dictKey : null,
-          userId: user!.uid,
-          attachment: transaction.attachment,
-        });
+        try {
+          await addTransaction({
+            type: transaction.type,
+            value: parseFloat(transaction.value),
+            date: transaction.date,
+            to: transaction.type === "Debit" ? transaction.dictKey : null,
+            from: transaction.type === "Credit" ? transaction.dictKey : null,
+            userId: user!.uid,
+            attachment: transaction.attachment,
+          });
+
+          Toast.show({
+            type: "success",
+            text1: "Transação adicionada!",
+            position: "bottom",
+          });
+        } catch {
+          Toast.show({
+            type: "error",
+            text1: "Erro ao adicionar transação",
+            position: "bottom",
+          });
+        }
       }
 
       refetchTransactions();
