@@ -13,8 +13,9 @@ import { OptionsSelector } from "../../OptionsSelector";
 import { formatDate } from "date-fns";
 import { transactionTranslate } from "@/utils/transactionTranslate";
 import { theme } from "@/theme";
-import { TransactionType } from "@/api/transaction";
-import { useTransactions } from "@/context/TransactionsContext";
+
+import { TransactionType } from "@/infrastructure/api/TransactionsApi";
+import { useTransactionFilters } from "@/store/hooks/useTransactionFilters";
 
 interface TransactionFiltersProps {
   handleTransactionDate(date: { start: Date | null; end: Date | null }): void;
@@ -29,7 +30,7 @@ export function TransactionFilters({
   handleTransactionText,
   handleTransactionType,
 }: Readonly<TransactionFiltersProps>) {
-  const { handleClearFilter } = useTransactions();
+  const { handleClearFilter } = useTransactionFilters();
   const [showDateFilter, setShowDateFilter] = useState(false);
   const [showTransactionFilter, setShowTransactionFilter] = useState(false);
 

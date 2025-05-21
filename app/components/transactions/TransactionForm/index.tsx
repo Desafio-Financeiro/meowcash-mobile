@@ -5,18 +5,16 @@ import { useEffect, useMemo, useState } from "react";
 import { DatePicker } from "../../DatePicker";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
-import { useAuth } from "@/context/AuthContext";
-import { useTransactions } from "@/context/TransactionsContext";
 import { type Transaction } from "@/app/components/transactions/TransactionItem";
 import * as DocumentPicker from "expo-document-picker";
 import FileUploader from "@/app/components/FileUploader/FileUploader";
 import { theme } from "@/theme";
 import { Timestamp } from "firebase/firestore";
-import {
-  updateTransaction,
-  addTransaction,
-} from "@/domain/usecases/TransactionsUseCases";
-import Toast from "react-native-toast-message";
+
+import { useRecoilValue } from "recoil";
+import { userAuthState } from "@/store/atoms/authAtoms";
+
+import { useHandleTransaction } from "@/store/hooks/useHandleTransaction";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -37,20 +35,21 @@ export function TransactionForm({
   open,
   transactionToEdit,
 }: Readonly<TransactionFormProps>) {
-  const { user } = useAuth();
-  const { refetchTransactions, refetchBalance, refetchStatistics } =
-    useTransactions();
+  const user = useRecoilValue(userAuthState);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    setTransaction,
+    transaction,
+    setLoading,
+    loading,
+    createTransaction,
+    editTransaction,
+    invalidateQueries,
+  } = useHandleTransaction();
+
   const [steps, setSteps] = useState<
     "value" | "date" | "type" | "dictKey" | "attachment"
   >("value");
-  const [transaction, setTransaction] = useState<AddTransactionArgs>({
-    type: "Debit",
-    value: "0",
-    date: new Date(),
-    dictKey: "",
-  });
 
   useEffect(() => {
     setTransaction({
@@ -101,62 +100,18 @@ export function TransactionForm({
   }, [steps, isValueValid, transaction.date, isTypeValid, isDictKeyValid]);
 
   async function handleAddTransaction() {
+    if (!user) return;
+
     setLoading(true);
 
     try {
       if (transactionToEdit?.id) {
-        try {
-          await updateTransaction({
-            ...transactionToEdit,
-            type: transaction.type,
-            value: parseFloat(transaction.value),
-            date: transaction.date,
-            to: transaction.type === "Debit" ? transaction.dictKey : null,
-            from: transaction.type === "Credit" ? transaction.dictKey : null,
-            attachment: transaction.attachment,
-          });
-
-          Toast.show({
-            type: "success",
-            text1: "Transação editada com sucesso!",
-            position: "bottom",
-          });
-        } catch {
-          Toast.show({
-            type: "error",
-            text1: "Erro ao editar transação",
-            position: "bottom",
-          });
-        }
+        await editTransaction(transactionToEdit);
       } else {
-        try {
-          await addTransaction({
-            type: transaction.type,
-            value: parseFloat(transaction.value),
-            date: transaction.date,
-            to: transaction.type === "Debit" ? transaction.dictKey : null,
-            from: transaction.type === "Credit" ? transaction.dictKey : null,
-            userId: user!.uid,
-            attachment: transaction.attachment,
-          });
-
-          Toast.show({
-            type: "success",
-            text1: "Transação adicionada!",
-            position: "bottom",
-          });
-        } catch {
-          Toast.show({
-            type: "error",
-            text1: "Erro ao adicionar transação",
-            position: "bottom",
-          });
-        }
+        await createTransaction();
       }
 
-      refetchTransactions();
-      refetchBalance();
-      refetchStatistics();
+      invalidateQueries();
     } catch (error) {
       console.error("Erro ao adicionar transação: ", error);
     } finally {

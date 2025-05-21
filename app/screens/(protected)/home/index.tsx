@@ -11,28 +11,29 @@ import {
 import { styles } from "./style";
 import { getFullCurrentDate } from "@/utils/getCurrentDate";
 import StaticTransactionsList from "@/app/components/transactions/StaticTransactionsList";
-import { useAuth } from "@/context/AuthContext";
-import { useTransactions } from "@/context/TransactionsContext";
 import { Button } from "@/app/components/Button";
 import { theme } from "@/theme";
 import { TransactionFilters } from "@/app/components/transactions/Filters";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { TransactionForm } from "@/app/components/transactions/TransactionForm";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { userAuthState } from "@/store/atoms/authAtoms";
+import { useTransactionList } from "@/store/hooks/useTransactionList";
+import { useBalance } from "@/store/hooks/useBalance";
+import { useStatistics } from "@/store/hooks/useStatistics";
+import { transactionsFilterState } from "@/store/atoms/transactionAtoms";
+import { useTransactionFilters } from "@/store/hooks/useTransactionFilters";
 
 export default function Home() {
   const navigation = useNavigation();
-  const { user } = useAuth();
-  const {
-    transactions,
-    isLoading: transactionsIsLoading,
-    balanceIsLoading,
-    balance,
-    statistics,
-    statisticsIsLoading,
-    transactionFilter,
-    setTransactionFilter,
-  } = useTransactions();
+  const user = useRecoilValue(userAuthState);
+  const { setTransactionFilter, transactionFilter } = useTransactionFilters();
+
+  const { transactions, isLoading: transactionsIsLoading } =
+    useTransactionList();
+  const { balance, isLoading: balanceIsLoading } = useBalance();
+  const { statistics, isLoading: statisticsIsLoading } = useStatistics();
 
   const [showAddTransactionDialog, setShowAddTransactionDialog] =
     useState(false);

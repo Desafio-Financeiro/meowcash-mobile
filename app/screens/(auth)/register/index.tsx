@@ -1,15 +1,15 @@
 import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
-import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./style";
 import Cat from "@/app/components/Icons/Cat";
+import { useSignUp } from "@/store/hooks/useSignUp";
 
 export default function Index() {
   const navigation = useNavigation();
-  const { handleSignUp } = useAuth();
+  const { handleSignUp } = useSignUp();
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");

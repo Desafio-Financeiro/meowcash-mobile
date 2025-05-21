@@ -5,9 +5,9 @@ import { styles } from "./style";
 import { View } from "react-native";
 import { Button } from "../../Button";
 import { useNavigation } from "@react-navigation/native";
-import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionForm } from "../TransactionForm";
 import { useEffect, useState } from "react";
+import { useDeleteTransaction } from "@/store/hooks/useDeleteTransaction";
 
 interface StaticTransactionsListProps {
   data: Transaction[];
@@ -15,7 +15,7 @@ interface StaticTransactionsListProps {
 
 const StaticTransactionsList = ({ data }: StaticTransactionsListProps) => {
   const navigation = useNavigation();
-  const { showDeleteAlert } = useTransactions();
+  const { showDeleteAlert } = useDeleteTransaction();
   const [showAddTransactionDialog, setShowAddTransactionDialog] =
     useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<

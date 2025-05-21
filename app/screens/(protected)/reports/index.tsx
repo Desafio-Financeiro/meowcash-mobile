@@ -1,11 +1,11 @@
 import { Text, ScrollView } from "react-native";
 import { styles } from "./style";
-import { useTransactions } from "@/context/TransactionsContext";
 import PieChart from "@/app/components/PieChart";
 import BarChart from "@/app/components/BarChart";
+import { useStatistics } from "@/store/hooks/useStatistics";
 
 export default function Reports() {
-  const { statistics } = useTransactions();
+  const { statistics } = useStatistics();
 
   return (
     <ScrollView style={styles.container}>

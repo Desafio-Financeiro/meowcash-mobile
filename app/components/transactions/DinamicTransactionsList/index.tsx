@@ -3,22 +3,22 @@ import DinamicList from "@/app/components/DinamicList";
 import TransactionItem, {
   Transaction,
 } from "@/app/components/transactions/TransactionItem";
-import { useTransactions } from "@/context/TransactionsContext";
 import { TransactionFilters } from "../Filters";
 import { View, Text } from "react-native";
 import { styles } from "./style";
 import { TransactionForm } from "../TransactionForm";
+import { useTransactionList } from "@/store/hooks/useTransactionList";
+import { useTransactionFilters } from "@/store/hooks/useTransactionFilters";
+import { useDeleteTransaction } from "@/store/hooks/useDeleteTransaction";
 
 const DinamicTransactionsList = () => {
-  const {
-    transactions,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    showDeleteAlert,
-    transactionFilter,
-    setTransactionFilter,
-  } = useTransactions();
+  const { showDeleteAlert } = useDeleteTransaction();
+
+  const { transactionFilter, setTransactionFilter } = useTransactionFilters();
+
+  const { transactions, isLoading, fetchNextPage, hasNextPage } =
+    useTransactionList();
+
   const [transactionsList, setTransactionsList] = useState<
     { id: string; body: React.ReactNode }[]
   >([]);

@@ -6,12 +6,15 @@ import { theme } from "@/theme";
 import Logo from "../Illustrations/Logo";
 import { useState } from "react";
 import { Button } from "../Button";
-import { useAuth } from "@/context/AuthContext";
 import { styles } from "./style";
+import { useLogout } from "@/store/hooks/useLogout";
+import { useRecoilValue } from "recoil";
+import { userIsAuthenticatedState } from "@/store/atoms/authAtoms";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
   const [openPopover, setOpenPopover] = useState<boolean>(false);
-  const { handleLogout, isAuthenticated } = useAuth();
+  const { handleLogout } = useLogout();
+  const isAuthenticated = useRecoilValue(userIsAuthenticatedState);
 
   return (
     <View style={styles.container}>
