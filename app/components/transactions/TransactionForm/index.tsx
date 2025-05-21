@@ -31,10 +31,10 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({
-                                  onClose,
-                                  open,
-                                  transactionToEdit
-                                }: Readonly<TransactionFormProps>) {
+  onClose,
+  open,
+  transactionToEdit,
+}: Readonly<TransactionFormProps>) {
   const user = useRecoilValue(userAuthState);
 
   const {
@@ -44,7 +44,7 @@ export function TransactionForm({
     loading,
     createTransaction,
     editTransaction,
-    invalidateQueries
+    invalidateQueries,
   } = useHandleTransaction();
 
   const [steps, setSteps] = useState<
@@ -61,7 +61,7 @@ export function TransactionForm({
       dictKey:
         transactionToEdit?.type === "Debit"
           ? transactionToEdit?.to ?? ""
-          : transactionToEdit?.from ?? ""
+          : transactionToEdit?.from ?? "",
     });
   }, [open, transactionToEdit]);
 
@@ -136,7 +136,7 @@ export function TransactionForm({
       type: "Debit",
       value: "0",
       date: new Date(),
-      dictKey: ""
+      dictKey: "",
     });
     setSteps("value");
   }
@@ -238,7 +238,7 @@ export function TransactionForm({
               setFile={(file) => {
                 setTransaction((oldState) => ({
                   ...oldState,
-                  attachment: file
+                  attachment: file,
                 }));
               }}
               file={transaction.attachment}
