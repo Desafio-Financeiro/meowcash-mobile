@@ -1,6 +1,5 @@
 import Toast from "react-native-toast-message";
 
-import { RecoilRoot } from "recoil";
 import {
   useFonts,
   Poppins_300Light,
@@ -66,12 +65,10 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <RecoilRoot>
-          <Provider store={store}>
-            <Routes />
-            <Toast />
-          </Provider>
-        </RecoilRoot>
+        <Provider store={store}>
+          <Routes />
+          <Toast />
+        </Provider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

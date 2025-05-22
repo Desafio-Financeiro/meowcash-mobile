@@ -8,7 +8,6 @@ import { useState } from "react";
 import { Button } from "../Button";
 import { styles } from "./style";
 import { useLogout } from "@/store/hooks/useLogout";
-import { useRecoilValue } from "recoil";
 import { useAppSelector } from "@/store/redux/hooks";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
