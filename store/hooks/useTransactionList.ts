@@ -3,6 +3,7 @@ import { getTransactions } from "@/domain/usecases/TransactionsUseCases";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
 import { setTransactions } from "@/store/redux/slices/transactionSlice";
 import { useEffect } from "react";
+import { Transaction } from "@/app/components/transactions/TransactionItem";
 
 export function useTransactionList() {
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ export function useTransactionList() {
   useEffect(() => {
     const transactionList = data?.pages?.map((page) => page?.data || []).flat();
     if (transactionList?.length) {
-      dispatch(setTransactions(transactionList));
+      dispatch(setTransactions(transactionList as Transaction[]));
     }
   }, [isLoading, data]);
 
