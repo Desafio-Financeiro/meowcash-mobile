@@ -6,15 +6,14 @@ import {
 } from "@/domain/usecases/TransactionsUseCases";
 import { useState } from "react";
 import { useTransactionFilters } from "./useTransactionFilters";
-import { useRecoilValue } from "recoil";
-import { userAuthState } from "../atoms/authAtoms";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "@/store/redux/hooks";
 
 export function useHandleTransaction() {
   const queryClient = useQueryClient();
-  const user = useRecoilValue(userAuthState);
-
+  const user = useAppSelector((state) => state.auth.user);
   const { transactionFilter } = useTransactionFilters();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [transaction, setTransaction] = useState<AddTransactionArgs>({
     type: "Debit",
@@ -27,16 +26,13 @@ export function useHandleTransaction() {
     queryClient.invalidateQueries({
       queryKey: ["transactions", transactionFilter],
     });
-    queryClient.invalidateQueries({
-      queryKey: ["balanceInfo"],
-    });
-    queryClient.invalidateQueries({
-      queryKey: ["statistics"],
-    });
+    queryClient.invalidateQueries({ queryKey: ["balanceInfo"] });
+    queryClient.invalidateQueries({ queryKey: ["statistics"] });
   }
 
   async function createTransaction() {
     if (!user) return;
+
     return addTransaction({
       type: transaction.type,
       value: parseFloat(transaction.value),
@@ -64,9 +60,9 @@ export function useHandleTransaction() {
     createTransaction,
     editTransaction,
     transaction,
-    setLoading,
-    loading,
     setTransaction,
+    loading,
+    setLoading,
     invalidateQueries,
   };
 }

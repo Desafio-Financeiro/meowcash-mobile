@@ -3,8 +3,7 @@ import { StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { lazy } from "react";
-import { useRecoilValue } from "recoil";
-import { userIsAuthenticatedState } from "@/store/atoms/authAtoms";
+import { useAppSelector } from "@/store/redux/hooks";
 
 const LandingPage = lazy(() => import("./screens/(auth)/landing-page"));
 const Login = lazy(() => import("./screens/(auth)/login"));
@@ -27,8 +26,7 @@ type DrawerParamList = {
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export default function Routes() {
-  const isAuthenticated = useRecoilValue(userIsAuthenticatedState);
-
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   return (
     <Drawer.Navigator
       screenOptions={{

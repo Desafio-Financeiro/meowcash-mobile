@@ -2,13 +2,12 @@ import { logoutUser } from "@/domain/usecases/AuthUseCases";
 import { useNavigation } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
-import { useRecoilState } from "recoil";
-import { userAuthState, userIsAuthenticatedState } from "../atoms/authAtoms";
+import { useAppDispatch } from "@/store/redux/hooks";
+import { logout } from "@/store/redux/slices/authSlice";
 
 export function useLogout() {
   const navigation = useNavigation();
-  const [_, setUser] = useRecoilState(userAuthState);
-  const [__, setIsAuthenticated] = useRecoilState(userIsAuthenticatedState);
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     try {
@@ -19,8 +18,9 @@ export function useLogout() {
         position: "bottom",
       });
       await SecureStore.deleteItemAsync("userToken");
-      setUser(null);
-      setIsAuthenticated(false);
+
+      dispatch(logout());
+
       navigation.navigate("LandingPage" as never);
     } catch (e) {
       Toast.show({

@@ -1,17 +1,16 @@
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  transactionsFilterState,
-  transactionsState,
-} from "../atoms/transactionAtoms";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getTransactions } from "@/domain/usecases/TransactionsUseCases";
-import { userAuthState } from "../atoms/authAtoms";
+import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
+import { setTransactions } from "@/store/redux/slices/transactionSlice";
 import { useEffect } from "react";
 
 export function useTransactionList() {
-  const transactionFilter = useRecoilValue(transactionsFilterState);
-  const user = useRecoilValue(userAuthState);
-  const [transactions, setTransactions] = useRecoilState(transactionsState);
+  const dispatch = useAppDispatch();
+  const transactionFilter = useAppSelector(
+    (state) => state.transactions.filter
+  );
+  const transactions = useAppSelector((state) => state.transactions.list);
+  const user = useAppSelector((state) => state.auth.user);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ["transactions", transactionFilter],
@@ -28,7 +27,7 @@ export function useTransactionList() {
   useEffect(() => {
     const transactionList = data?.pages?.map((page) => page?.data || []).flat();
     if (transactionList?.length) {
-      setTransactions(transactionList);
+      dispatch(setTransactions(transactionList));
     }
   }, [isLoading, data]);
 

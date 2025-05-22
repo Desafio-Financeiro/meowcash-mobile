@@ -11,10 +11,10 @@ import { theme } from "@/theme";
 import { Timestamp } from "firebase/firestore";
 
 import { useRecoilValue } from "recoil";
-import { userAuthState } from "@/store/atoms/authAtoms";
 
 import { useHandleTransaction } from "@/store/hooks/useHandleTransaction";
 import { Dialog } from "@/app/components/Dialog";
+import { useAppSelector } from "@/store/redux/hooks";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -35,7 +35,7 @@ export function TransactionForm({
   open,
   transactionToEdit,
 }: Readonly<TransactionFormProps>) {
-  const user = useRecoilValue(userAuthState);
+  const user = useAppSelector((state) => state.auth.user);
 
   const {
     setTransaction,

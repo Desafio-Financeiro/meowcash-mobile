@@ -9,12 +9,12 @@ import { Button } from "../Button";
 import { styles } from "./style";
 import { useLogout } from "@/store/hooks/useLogout";
 import { useRecoilValue } from "recoil";
-import { userIsAuthenticatedState } from "@/store/atoms/authAtoms";
+import { useAppSelector } from "@/store/redux/hooks";
 
 export default function Header({ props }: { props: DrawerHeaderProps }) {
   const [openPopover, setOpenPopover] = useState<boolean>(false);
   const { handleLogout } = useLogout();
-  const isAuthenticated = useRecoilValue(userIsAuthenticatedState);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   return (
     <View style={styles.container}>

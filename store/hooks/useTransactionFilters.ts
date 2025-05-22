@@ -1,25 +1,20 @@
-import { useRecoilState } from "recoil";
-import { transactionsFilterState } from "../atoms/transactionAtoms";
+import {
+  clearTransactionFilter,
+  setTransactionFilter,
+} from "@/store/redux/slices/transactionSlice";
+import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
+import { Filter } from "@/utils/types";
 
 export function useTransactionFilters() {
-  const [transactionFilter, setTransactionFilter] = useRecoilState(
-    transactionsFilterState
+  const dispatch = useAppDispatch();
+  const transactionFilter = useAppSelector(
+    (state) => state.transactions.filter
   );
-  function handleClearFilter() {
-    setTransactionFilter({
-      date: {
-        start: null,
-        end: null,
-      },
-      transactionType: null,
-      hasAttachment: null,
-      transactionText: null,
-    });
-  }
 
   return {
     transactionFilter,
-    handleClearFilter,
-    setTransactionFilter,
+    setTransactionFilter: (filter: Filter) =>
+      dispatch(setTransactionFilter(filter)),
+    handleClearFilter: () => dispatch(clearTransactionFilter()),
   };
 }

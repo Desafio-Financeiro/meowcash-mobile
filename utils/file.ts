@@ -1,4 +1,4 @@
-import { storage } from "@/infrastructure/firebase/config";
+import { firebase } from "@/infrastructure/firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { DocumentPickerAsset } from "expo-document-picker";
 import { Alert } from "react-native";
@@ -14,7 +14,10 @@ export const uploadFile = async (
     const response = await fetch(attachment.uri);
     const blob = await response.blob();
 
-    const fileRef = ref(storage, `uploads/${Date.now()}_${attachment.name}`);
+    const fileRef = ref(
+      firebase.storage,
+      `uploads/${Date.now()}_${attachment.name}`
+    );
     await uploadBytes(fileRef, blob);
 
     return await getDownloadURL(fileRef);

@@ -6,8 +6,8 @@ import { useTransactionFilters } from "./useTransactionFilters";
 
 export function useDeleteTransaction() {
   const queryClient = useQueryClient();
-
   const { transactionFilter } = useTransactionFilters();
+
   const showDeleteAlert = (transaction: Transaction) => {
     Alert.alert(
       "Deletar transação",
@@ -20,18 +20,13 @@ export function useDeleteTransaction() {
         },
         {
           text: "Deletar",
-          onPress: () => {
-            deleteTransaction(transaction).then(() => {
-              queryClient.invalidateQueries({
-                queryKey: ["transactions", transactionFilter],
-              });
-              queryClient.invalidateQueries({
-                queryKey: ["balanceInfo"],
-              });
-              queryClient.invalidateQueries({
-                queryKey: ["statistics"],
-              });
+          onPress: async () => {
+            await deleteTransaction(transaction);
+            queryClient.invalidateQueries({
+              queryKey: ["transactions", transactionFilter],
             });
+            queryClient.invalidateQueries({ queryKey: ["balanceInfo"] });
+            queryClient.invalidateQueries({ queryKey: ["statistics"] });
           },
         },
       ]

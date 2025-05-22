@@ -17,17 +17,16 @@ import { TransactionFilters } from "@/app/components/transactions/Filters";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { TransactionForm } from "@/app/components/transactions/TransactionForm";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { userAuthState } from "@/store/atoms/authAtoms";
+
 import { useTransactionList } from "@/store/hooks/useTransactionList";
 import { useBalance } from "@/store/hooks/useBalance";
 import { useStatistics } from "@/store/hooks/useStatistics";
-import { transactionsFilterState } from "@/store/atoms/transactionAtoms";
 import { useTransactionFilters } from "@/store/hooks/useTransactionFilters";
+import { useAppSelector } from "@/store/redux/hooks";
 
 export default function Home() {
   const navigation = useNavigation();
-  const user = useRecoilValue(userAuthState);
+  const user = useAppSelector((state) => state.auth.user);
   const { setTransactionFilter, transactionFilter } = useTransactionFilters();
 
   const { transactions, isLoading: transactionsIsLoading } =

@@ -1,11 +1,10 @@
-import { getBalance } from "@/domain/usecases/BalanceUseCases";
 import { useQuery } from "@tanstack/react-query";
-import { useRecoilValue } from "recoil";
-import { userAuthState } from "../atoms/authAtoms";
+import { useAppSelector } from "@/store/redux/hooks";
 import { getStatistics } from "@/domain/usecases/TransactionsUseCases";
 
 export function useStatistics() {
-  const user = useRecoilValue(userAuthState);
+  const user = useAppSelector((state) => state.auth.user);
+
   const { isLoading, data: statistics } = useQuery({
     queryKey: ["statistics"],
     queryFn: () => getStatistics(user?.uid ?? ""),

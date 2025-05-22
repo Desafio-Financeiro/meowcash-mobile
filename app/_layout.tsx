@@ -18,6 +18,9 @@ import { BackHandler } from "react-native";
 import { User } from "firebase/auth";
 import { getUserData } from "@/utils/getUserData";
 
+import { Provider } from "react-redux";
+import { store } from "@/store/redux/store";
+
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
@@ -64,8 +67,10 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <RecoilRoot>
-          <Routes />
-          <Toast />
+          <Provider store={store}>
+            <Routes />
+            <Toast />
+          </Provider>
         </RecoilRoot>
       </QueryClientProvider>
     </GestureHandlerRootView>
