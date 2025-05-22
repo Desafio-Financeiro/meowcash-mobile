@@ -1,8 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { CurrencyInput } from "@/app/components/CurrencyInput";
-import { Dialog } from "../../Dialog";
 import { useEffect, useMemo, useState } from "react";
-import { DatePicker } from "../../DatePicker";
+import { DatePicker } from "@/app/components/DatePicker";
 import { TextInput, View } from "react-native";
 import { styles } from "./style";
 import { type Transaction } from "@/app/components/transactions/TransactionItem";
@@ -15,6 +14,7 @@ import { useRecoilValue } from "recoil";
 import { userAuthState } from "@/store/atoms/authAtoms";
 
 import { useHandleTransaction } from "@/store/hooks/useHandleTransaction";
+import { Dialog } from "@/app/components/Dialog";
 
 export interface AddTransactionArgs {
   type: "Credit" | "Debit";
@@ -31,10 +31,10 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({
-  onClose,
-  open,
-  transactionToEdit,
-}: Readonly<TransactionFormProps>) {
+                                  onClose,
+                                  open,
+                                  transactionToEdit
+                                }: Readonly<TransactionFormProps>) {
   const user = useRecoilValue(userAuthState);
 
   const {
@@ -44,7 +44,7 @@ export function TransactionForm({
     loading,
     createTransaction,
     editTransaction,
-    invalidateQueries,
+    invalidateQueries
   } = useHandleTransaction();
 
   const [steps, setSteps] = useState<
@@ -61,7 +61,7 @@ export function TransactionForm({
       dictKey:
         transactionToEdit?.type === "Debit"
           ? transactionToEdit?.to ?? ""
-          : transactionToEdit?.from ?? "",
+          : transactionToEdit?.from ?? ""
     });
   }, [open, transactionToEdit]);
 
@@ -136,7 +136,7 @@ export function TransactionForm({
       type: "Debit",
       value: "0",
       date: new Date(),
-      dictKey: "",
+      dictKey: ""
     });
     setSteps("value");
   }
@@ -238,7 +238,7 @@ export function TransactionForm({
               setFile={(file) => {
                 setTransaction((oldState) => ({
                   ...oldState,
-                  attachment: file,
+                  attachment: file
                 }));
               }}
               file={transaction.attachment}

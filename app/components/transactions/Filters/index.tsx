@@ -8,14 +8,14 @@ import {
 import { styles } from "./style";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { DateRangeSelector } from "../../DataRangeSelector";
-import { OptionsSelector } from "../../OptionsSelector";
 import { formatDate } from "date-fns";
 import { transactionTranslate } from "@/utils/transactionTranslate";
 import { theme } from "@/theme";
 
 import { TransactionType } from "@/infrastructure/api/TransactionsApi";
 import { useTransactionFilters } from "@/store/hooks/useTransactionFilters";
+import { DateRangeSelector } from "@/app/components/DataRangeSelector";
+import { OptionsSelector } from "@/app/components/OptionsSelector";
 
 interface TransactionFiltersProps {
   handleTransactionDate(date: { start: Date | null; end: Date | null }): void;
