@@ -1,5 +1,5 @@
 import { BalanceRepository } from "@/domain/repositories/BalanceRepository";
-import { db } from "@/infrastructure/firebase/config";
+import { firebase } from "@/infrastructure/firebase/config";
 import {
   collection,
   addDoc,
@@ -13,7 +13,7 @@ import {
 export const balanceApi: BalanceRepository = {
   addBalance: async (user: string, balance: number) => {
     try {
-      await addDoc(collection(db, "balance"), { user, balance });
+      await addDoc(collection(firebase.db, "balance"), { user, balance });
       return { success: true };
     } catch {
       throw new Error();
@@ -22,7 +22,7 @@ export const balanceApi: BalanceRepository = {
 
   getBalance: async (user: string) => {
     try {
-      const balanceRef = collection(db, "balance");
+      const balanceRef = collection(firebase.db, "balance");
       const q = query(balanceRef, where("user", "==", user));
 
       const querySnapshot = await getDocs(q);
@@ -40,14 +40,14 @@ export const balanceApi: BalanceRepository = {
 
   updateBalance: async (user: string, newData: { balance: number }) => {
     try {
-      const balanceRef = collection(db, "balance");
+      const balanceRef = collection(firebase.db, "balance");
       const q = query(balanceRef, where("user", "==", user));
 
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
         querySnapshot.forEach(async (document) => {
-          const userRef = doc(db, "balance", document.id);
+          const userRef = doc(firebase.db, "balance", document.id);
           await updateDoc(userRef, newData);
         });
 

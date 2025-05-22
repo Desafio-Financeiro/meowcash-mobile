@@ -1,9 +1,9 @@
 import Header from "@/app/components/Header";
-import { useAuth } from "@/context/AuthContext";
 import { StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { lazy } from "react";
+import { useAppSelector } from "@/store/redux/hooks";
 
 const LandingPage = lazy(() => import("./screens/(auth)/landing-page"));
 const Login = lazy(() => import("./screens/(auth)/login"));
@@ -26,8 +26,7 @@ type DrawerParamList = {
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export default function Routes() {
-  const auth = useAuth();
-
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -51,7 +50,7 @@ export default function Routes() {
         name="LandingPage"
         options={{
           drawerLabel: "Início",
-          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: !isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
         component={LandingPage}
@@ -61,7 +60,7 @@ export default function Routes() {
         component={Login}
         options={{
           drawerLabel: "Login",
-          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: !isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />
@@ -70,7 +69,7 @@ export default function Routes() {
         component={Register}
         options={{
           drawerLabel: "Criar conta",
-          drawerItemStyle: { display: !auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: !isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />
@@ -79,7 +78,7 @@ export default function Routes() {
         component={Home}
         options={{
           drawerLabel: "Home",
-          drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />
@@ -88,7 +87,7 @@ export default function Routes() {
         component={Extract}
         options={{
           drawerLabel: "Extrato",
-          drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />
@@ -97,7 +96,7 @@ export default function Routes() {
         component={Reports}
         options={{
           drawerLabel: "Relatórios",
-          drawerItemStyle: { display: auth.isAuthenticated ? "flex" : "none" },
+          drawerItemStyle: { display: isAuthenticated ? "flex" : "none" },
           sceneStyle: styles.sceneStyle,
         }}
       />

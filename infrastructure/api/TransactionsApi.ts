@@ -1,4 +1,4 @@
-import { db } from "@/infrastructure/firebase/config";
+import { firebase } from "@/infrastructure/firebase/config";
 import {
   addDoc,
   collection,
@@ -39,7 +39,7 @@ export const transactionsApi: TransactionsRepository = {
     | undefined
   > => {
     try {
-      const transactionsRef = collection(db, "transaction");
+      const transactionsRef = collection(firebase.db, "transaction");
       let conditions = [where("userId", "==", user)];
 
       if (transactionFilter?.date?.start) {
@@ -139,7 +139,7 @@ export const transactionsApi: TransactionsRepository = {
     | undefined
   > => {
     try {
-      const transactionsRef = collection(db, "transaction");
+      const transactionsRef = collection(firebase.db, "transaction");
       let q = query(transactionsRef, where("userId", "==", user));
 
       const querySnapshot = await getDocs(q);
@@ -177,7 +177,7 @@ export const transactionsApi: TransactionsRepository = {
       }
       delete transaction.attachment;
 
-      await addDoc(collection(db, "transaction"), {
+      await addDoc(collection(firebase.db, "transaction"), {
         ...transaction,
         date: Timestamp.fromDate(new Date(transaction.date.toString())),
       });
@@ -200,7 +200,7 @@ export const transactionsApi: TransactionsRepository = {
 
   updateTransaction: async (transaction: Transaction) => {
     try {
-      const transactionRef = doc(db, "transaction", transaction.id!);
+      const transactionRef = doc(firebase.db, "transaction", transaction.id!);
 
       let fileUrl = null;
 
@@ -236,7 +236,7 @@ export const transactionsApi: TransactionsRepository = {
 
   deleteTransaction: async (transaction: Transaction) => {
     try {
-      const transactionRef = doc(db, "transaction", transaction.id!);
+      const transactionRef = doc(firebase.db, "transaction", transaction.id!);
 
       await updateDoc(transactionRef, {
         deletedAt: new Date().toISOString().split("T")[0],
